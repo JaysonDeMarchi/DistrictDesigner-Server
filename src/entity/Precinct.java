@@ -46,5 +46,21 @@ public class Precinct implements Serializable {
     public void setCountyId(String countyId) {
         this.countyId = countyId;
     }
+
+    /**
+     * @return the countyName
+     */
+    public String getCountyName() {
+        return countyName;
+    }
+
+    /**
+     * @param countyName the countyName to set
+     */
+    public void setCountyName(String countyName) {
+        this.countyName = countyName;
+    }
+    
+    
     
 }
