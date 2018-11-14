@@ -1,12 +1,1 @@
-<<<<<<< HEAD
 /DistrictDesigner-Server/nbproject/private/
-=======
-# production
-/build
-/src/hibernate.cfg.xml
-
-# misc
-.DS_Store
-.env
-.env.local
->>>>>>> f578220a0b6bc76bb5a0b53945859b03119bfab5
