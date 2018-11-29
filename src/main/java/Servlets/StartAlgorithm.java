@@ -37,7 +37,6 @@ public class StartAlgorithm extends HttpServlet {
     StartRequestParams requestParams = mapper.readValue(requestBody, StartRequestParams.class);
     HttpSession session = request.getSession();
 
-    System.out.println(requestParams.toString());
     processResponse(response, request, initiateAlgorithm(session, requestParams));
   }
 
