@@ -1,9 +1,9 @@
-package Beans;
+package beans;
 
-import java.util.HashMap;
-import Enums.ShortName;
-import Enums.AlgorithmType;
-import Enums.Metric;
+import java.util.Map;
+import enums.ShortName;
+import enums.AlgorithmType;
+import enums.Metric;
 
 /**
  *
@@ -13,9 +13,9 @@ public class StartRequestParams {
 
   private AlgorithmType algoType;
   private ShortName shortName;
-  private HashMap<Metric, Float> weights;
+  private Map<Metric, Float> weights;
 
-  public StartRequestParams(AlgorithmType a, ShortName s, HashMap<Metric, Float> w) {
+  public StartRequestParams(AlgorithmType a, ShortName s, Map<Metric, Float> w) {
     this.algoType = a;
     this.shortName = s;
     this.weights = w;
@@ -29,7 +29,7 @@ public class StartRequestParams {
     return this.shortName;
   }
 
-  public HashMap<Metric, Float> getWeights() {
+  public Map<Metric, Float> getWeights() {
     return this.weights;
   }
 
@@ -41,7 +41,7 @@ public class StartRequestParams {
     this.shortName = s;
   }
 
-  public void setWeights(HashMap<Metric, Float> w) {
+  public void setWeights(Map<Metric, Float> w) {
     this.weights = w;
   }
 

@@ -1,19 +1,19 @@
-package Servlets;
+package servlets;
 
-import Algorithms.RegionGrowing;
-import Algorithms.SimulatedAnnealing;
-import Beans.StartRequestParams;
-import Enums.AlgorithmType;
-import Enums.Metric;
-import Enums.ResponseAttribute;
-import Enums.SessionAttribute;
-import Enums.ShortName;
+import algorithms.RegionGrowing;
+import algorithms.SimulatedAnnealing;
+import beans.StartRequestParams;
+import enums.AlgorithmType;
+import enums.Metric;
+import enums.ResponseAttribute;
+import enums.SessionAttribute;
+import enums.ShortName;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.HashMap;
+import java.util.Map;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -43,7 +43,7 @@ public class StartAlgorithm extends HttpServlet {
   private Boolean initiateAlgorithm(HttpSession session, StartRequestParams requestParams) {
     AlgorithmType algoType = requestParams.getAlgoType();
     ShortName shortName = requestParams.getShortName();
-    HashMap<Metric, Float> weights = requestParams.getWeights();
+    Map<Metric, Float> weights = requestParams.getWeights();
 
     if (algoType == AlgorithmType.REGION_GROWING) {
       session.setAttribute(SessionAttribute.ALGORITHM.toString(), new RegionGrowing(shortName, weights));

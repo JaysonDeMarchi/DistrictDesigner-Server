@@ -1,8 +1,8 @@
-package Algorithms;
+package algorithms;
 
-import Enums.Metric;
-import Enums.ShortName;
-import java.util.HashMap;
+import enums.Metric;
+import enums.ShortName;
+import java.util.Map;
 
 /**
  *
@@ -10,7 +10,7 @@ import java.util.HashMap;
  */
 public class SimulatedAnnealing extends Algorithm {
 
-  public SimulatedAnnealing(ShortName shortName, HashMap<Metric, Float> weights) {
+  public SimulatedAnnealing(ShortName shortName, Map<Metric, Float> weights) {
     super(shortName, weights);
   }
 

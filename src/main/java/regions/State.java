@@ -1,6 +1,6 @@
-package Regions;
+package regions;
 
-import Enums.ShortName;
+import enums.ShortName;
 
 /**
  *
