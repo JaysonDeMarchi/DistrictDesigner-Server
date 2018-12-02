@@ -1,50 +1,37 @@
 import json
 import sys
 from shapely.geometry import shape
-from shapely.validation import explain_validity
-
 
 class Precinct:
-	def __init__(self,precintId,polygon):
-		self.precintId = precintId
+	def __init__(self,precinctId,polygon):
+		self.precinctId = precinctId
 		self.polygon = polygon
 		self.adjPrecincts = []
 
 def updateAdjPrecincts(a,b):
-	if a==b or b.precintId in a.adjPrecincts:
+	if a==b or b.precinctId in a.adjPrecincts:
 		return
-
 	if a.polygon.intersects(b.polygon):
-		a.adjPrecincts.append(b.precintId)
-		b.adjPrecincts.append(a.precintId)
-	return 
+		a.adjPrecincts.append(b.precinctId)
+		b.adjPrecincts.append(a.precinctId)
+	return
 
-totalPrecinct = 0 
-with open(sys.argv[1],'r') as f:
-	data = json.load(f)['features']
-	totalPrecinct = len(data)
-	precincts = []
-	for item in data:
-		precintId = item['properties']['GEOID10']
-		polygon = shape(item['geometry'])
+inputFile = sys.argv[1]
+outputFile = sys.argv[2]
+with open(inputFile,'r') as fPrecinct:
+	data = json.load(fPrecinct)['features']
+	precincts = list(map(lambda item : Precinct(item['properties']['GEOID10'],shape(item['geometry'])),data))
+fPrecinct.close()
 
-		precincts.append(Precinct(precintId,polygon))
-f.close()
-
-completed = 1.0
-f = open(sys.argv[2],"w+")
-f.write("[\n")
-for precinctA in precincts:
-	for precinctB in precincts:
-		updateAdjPrecincts(precinctA,precinctB)
-	completed += 1
-	print(completed/totalPrecinct)
-	if precinctA == precincts[-1]:
-		dic = '{"id":"'+str(precinctA.precintId)+'","adjPrecincts":'+str(precinctA.adjPrecincts).replace("'",'"')+'}\n]'
-	else:
-		dic = '{"id":"'+str(precinctA.precintId)+'","adjPrecincts":'+str(precinctA.adjPrecincts).replace("'",'"')+'},\n'
-	f.write(dic)
-f.close()
-
+with open(outputFile,'w') as fOutput:
+	jsonStrings = []
+	for precinctA in precincts:     #precinctA is the precinct needs to find adjPrecinct
+		for precinctB in precincts:	#precinctB is a precinct in the whole precincct list
+			updateAdjPrecincts(precinctA,precinctB)
+		jsonStrings.append(json.dumps({"id":precinctA.precinctId,"adjPrecincts":str(precinctA.adjPrecincts)}))
+	fOutput.write('[')
+	fOutput.write(",\n".join(jsonStrings))
+	fOutput.write(']')
+fOutput.close()
 
 
