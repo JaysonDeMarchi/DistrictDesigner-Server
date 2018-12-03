@@ -1,3 +1,5 @@
+# District Designer
+
 ## Start Algorithm
 
 Begin redistricting the provided state using the provided algorithm and the provided metrics
@@ -18,4 +20,32 @@ Begin redistricting the provided state using the provided algorithm and the prov
 	{
 		algorithmStarted: true
 	}
+	```
+
+## Update Precincts
+
+
+
+|Method|URL|
+|--|--|
+|GET|`/updatePrecincts/`|
+
+- **Successful Response:**
+	- Code: 200
+	- Content: 
+	```json
+	[
+            {
+                precinctId: 234,
+                oldDistrictId: 2,
+                newDistrictId: 3,
+                successStatus: true,
+            },{
+                precinctId: 123,
+                oldDistrictId: 1,
+                newDistrictId: 2,
+                successStatus: false,
+            },
+            . . .
+        ]
 	```
