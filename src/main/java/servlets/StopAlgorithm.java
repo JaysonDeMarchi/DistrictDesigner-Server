@@ -21,11 +21,9 @@ public class StopAlgorithm extends HttpServlet {
 
   ObjectMapper mapper = new ObjectMapper();
 
-  protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-          throws ServletException, IOException {
+  protected void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
     HttpSession session = request.getSession();
     session.invalidate();
-    System.out.println("Session invalidated!");
     processResponse(request, response, true);
   }
 
