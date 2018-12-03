@@ -28,10 +28,8 @@ with open(outputFile,'w') as fOutput:
 	for precinctA in precincts:     #precinctA is the precinct needs to find adjPrecinct
 		for precinctB in precincts:	#precinctB is a precinct in the whole precincct list
 			updateAdjPrecincts(precinctA,precinctB)
-		jsonStrings.append(json.dumps({"id":precinctA.precinctId,"adjPrecincts":str(precinctA.adjPrecincts)}))
-	fOutput.write('[')
-	fOutput.write(",\n".join(jsonStrings))
-	fOutput.write(']')
+		jsonStrings.append({"id":precinctA.precinctId,"adjPrecincts":str(precinctA.adjPrecincts)})
+	fOutput.write(json.dumps(jsonStrings,indent=0))
 fOutput.close()
 
 

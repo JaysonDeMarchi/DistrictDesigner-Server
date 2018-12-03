@@ -36,10 +36,8 @@ with open(outputFile,"w") as fOutput:
 	for precinct in precincts:
 		for district in districts:
 			if district.polygon.contains(precinct.center): #find a district
-				jsonStrings.append(json.dumps({"id":precinct.precinctId,"district":district.districtId}))
+				jsonStrings.append({"id":precinct.precinctId,"district":district.districtId})
 				break
-	fOutput.write('[')
-	fOutput.write(",\n".join(jsonStrings))
-	fOutput.write(']')
+	fOutput.write(json.dumps(jsonStrings,indent=0))
 fOutput.close()
 
