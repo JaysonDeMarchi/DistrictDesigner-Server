@@ -17,8 +17,6 @@ import javax.persistence.Transient;
 @Table(name="STATE")
 public class State implements Serializable {
     private static final long serialVersionUID = 1L;
-    
-
     private String id;
     private String name;
     private ShortName shortName;
@@ -37,7 +35,7 @@ public class State implements Serializable {
     @Id @GeneratedValue
     @Column(name = "ID")
     public String getId() {
-        return id;
+        return this.id;
     }
 
     public void setId(String id) {
@@ -46,7 +44,7 @@ public class State implements Serializable {
 
     @Column(name = "NAME")
     public String getName() {
-        return name;
+        return this.name;
     }
 
     public void setName(String name) {
@@ -55,7 +53,7 @@ public class State implements Serializable {
 
     @Transient
     public ShortName getShortName() {
-        return shortName;
+        return this.shortName;
     }
 
     public void setShortName(ShortName shortName) {

@@ -1,13 +1,7 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package regions;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Collection;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -23,24 +17,23 @@ import javax.persistence.Transient;
 @Table(name = "DISTRICT")
 public class District implements Serializable{
     private static final long serialVersionUID = 1L;
-    
     private String id;
     private String boundaryJSON;
     private String state;
-    List<Object> precincts;
+    Collection<Precinct> precincts;
 
+    public District(){}
+    
     public District(String id, String boundaryJSON, String state) {
         this.id = id;
         this.boundaryJSON = boundaryJSON;
         this.state = state;
     }
 
-    public District(){}
-
     @Id @GeneratedValue
     @Column(name = "ID")
     public String getId() {
-        return id;
+        return this.id;
     }
 
     public void setId(String id) {
@@ -49,7 +42,7 @@ public class District implements Serializable{
 
     @Column(name = "BOUNDARY")
     public String getBoundaryJSON() {
-        return boundaryJSON;
+        return this.boundaryJSON;
     }
 
     public void setBoundaryJSON(String boundaryJSON) {
@@ -58,7 +51,7 @@ public class District implements Serializable{
 
     @Column(name = "STATE")
     public String getState() {
-        return state;
+        return this.state;
     }
 
     public void setState(String state) {
@@ -66,11 +59,11 @@ public class District implements Serializable{
     }
 
     @Transient
-    public List<Object> getPrecincts() {
-        return precincts;
+    public Collection<Precinct> getPrecincts() {
+        return this.precincts;
     }
 
-    public void setPrecincts(List<Object> precincts) {
+    public void setPrecincts(Collection<Precinct> precincts) {
         this.precincts = precincts;
     }
      

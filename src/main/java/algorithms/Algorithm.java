@@ -2,8 +2,8 @@ package algorithms;
 
 import enums.Metric;
 import enums.ShortName;
+import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
 import regions.State;
 import java.util.Map;
 import regions.District;
@@ -18,7 +18,7 @@ public abstract class Algorithm {
 
     State state;
     Map<Metric, Float> weights;
-    List<District> districts;
+    Collection<District> districts;
 
     public Algorithm(ShortName shortName, Map<Metric, Float> weights) {
         this.state = new State(shortName);
@@ -27,11 +27,11 @@ public abstract class Algorithm {
             HibernateManager hb = new HibernateManager();
             Map<String, Object> criteria = new HashMap<>();
             criteria.put("state", this.getState().getShortName().toString());
-            this.setDistricts((List<District>)(List)hb.getRecordsBasedOnCriteria(District.class, criteria));
+            this.setDistricts((Collection<District>)(Collection)hb.getRecordsBasedOnCriteria(District.class, criteria));
             for (District d : this.districts) 
             {
-                criteria.put("district", d.getId());
-                d.setPrecincts(hb.getRecordsBasedOnCriteria(Precinct.class, criteria));
+                criteria.put("districtId", d.getId());
+                d.setPrecincts((Collection<Precinct>)(Collection)hb.getRecordsBasedOnCriteria(Precinct.class, criteria));
             }
         } catch (Throwable e) {
             System.out.println("Exception: " + e.getMessage());
@@ -56,11 +56,11 @@ public abstract class Algorithm {
         this.weights = weights;
     }
 
-    public List<District> getDistricts() {
+    public Collection<District> getDistricts() {
         return districts;
     }
 
-    public void setDistricts(List<District> districts) {
+    public void setDistricts(Collection<District> districts) {
         this.districts = districts;
     }
 
