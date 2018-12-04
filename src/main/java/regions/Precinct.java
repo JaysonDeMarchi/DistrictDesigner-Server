@@ -13,86 +13,89 @@ import utils.Validator;
  * @author Hengqi Zhu
  */
 @Entity
-@Table(name="PRECINCT")
+@Table(name = "PRECINCT")
 public class Precinct implements Serializable {
-    private static final long serialVersionUID = 1L;
-    private String id;
-    private String name;	
-    private String boundaryJSON;
-    private String state;
-    private String districtId;
-    private String adjPrecincts;
 
-    public Precinct() {}
+  private String id;
+  private String name;
+  private String boundaryJSON;
+  private String state;
+  private String districtId;
+  private String adjPrecincts;
 
-    public Precinct(String precinctId, String districtId, String boundaryJSON, String adjPrecincts) throws Exception {
-            this.id = precinctId;
-            if(!Validator.isJSONValid(boundaryJSON))
-                    throw new Exception("boundaryJSON value is not a valid JSON");		
-            this.boundaryJSON = boundaryJSON;
-            this.districtId = districtId;
-            if(!Validator.isJSONValid(adjPrecincts))
-                    throw new Exception("boundaryJSON value is not a valid JSON");
-            this.adjPrecincts = adjPrecincts;
+  public Precinct() {
+  }
+
+  public Precinct(String precinctId, String districtId, String boundaryJSON, String adjPrecincts) throws Exception {
+    this.id = precinctId;
+    if (!Validator.isJSONValid(boundaryJSON)) {
+      throw new Exception("boundaryJSON value is not a valid JSON");
     }
-
-    @Id @GeneratedValue
-    @Column(name = "ID")
-    public String getId() {
-        return this.id;
+    this.boundaryJSON = boundaryJSON;
+    this.districtId = districtId;
+    if (!Validator.isJSONValid(adjPrecincts)) {
+      throw new Exception("boundaryJSON value is not a valid JSON");
     }
+    this.adjPrecincts = adjPrecincts;
+  }
 
-    public void setId(String id) {
-        this.id = id;
-    }
+  @Id
+  @GeneratedValue
+  @Column(name = "ID")
+  public String getId() {
+    return this.id;
+  }
 
-    @Column(name = "NAME")
-    public String getName() {
-        return this.name;
-    }
+  public void setId(String id) {
+    this.id = id;
+  }
 
-    public void setName(String name) {
-        this.name = name;
-    }
+  @Column(name = "NAME")
+  public String getName() {
+    return this.name;
+  }
 
-    @Column(name = "BOUNDARY")
-    public String getBoundaryJSON() {
-            return this.boundaryJSON;
-    }
+  public void setName(String name) {
+    this.name = name;
+  }
 
-    public void setboundaryJSON(String boundaryJSON) throws Exception {
-            if(!Validator.isJSONValid(boundaryJSON))
-                    throw new Exception("boundaryJSON value is not a valid JSON");
-            this.boundaryJSON = boundaryJSON;
-    }
+  @Column(name = "BOUNDARY")
+  public String getBoundaryJSON() {
+    return this.boundaryJSON;
+  }
 
-    @Column(name = "DISTRICT")
-    public String getDistrictId() {
-            return this.districtId;
+  public void setboundaryJSON(String boundaryJSON) throws Exception {
+    if (!Validator.isJSONValid(boundaryJSON)) {
+      throw new Exception("boundaryJSON value is not a valid JSON");
     }
+    this.boundaryJSON = boundaryJSON;
+  }
 
-    public void setDistrictId(String districtId) {
-            this.districtId = districtId;
-    }
+  @Column(name = "DISTRICT")
+  public String getDistrictId() {
+    return this.districtId;
+  }
 
-    @Column(name = "ADJPRECINCTS")
-    public String getAdjPrecincts() {
-        return this.adjPrecincts;
-    }
+  public void setDistrictId(String districtId) {
+    this.districtId = districtId;
+  }
 
-    public void setAdjPrecincts(String adjPrecincts) {
-        this.adjPrecincts = adjPrecincts;
-    }
+  @Column(name = "ADJPRECINCTS")
+  public String getAdjPrecincts() {
+    return this.adjPrecincts;
+  }
 
-    @Column(name = "STATE")
-    public String getState() {
-        return this.state;
-    }
+  public void setAdjPrecincts(String adjPrecincts) {
+    this.adjPrecincts = adjPrecincts;
+  }
 
-    public void setState(String state) {
-        this.state = state;
-    }
+  @Column(name = "STATE")
+  public String getState() {
+    return this.state;
+  }
+
+  public void setState(String state) {
+    this.state = state;
+  }
 
 }
-
-

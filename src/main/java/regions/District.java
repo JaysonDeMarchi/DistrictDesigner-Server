@@ -15,56 +15,58 @@ import javax.persistence.Transient;
  */
 @Entity
 @Table(name = "DISTRICT")
-public class District implements Serializable{
-    private static final long serialVersionUID = 1L;
-    private String id;
-    private String boundaryJSON;
-    private String state;
-    Collection<Precinct> precincts;
+public class District implements Serializable {
 
-    public District(){}
-    
-    public District(String id, String boundaryJSON, String state) {
-        this.id = id;
-        this.boundaryJSON = boundaryJSON;
-        this.state = state;
-    }
+  private String id;
+  private String boundaryJSON;
+  private String state;
+  Collection<Precinct> precincts;
 
-    @Id @GeneratedValue
-    @Column(name = "ID")
-    public String getId() {
-        return this.id;
-    }
+  public District() {
+  }
 
-    public void setId(String id) {
-        this.id = id;
-    }
+  public District(String id, String boundaryJSON, String state) {
+    this.id = id;
+    this.boundaryJSON = boundaryJSON;
+    this.state = state;
+  }
 
-    @Column(name = "BOUNDARY")
-    public String getBoundaryJSON() {
-        return this.boundaryJSON;
-    }
+  @Id
+  @GeneratedValue
+  @Column(name = "ID")
+  public String getId() {
+    return this.id;
+  }
 
-    public void setBoundaryJSON(String boundaryJSON) {
-        this.boundaryJSON = boundaryJSON;
-    }
+  public void setId(String id) {
+    this.id = id;
+  }
 
-    @Column(name = "STATE")
-    public String getState() {
-        return this.state;
-    }
+  @Column(name = "BOUNDARY")
+  public String getBoundaryJSON() {
+    return this.boundaryJSON;
+  }
 
-    public void setState(String state) {
-        this.state = state;
-    }
+  public void setBoundaryJSON(String boundaryJSON) {
+    this.boundaryJSON = boundaryJSON;
+  }
 
-    @Transient
-    public Collection<Precinct> getPrecincts() {
-        return this.precincts;
-    }
+  @Column(name = "STATE")
+  public String getState() {
+    return this.state;
+  }
 
-    public void setPrecincts(Collection<Precinct> precincts) {
-        this.precincts = precincts;
-    }
-     
+  public void setState(String state) {
+    this.state = state;
+  }
+
+  @Transient
+  public Collection<Precinct> getPrecincts() {
+    return this.precincts;
+  }
+
+  public void setPrecincts(Collection<Precinct> precincts) {
+    this.precincts = precincts;
+  }
+
 }

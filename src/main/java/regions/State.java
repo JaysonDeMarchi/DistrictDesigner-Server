@@ -14,49 +14,51 @@ import javax.persistence.Transient;
  * @author Hengqi Zhu
  */
 @Entity
-@Table(name="STATE")
+@Table(name = "STATE")
 public class State implements Serializable {
-    private static final long serialVersionUID = 1L;
-    private String id;
-    private String name;
-    private ShortName shortName;
 
-    public State(String id, String name) {
-        this.id = id;
-        this.name = name;
-    }
-    
-    public State(ShortName shortName) {
-        this.shortName = shortName;
-    }
-          
-    public State() {}
-    
-    @Id @GeneratedValue
-    @Column(name = "ID")
-    public String getId() {
-        return this.id;
-    }
+  private String id;
+  private String name;
+  private ShortName shortName;
 
-    public void setId(String id) {
-        this.id = id;
-    }
+  public State(String id, String name) {
+    this.id = id;
+    this.name = name;
+  }
 
-    @Column(name = "NAME")
-    public String getName() {
-        return this.name;
-    }
+  public State(ShortName shortName) {
+    this.shortName = shortName;
+  }
 
-    public void setName(String name) {
-        this.name = name;
-    }
+  public State() {
+  }
 
-    @Transient
-    public ShortName getShortName() {
-        return this.shortName;
-    }
+  @Id
+  @GeneratedValue
+  @Column(name = "ID")
+  public String getId() {
+    return this.id;
+  }
 
-    public void setShortName(ShortName shortName) {
-        this.shortName = shortName;
-    } 
+  public void setId(String id) {
+    this.id = id;
+  }
+
+  @Column(name = "NAME")
+  public String getName() {
+    return this.name;
+  }
+
+  public void setName(String name) {
+    this.name = name;
+  }
+
+  @Transient
+  public ShortName getShortName() {
+    return this.shortName;
+  }
+
+  public void setShortName(ShortName shortName) {
+    this.shortName = shortName;
+  }
 }
