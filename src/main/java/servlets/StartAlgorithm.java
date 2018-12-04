@@ -61,6 +61,7 @@ public class StartAlgorithm extends HttpServlet {
     response.setHeader("Access-Control-Allow-Origin", request.getHeader("Origin"));
     responseBody.put(ResponseAttribute.ALGO_STARTED.toString(), status);
     pw.print(responseBody.toString());
+    pw.close();
   }
 
   // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
