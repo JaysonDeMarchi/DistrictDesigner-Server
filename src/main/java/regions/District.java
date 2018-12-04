@@ -22,8 +22,7 @@ public class District implements Serializable {
   private String state;
   Collection<Precinct> precincts;
 
-  public District() {
-  }
+  public District() {}
 
   public District(String id, String boundaryJSON, String state) {
     this.id = id;

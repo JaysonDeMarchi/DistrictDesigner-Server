@@ -46,5 +46,5 @@ public class RegionGrowing extends Algorithm {
   public Collection<Precinct> getSeeds() {
     return this.seeds;
   }
-
+  
 }

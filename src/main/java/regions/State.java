@@ -30,8 +30,7 @@ public class State implements Serializable {
     this.shortName = shortName;
   }
 
-  public State() {
-  }
+  public State() {}
 
   @Id
   @GeneratedValue

@@ -23,8 +23,7 @@ public class Precinct implements Serializable {
   private String districtId;
   private String adjPrecincts;
 
-  public Precinct() {
-  }
+  public Precinct() {}
 
   public Precinct(String precinctId, String districtId, String boundaryJSON, String adjPrecincts) throws Exception {
     this.id = precinctId;
