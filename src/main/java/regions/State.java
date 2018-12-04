@@ -1,6 +1,7 @@
 package regions;
 
 import enums.ShortName;
+import java.util.Collection;
 
 /**
  *
@@ -8,9 +9,14 @@ import enums.ShortName;
  */
 public class State {
 
-  ShortName shortName;
+  private ShortName shortName;
+  private Collection<Precinct> precincts;
 
   public State(ShortName shortName) {
     this.shortName = shortName;
+  }
+
+  public Collection<Precinct> getPrecincts() {
+    return this.precincts;
   }
 }
