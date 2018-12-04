@@ -10,6 +10,7 @@ import enums.SessionAttribute;
 import enums.ShortName;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import enums.SelectionType;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -42,26 +43,34 @@ public class StartAlgorithm extends HttpServlet {
 
   private Boolean initiateAlgorithm(HttpSession session, StartRequestParams requestParams) {
     AlgorithmType algoType = requestParams.getAlgoType();
+    Integer numOfDistricts = requestParams.getNumOfDistricts();
+    SelectionType selectionType = requestParams.getSelectionType();
     ShortName shortName = requestParams.getShortName();
     Map<Metric, Float> weights = requestParams.getWeights();
 
-    if (algoType == AlgorithmType.REGION_GROWING) {
-      session.setAttribute(SessionAttribute.ALGORITHM.toString(), new RegionGrowing(shortName, weights));
-    } else if (algoType == AlgorithmType.SIMULATED_ANNEALING) {
-      session.setAttribute(SessionAttribute.ALGORITHM.toString(), new SimulatedAnnealing(shortName, weights));
+    switch (algoType) {
+      case REGION_GROWING:
+        session.setAttribute(SessionAttribute.ALGORITHM.toString(),
+                new RegionGrowing(numOfDistricts, selectionType, shortName, weights));
+        break;
+      case SIMULATED_ANNEALING:
+        session.setAttribute(SessionAttribute.ALGORITHM.toString(),
+                new SimulatedAnnealing(selectionType, shortName, weights));
+        break;
+      default:
+        return false;
     }
     return true;
   }
 
   private void processResponse(HttpServletResponse response, HttpServletRequest request, Boolean status) throws IOException {
     ObjectNode responseBody = mapper.createObjectNode();
-    PrintWriter pw = response.getWriter();
-
-    response.setContentType("application/json;charset=UTF-8");
-    response.setHeader("Access-Control-Allow-Origin", request.getHeader("Origin"));
-    responseBody.put(ResponseAttribute.ALGO_STARTED.toString(), status);
-    pw.print(responseBody.toString());
-    pw.close();
+    try (PrintWriter pw = response.getWriter()) {
+      response.setContentType("application/json;charset=UTF-8");
+      response.setHeader("Access-Control-Allow-Origin", request.getHeader("Origin"));
+      responseBody.put(ResponseAttribute.ALGO_STARTED.toString(), status);
+      pw.print(responseBody.toString());
+    }
   }
 
   // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
