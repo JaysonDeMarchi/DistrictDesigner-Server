@@ -1,10 +1,11 @@
 package utils;
 
+import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.service.ServiceRegistry;
@@ -29,7 +30,7 @@ public class HibernateManager {
     configuration = new Configuration();
     configuration.configure();
     ServiceRegistry serviceRegistry = new ServiceRegistryBuilder().applySettings(
-            configuration.getProperties()).buildServiceRegistry();
+	    configuration.getProperties()).buildServiceRegistry();
     sessionFactory = configuration.buildSessionFactory(serviceRegistry);
   }
 
@@ -39,8 +40,7 @@ public class HibernateManager {
    * @throws HibernateException
    */
   public static synchronized HibernateManager getInstance() throws Exception {
-    if (instance == null)
-    {
+    if (instance == null) {
       instance = new HibernateManager();
     }
     return instance;
@@ -53,7 +53,7 @@ public class HibernateManager {
    * @return success statue
    * @throws Throwable : use getStackTrace() to find the error
    */
-  public boolean persistToDB(Object o) throws Throwable {
+  public boolean saveObjectToDB(Object o) throws Throwable {
     Session session = sessionFactory.openSession();
     session.beginTransaction();
     session.persist(o);
@@ -63,43 +63,85 @@ public class HibernateManager {
   }
 
   /**
-   * Method to get all the records for the given class from DB
+   * Method to get objects as entries in DB by conditions if conditions are
+   * empty return all objects
    *
-   * @param c: Class reference of class object to be queried
-   * @return List containing all the records
-   * @throws Throwable
+   * @param c objects to be get from DB
+   * @param conditions constraints to data look for
+   * @return a collection of objects
+   * @throws Throwable : use getStackTrace() to find the error
    */
-  public List<Object> getAllRecords(Class c) throws Throwable {
-    return executeCriteria(c, null);
+  public Collection<Object> getObjectsByConditions(Class c, List<QueryCondition> conditions) throws Throwable {
+    Session session = sessionFactory.openSession();
+    Transaction transaction = session.beginTransaction();
+    Criteria criteria = session.createCriteria(c);
+    if (conditions != null && !conditions.isEmpty()) {
+      for (QueryCondition qc : conditions) {
+	switch (qc.getType()) {
+	  case EQUAL:
+	    criteria.add(Restrictions.eq(qc.getFieldToCompare(), qc.getValue()));
+	    break;
+	  case LESS:
+	    criteria.add(Restrictions.lt(qc.getFieldToCompare(), qc.getValue()));
+	    break;
+	  case GREATER:
+	    criteria.add(Restrictions.gt(qc.getFieldToCompare(), qc.getValue()));
+	    break;
+	  case GREATEROREQUAL:
+	    criteria.add(Restrictions.ge(qc.getFieldToCompare(), qc.getValue()));
+	    break;
+	  case LESSOREQUAL:
+	    criteria.add(Restrictions.le(qc.getFieldToCompare(), qc.getValue())); 
+	    break;
+	  default:
+	    break;
+	}
+      }
+    }
+    Collection<Object> entites = criteria.list();
+    transaction.commit();
+    session.close();
+    return entites;
   }
 
   /**
-   * Method to get records based on criteria passed as param
+   * Method to get objects as entries in DB by a condition if condition is
+   * NULL return all objects
    *
-   * @param c : Class reference of class object to be queried
-   * @param criteria: map containing attribute and their values
-   * @return List containing all the records
-   * @throws Throwable
+   * @param c objects to be get from DB
+   * @param queryCondition constraints to data look for
+   * @return a collection of objects
+   * @throws Throwable : use getStackTrace() to find the error
    */
-  public List<Object> getRecordsBasedOnCriteria(Class c, Map<String, Object> criteria) throws Throwable {
-    return executeCriteria(c, criteria);
-  }
-
-  private List<Object> executeCriteria(Class c, Map<String, Object> restrictions) throws Throwable {
+  public Collection<Object> getObjectsByCondition(Class c, QueryCondition queryCondition) throws Throwable {
     Session session = sessionFactory.openSession();
-    org.hibernate.Transaction tr = session.beginTransaction();
+    Transaction transaction = session.beginTransaction();
     Criteria criteria = session.createCriteria(c);
-    if (restrictions != null && !restrictions.isEmpty())
-    {
-      for (Map.Entry<String, Object> e : restrictions.entrySet())
-      {
-        criteria.add(Restrictions.eq(e.getKey(), e.getValue()));
+    if (queryCondition != null) {
+      switch (queryCondition.getType()) {
+	case EQUAL:
+	  criteria.add(Restrictions.eq(queryCondition.getFieldToCompare(), queryCondition.getValue()));
+	  break;
+	case LESS:
+	  criteria.add(Restrictions.lt(queryCondition.getFieldToCompare(), queryCondition.getValue()));
+	  break;
+	case GREATER:
+	  criteria.add(Restrictions.gt(queryCondition.getFieldToCompare(), queryCondition.getValue()));
+	  break;
+	case GREATEROREQUAL:
+	  criteria.add(Restrictions.ge(queryCondition.getFieldToCompare(), queryCondition.getValue()));
+	  break;
+	case LESSOREQUAL:
+	  criteria.add(Restrictions.le(queryCondition.getFieldToCompare(), queryCondition.getValue()));
+	  break;
+	default:
+	  break;
       }
     }
-    List records = criteria.list();
-    tr.commit();
+    Collection<Object> entites = criteria.list();
+    transaction.commit();
     session.close();
-    return records;
+    return entites;
   }
 
 }

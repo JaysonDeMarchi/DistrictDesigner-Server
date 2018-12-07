@@ -1,14 +1,17 @@
 package algorithms;
 
+import static enums.ComparisonType.*;
 import enums.Metric;
 import enums.ShortName;
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
+import java.util.List;
 import regions.State;
 import java.util.Map;
 import regions.District;
 import regions.Precinct;
 import utils.HibernateManager;
+import utils.QueryCondition;
 
 /**
  *
@@ -19,25 +22,30 @@ public abstract class Algorithm {
   State state;
   Map<Metric, Float> weights;
   Collection<District> districts;
+  Collection<Precinct> precincts;
 
   public Algorithm(ShortName shortName, Map<Metric, Float> weights) {
-    this.state = new State(shortName);
+   
     this.weights = weights;
+    this.precincts = new ArrayList<>();
     try {
       HibernateManager hb = new HibernateManager();
-      Map<String, Object> criteria = new HashMap<>();
-      criteria.put("state", this.getState().getShortName().toString());
-      this.setDistricts((Collection<District>) (Collection) hb.getRecordsBasedOnCriteria(District.class, criteria));
+      QueryCondition queryCondition = new QueryCondition("shortName", shortName.toString(), EQUAL);
+      this.setState(((List<State>)(List)hb.getObjectsByCondition(State.class, queryCondition)).get(0));
+      queryCondition = new QueryCondition("state", shortName.toString(), EQUAL);
+      this.setDistricts((Collection<District>) (Collection) hb.getObjectsByCondition(District.class, queryCondition));
       for (District d : this.districts) {
-        criteria.put("districtId", d.getId());
-        d.setPrecincts((Collection<Precinct>) (Collection) hb.getRecordsBasedOnCriteria(Precinct.class, criteria));
+	queryCondition = new QueryCondition("districtId", d.getId(), EQUAL);
+	Collection<Precinct> precinctsInDistrict = (Collection<Precinct>) (Collection) hb.getObjectsByCondition(Precinct.class, queryCondition);
+	d.setPrecincts(precinctsInDistrict);
+	this.precincts.addAll(precinctsInDistrict);
       }
     } catch (Throwable e) {
       System.out.println("Exception: " + e.getMessage());
     }
   }
 
-  public abstract Boolean start();
+  public abstract Boolean start ();
 
   public State getState() {
     return state;
@@ -62,5 +70,16 @@ public abstract class Algorithm {
   public void setDistricts(Collection<District> districts) {
     this.districts = districts;
   }
+
+  public Collection<Precinct> getPrecincts() {
+    return this.precincts;
+  }
+
+  public void setPrecincts(Collection<Precinct> precincts) {
+    this.precincts = precincts;
+  }
+  
+  
+  
 
 }
