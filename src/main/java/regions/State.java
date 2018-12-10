@@ -1,16 +1,63 @@
 package regions;
 
 import enums.ShortName;
+import java.io.Serializable;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.Table;
+import javax.persistence.Transient;
 
 /**
  *
- * @author Jayson
+ * @author Hengqi Zhu
  */
-public class State {
+@Entity
+@Table(name = "STATE")
+public class State implements Serializable {
 
-  ShortName shortName;
+  private String id;
+  private String name;
+  private String shortName;
+  
+  public State() {}
 
-  public State(ShortName shortName) {
+  public State(String id, String name) {
+    this.id = id;
+    this.name = name;
+  }
+
+  public State(String shortName) {
+    this.shortName = shortName;
+  }
+
+  @Id
+  @GeneratedValue
+  @Column(name = "ID")
+  public String getId() {
+    return this.id;
+  }
+
+  public void setId(String id) {
+    this.id = id;
+  }
+
+  @Column(name = "NAME")
+  public String getName() {
+    return this.name;
+  }
+
+  public void setName(String name) {
+    this.name = name;
+  }
+
+  @Column(name="SHORTNAME")
+  public String getShortName() {
+    return this.shortName;
+  }
+
+  public void setShortName(String shortName) {
     this.shortName = shortName;
   }
 }
