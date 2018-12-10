@@ -1,5 +1,6 @@
 package utils;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import org.hibernate.Criteria;
@@ -30,7 +31,7 @@ public class HibernateManager {
     configuration = new Configuration();
     configuration.configure();
     ServiceRegistry serviceRegistry = new ServiceRegistryBuilder().applySettings(
-	    configuration.getProperties()).buildServiceRegistry();
+            configuration.getProperties()).buildServiceRegistry();
     sessionFactory = configuration.buildSessionFactory(serviceRegistry);
   }
 
@@ -77,25 +78,25 @@ public class HibernateManager {
     Criteria criteria = session.createCriteria(c);
     if (conditions != null && !conditions.isEmpty()) {
       for (QueryCondition qc : conditions) {
-	switch (qc.getType()) {
-	  case EQUAL:
-	    criteria.add(Restrictions.eq(qc.getFieldToCompare(), qc.getValue()));
-	    break;
-	  case LESS:
-	    criteria.add(Restrictions.lt(qc.getFieldToCompare(), qc.getValue()));
-	    break;
-	  case GREATER:
-	    criteria.add(Restrictions.gt(qc.getFieldToCompare(), qc.getValue()));
-	    break;
-	  case GREATEROREQUAL:
-	    criteria.add(Restrictions.ge(qc.getFieldToCompare(), qc.getValue()));
-	    break;
-	  case LESSOREQUAL:
-	    criteria.add(Restrictions.le(qc.getFieldToCompare(), qc.getValue())); 
-	    break;
-	  default:
-	    break;
-	}
+        switch (qc.getType()) {
+          case EQUAL:
+            criteria.add(Restrictions.eq(qc.getFieldToCompare(), qc.getValue()));
+            break;
+          case LESS_THAN:
+            criteria.add(Restrictions.lt(qc.getFieldToCompare(), qc.getValue()));
+            break;
+          case GREATER_THAN:
+            criteria.add(Restrictions.gt(qc.getFieldToCompare(), qc.getValue()));
+            break;
+          case GREATER_THAN_OR_EQUAL:
+            criteria.add(Restrictions.ge(qc.getFieldToCompare(), qc.getValue()));
+            break;
+          case LESS_THAN_OR_EQUAL:
+            criteria.add(Restrictions.le(qc.getFieldToCompare(), qc.getValue()));
+            break;
+          default:
+            break;
+        }
       }
     }
     Collection<Object> entites = criteria.list();
@@ -105,43 +106,11 @@ public class HibernateManager {
   }
 
   /**
-   * Method to get objects as entries in DB by a condition if condition is
-   * NULL return all objects
-   *
-   * @param c objects to be get from DB
-   * @param queryCondition constraints to data look for
-   * @return a collection of objects
-   * @throws Throwable : use getStackTrace() to find the error
+   * Overload of getObjectsByConditions
    */
-  public Collection<Object> getObjectsByCondition(Class c, QueryCondition queryCondition) throws Throwable {
-    Session session = sessionFactory.openSession();
-    Transaction transaction = session.beginTransaction();
-    Criteria criteria = session.createCriteria(c);
-    if (queryCondition != null) {
-      switch (queryCondition.getType()) {
-	case EQUAL:
-	  criteria.add(Restrictions.eq(queryCondition.getFieldToCompare(), queryCondition.getValue()));
-	  break;
-	case LESS:
-	  criteria.add(Restrictions.lt(queryCondition.getFieldToCompare(), queryCondition.getValue()));
-	  break;
-	case GREATER:
-	  criteria.add(Restrictions.gt(queryCondition.getFieldToCompare(), queryCondition.getValue()));
-	  break;
-	case GREATEROREQUAL:
-	  criteria.add(Restrictions.ge(queryCondition.getFieldToCompare(), queryCondition.getValue()));
-	  break;
-	case LESSOREQUAL:
-	  criteria.add(Restrictions.le(queryCondition.getFieldToCompare(), queryCondition.getValue()));
-	  break;
-	default:
-	  break;
-      }
-    }
-    Collection<Object> entites = criteria.list();
-    transaction.commit();
-    session.close();
-    return entites;
+  public Collection<Object> getObjectsByConditions(Class c, QueryCondition queryCondition) throws Throwable {
+      return getObjectsByConditions(c,Arrays.asList(queryCondition));
+
   }
 
 }
