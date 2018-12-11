@@ -1,14 +1,15 @@
 package utils;
 
-import java.util.Arrays;
+
 import java.util.Collection;
 import java.util.List;
+import enums.ComparisonType.*;
+import java.util.Arrays;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.cfg.Configuration;
-import org.hibernate.criterion.Restrictions;
 import org.hibernate.service.ServiceRegistry;
 import org.hibernate.service.ServiceRegistryBuilder;
 
@@ -78,27 +79,9 @@ public class HibernateManager {
     Criteria criteria = session.createCriteria(c);
     if (conditions != null && !conditions.isEmpty()) {
       for (QueryCondition qc : conditions) {
-        switch (qc.getType()) {
-          case EQUAL:
-            criteria.add(Restrictions.eq(qc.getFieldToCompare(), qc.getValue()));
-            break;
-          case LESS_THAN:
-            criteria.add(Restrictions.lt(qc.getFieldToCompare(), qc.getValue()));
-            break;
-          case GREATER_THAN:
-            criteria.add(Restrictions.gt(qc.getFieldToCompare(), qc.getValue()));
-            break;
-          case GREATER_THAN_OR_EQUAL:
-            criteria.add(Restrictions.ge(qc.getFieldToCompare(), qc.getValue()));
-            break;
-          case LESS_THAN_OR_EQUAL:
-            criteria.add(Restrictions.le(qc.getFieldToCompare(), qc.getValue()));
-            break;
-          default:
-            break;
+        criteria.add(qc.getType().getRestriction(qc.getFieldToCompare(), qc.getValue()));
         }
       }
-    }
     Collection<Object> entites = criteria.list();
     transaction.commit();
     session.close();

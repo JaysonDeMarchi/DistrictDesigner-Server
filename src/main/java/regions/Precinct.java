@@ -10,7 +10,6 @@ import javax.persistence.Transient;
 
 
 /**
- *
  * @author Hengqi Zhu
  */
 @Entity

@@ -8,7 +8,12 @@ import org.hibernate.criterion.Restrictions;
  * @author hqzhu
  */
 public enum ComparisonType {
-  EQUAL,
+  EQUAL{
+    @Override
+    public Criterion getRestriction(String field, Object value) {
+      return Restrictions.eq(field, value);
+    }
+  },
   GREATER_THAN{
     @Override
     public Criterion getRestriction(String field, Object value) {
