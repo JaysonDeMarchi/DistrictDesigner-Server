@@ -30,9 +30,9 @@ public abstract class Algorithm {
     this.precincts = new ArrayList<>();
     try {
       HibernateManager hb = new HibernateManager();
-      QueryCondition queryCondition = new QueryCondition("shortName", shortName, EQUAL);
+      QueryCondition queryCondition = new QueryCondition("shortName", shortName.toString(), EQUAL);
       this.setState(((List<State>) (List) hb.getObjectsByConditions(State.class, queryCondition)).get(0));
-      queryCondition = new QueryCondition("state", shortName, EQUAL);
+      queryCondition = new QueryCondition("state", shortName.toString(), EQUAL);
       this.setDistricts((Collection) hb.getObjectsByConditions(District.class, queryCondition));
       for (District d : this.districts) {
 	queryCondition = new QueryCondition("districtId", d.getId(), EQUAL);

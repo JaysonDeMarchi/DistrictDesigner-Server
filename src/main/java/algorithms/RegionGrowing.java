@@ -54,7 +54,7 @@ public class RegionGrowing extends Algorithm {
     System.out.println("seed is "+ p1.getBoundary());
 
     //create a district, put the seed into it, hard code
-    District newDistrict = new District("UT-1", p1.getBoundary(), this.state.getShortName());
+    District newDistrict = new District("UT-1", p1.getBoundary(), this.state.getShortName().toString());
     newDistrict.addPrecincts(p1);
 //    newDistrict.setArea(p1.getLandArea()+p1.getWaterArea());
 

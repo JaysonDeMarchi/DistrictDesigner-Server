@@ -10,9 +10,12 @@ import enums.SessionAttribute;
 import enums.ShortName;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+
+import static enums.ShortName.*;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.HashMap;
 import java.util.Map;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -33,6 +36,11 @@ public class StartAlgorithm extends HttpServlet {
   protected void processRequest(HttpServletRequest request, HttpServletResponse response)
           throws ServletException, IOException {
     BufferedReader br = request.getReader();
+    
+    
+    Map<Metric, Float> criteria = new HashMap<>();
+    RegionGrowing rg = new RegionGrowing(UT, criteria);
+    
     String requestBody = br.readLine();
     StartRequestParams requestParams = mapper.readValue(requestBody, StartRequestParams.class);
     HttpSession session = request.getSession();
