@@ -3,7 +3,6 @@ package utils;
 
 import java.util.Collection;
 import java.util.List;
-import enums.ComparisonType.*;
 import java.util.Arrays;
 import org.hibernate.Criteria;
 import org.hibernate.Session;

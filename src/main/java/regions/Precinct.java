@@ -6,7 +6,6 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import javax.persistence.Transient;
 
 
 /**
@@ -19,18 +18,19 @@ public class Precinct implements Serializable {
   private String id;
   private String name;
   private String boundary;
-  private String state;
+  private String stateName;
   private String districtId;
-  private String adjPrecincts;
+  private String adjPrecinctsList;
+
 
   public Precinct() {
   }
 
-  public Precinct(String precinctId, String districtId, String boundary, String adjPrecincts) throws Exception {
+  public Precinct(String precinctId, String stateName, String boundary, String adjPrecincts) throws Exception {
     this.id = precinctId;
     this.boundary = boundary;
-    this.districtId = districtId;
-    this.adjPrecincts = adjPrecincts;
+    this.stateName = stateName;
+    this.adjPrecinctsList = adjPrecincts;
   }
 
   @Id
@@ -72,21 +72,21 @@ public class Precinct implements Serializable {
   }
 
   @Column(name = "ADJPRECINCTS")
-  public String getAdjPrecincts() {
-    return this.adjPrecincts;
+  public String getAdjPrecinctsList() {
+    return this.adjPrecinctsList;
   }
 
-  public void setAdjPrecincts(String adjPrecincts) {
-    this.adjPrecincts = adjPrecincts;
+  public void setAdjPrecinctsList(String adjPrecinctsList) {
+    this.adjPrecinctsList = adjPrecinctsList;
   }
 
   @Column(name = "STATE")
-  public String getState() {
-    return this.state;
+  public String getStateName() {
+    return this.stateName;
   }
 
-  public void setState(String state) {
-    this.state = state;
-  }
-  
+  public void setStateName(String stateName) {
+    this.stateName = stateName;
+  } 
+
 }
