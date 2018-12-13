@@ -1,12 +1,15 @@
 package regions;
 
 import com.vividsolutions.jts.geom.Geometry;
+import com.vividsolutions.jts.geom.GeometryCollection;
 import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.io.ParseException;
 import com.vividsolutions.jts.io.WKTReader;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -29,18 +32,20 @@ public class District implements Serializable {
   private Collection<Geometry> geoBoundary;
   GeometryFactory geometryFactory;
   WKTReader reader;
+  
 
   public District() {
+    this.precincts = new HashSet<>();
+    this.geoBoundary = new HashSet<>();
   }
 
-  public District(String id,Precinct p) throws ParseException {
+  public District(String id,Precinct seed) throws ParseException {
     this.geometryFactory = new GeometryFactory();
     this.reader = new WKTReader();
     this.id = id;
     this.precincts = new HashSet<>();
-    this.precincts.add(p);
     this.geoBoundary = new HashSet<>();
-    this.geoBoundary.add(reader.read(p.getBoundary()));
+    this.addPrecinct(seed);
   }
 
   @Id
@@ -92,6 +97,20 @@ public class District implements Serializable {
 
   public void addPrecinct(Precinct precinct) {
     this.precincts.add(precinct);
+    try {
+      this.geoBoundary.add(this.reader.read(precinct.getBoundary()));
+    } catch (ParseException ex) {
+      System.out.println(ex.getMessage());
+    }
+  }
+  
+  public void removePrecinct(Precinct precinct){
+    this.precincts.remove(precinct);
+    try {
+      this.geoBoundary.remove(this.reader.read(precinct.getBoundary()));
+    } catch (ParseException ex) {
+      System.out.println(ex.getMessage());
+    }
   }
 
   @Transient
@@ -103,14 +122,6 @@ public class District implements Serializable {
     this.geoBoundary = geoBoundary;
   }
   
-  public void addGeoBoundary(Geometry geometry){
-    this.geoBoundary.add(geometry);
-  }
-  
-  public void removeGeoBoundary(Geometry geometry){
-    this.geoBoundary.remove(geometry);
-  }
-
   @Transient
   public GeometryFactory getGeometryFactory() {
     return geometryFactory;
@@ -118,6 +129,12 @@ public class District implements Serializable {
 
   public void setGeometryFactory(GeometryFactory geometryFactory) {
     this.geometryFactory = geometryFactory;
+  }
+  
+  @Transient
+  public Geometry getGeometryShape(){
+     GeometryCollection geometryShape = (GeometryCollection)this.getGeometryFactory().buildGeometry(this.getGeoBoundary());
+     return geometryShape.union(); 
   }
 
   @Transient
@@ -128,6 +145,5 @@ public class District implements Serializable {
   public void setReader(WKTReader reader) {
     this.reader = reader;
   }
-
   
 }

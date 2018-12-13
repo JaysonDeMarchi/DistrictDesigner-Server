@@ -11,7 +11,6 @@ import enums.ShortName;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
-import static enums.ShortName.*;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;

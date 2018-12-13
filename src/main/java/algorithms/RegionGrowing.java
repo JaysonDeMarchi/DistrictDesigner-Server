@@ -35,36 +35,34 @@ public class RegionGrowing extends Algorithm {
 
     HashSet<Precinct> candidiatePrecicnts = new HashSet<>();
     candidiatePrecicnts.addAll(this.state.findAdjPrecincts(seed));
-
+   
     try {
       District newDistrict = new District("ut-1", seed);
       double maxCompactness = 0.0;
       Precinct bestPrecinct = null;
-      int i = 0;
 
       Iterator iterator = candidiatePrecicnts.iterator();
       while (iterator.hasNext()) {
         Precinct p = (Precinct) iterator.next();
-        Geometry precinctBoundary = newDistrict.getReader().read(p.getBoundary());
-        newDistrict.addGeoBoundary(precinctBoundary);
-        GeometryCollection combinedDistrictPrecinct = (GeometryCollection) newDistrict.getGeometryFactory().buildGeometry(newDistrict.getGeoBoundary());
-        Geometry tempDistrict = combinedDistrictPrecinct.union();
+        newDistrict.addPrecinct(p);
+        Geometry districtShape = newDistrict.getGeometryShape();
 
-        if (calCompactness(tempDistrict.getArea(), tempDistrict.getLength()) > maxCompactness) {
-          maxCompactness = calCompactness(tempDistrict.getArea(), tempDistrict.getLength());
+        if (calCompactness(districtShape.getArea(), districtShape.getLength()) > maxCompactness) {
+          maxCompactness = calCompactness(districtShape.getArea(), districtShape.getLength());
           bestPrecinct = p;
         }
-        newDistrict.removeGeoBoundary(precinctBoundary);
-
+        newDistrict.removePrecinct(p);
       }
+
       System.out.println("best precinct is " + bestPrecinct.getName());
+         
     } catch (Exception ex) {
       System.out.println("here" + ex.getMessage());
     }
-
+   
     return true;
   }
-
+  
   /**
    * This is used to get precincts randomly to start region growing according to
    * existing districts.

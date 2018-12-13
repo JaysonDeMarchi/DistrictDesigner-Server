@@ -37,9 +37,8 @@ public abstract class Algorithm {
       queryCondition = new QueryCondition(QueryField.stateName, shortName.toString(), ComparisonType.EQUAL);
       this.state.setPrecincts((Collection) hb.getObjectsByConditions(Precinct.class, queryCondition));
       this.state.initiatePrecinctsInDistrict();
-      
     } catch (Throwable e) {
-      System.out.println("Exception: " + e.getMessage());
+      System.out.println(e.getMessage());
     }
   }
 

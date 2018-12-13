@@ -88,5 +88,5 @@ public class Precinct implements Serializable {
   public void setStateName(String stateName) {
     this.stateName = stateName;
   } 
-
+  
 }

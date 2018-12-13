@@ -1,5 +1,6 @@
 package regions;
 
+import enums.ShortName;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.HashSet;
@@ -18,7 +19,7 @@ import javax.persistence.Transient;
 @Table(name = "STATE")
 public class State implements Serializable {
 
-  private int id;
+  private Integer id;
   private String name;
   private String shortName;
   private Collection<District> districts;
@@ -39,11 +40,11 @@ public class State implements Serializable {
   @Id
   @GeneratedValue
   @Column(name = "ID")
-  public int getId() {
+  public Integer getId() {
     return this.id;
   }
 
-  public void setId(int id) {
+  public void setId(Integer id) {
     this.id = id;
   }
 
@@ -56,7 +57,7 @@ public class State implements Serializable {
     this.name = name;
   }
 
-  @Column(name = "SHORTNAME")
+  @Column(name="SHORTNAME")
   public String getShortName() {
     return this.shortName;
   }
@@ -85,15 +86,7 @@ public class State implements Serializable {
 
   public void initiatePrecinctsInDistrict() {
     for (Precinct p : this.getPrecincts()) {
-      for (District d : this.getDistricts()) {
-        if (p.getDistrictId().equals(d.getId())) {
-          if (d.getPrecincts() == null) {
-            d.setPrecincts((Set) new HashSet<>());
-          } else {
-            d.addPrecinct(p);
-          }
-        }
-      }
+      this.getDistrictById(p.getDistrictId()).addPrecinct(p);
     }
   }
   
@@ -101,13 +94,22 @@ public class State implements Serializable {
     Set<Precinct> adjPrecincts = new HashSet<>();
     String[] adjPrecinctsId  = stringToList(p.getAdjPrecinctsList());
     for(String precinctId : adjPrecinctsId){
-      adjPrecincts.add(findPrecinctById(precinctId,this.getPrecincts()));
+      adjPrecincts.add(getPrecinctById(precinctId));
     }
     return adjPrecincts;
   }
+  
+  
+  private District getDistrictById(String id){
+    for(District d : this.getDistricts()){
+      if(d.getId().equals(id))
+        return d;
+    }
+    return null;
+  }
 
-  private Precinct findPrecinctById(String id, Collection<Precinct> precincts){
-    for(Precinct p: precincts){
+  private Precinct getPrecinctById(String id){
+    for(Precinct p: this.getPrecincts()){
       if(p.getId().equals(id))
         return p;
     }
