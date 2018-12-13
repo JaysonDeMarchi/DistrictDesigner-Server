@@ -34,7 +34,11 @@ public class StartAlgorithm extends HttpServlet {
 
   protected void processRequest(HttpServletRequest request, HttpServletResponse response)
           throws ServletException, IOException {
-    BufferedReader br = request.getReader();    
+    BufferedReader br = request.getReader();
+    
+    Map<Metric, Float> criteria = new HashMap<>();
+    RegionGrowing rg = new RegionGrowing(ShortName.UT, criteria);
+    
     String requestBody = br.readLine();
     StartRequestParams requestParams = mapper.readValue(requestBody, StartRequestParams.class);
     HttpSession session = request.getSession();

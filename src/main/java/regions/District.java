@@ -8,8 +8,6 @@ import com.vividsolutions.jts.io.WKTReader;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -30,11 +28,13 @@ public class District implements Serializable {
   private State state;
   private Collection<Precinct> precincts;
   private Collection<Geometry> geoBoundary;
+  private Collection<Precinct> candidatePrecincts;
   GeometryFactory geometryFactory;
   WKTReader reader;
   
 
   public District() {
+    this.reader = new WKTReader();
     this.precincts = new HashSet<>();
     this.geoBoundary = new HashSet<>();
   }
@@ -45,6 +45,7 @@ public class District implements Serializable {
     this.id = id;
     this.precincts = new HashSet<>();
     this.geoBoundary = new HashSet<>();
+    this.candidatePrecincts = new HashSet<>();
     this.addPrecinct(seed);
   }
 
@@ -86,6 +87,15 @@ public class District implements Serializable {
     this.boundary = boundary;
   }
 
+  @Transient
+  public Collection<Precinct> getCandidatePrecincts() {
+    return candidatePrecincts;
+  }
+
+  public void setCandidatePrecincts(Collection<Precinct> candidatePrecincts) {
+    this.candidatePrecincts = candidatePrecincts;
+  }
+ 
   @Transient
   public Collection<Precinct> getPrecincts() {
     return this.precincts;

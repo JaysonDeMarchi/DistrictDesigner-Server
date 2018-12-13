@@ -33,15 +33,14 @@ public class RegionGrowing extends Algorithm {
     Precinct seed = (Precinct) ((List) this.state.getPrecincts()).get(100);
     System.out.println("seed is " + seed.getBoundary());
 
-    HashSet<Precinct> candidiatePrecicnts = new HashSet<>();
-    candidiatePrecicnts.addAll(this.state.findAdjPrecincts(seed));
    
     try {
       District newDistrict = new District("ut-1", seed);
+      newDistrict.setCandidatePrecincts(this.state.findAdjPrecincts(seed));
       double maxCompactness = 0.0;
       Precinct bestPrecinct = null;
 
-      Iterator iterator = candidiatePrecicnts.iterator();
+      Iterator iterator = newDistrict.getCandidatePrecincts().iterator();
       while (iterator.hasNext()) {
         Precinct p = (Precinct) iterator.next();
         newDistrict.addPrecinct(p);
@@ -57,7 +56,7 @@ public class RegionGrowing extends Algorithm {
       System.out.println("best precinct is " + bestPrecinct.getName());
          
     } catch (Exception ex) {
-      System.out.println("here" + ex.getMessage());
+      System.out.println(ex.getMessage());
     }
    
     return true;
