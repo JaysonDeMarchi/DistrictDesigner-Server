@@ -15,6 +15,10 @@ public class StartRequestParams {
   private ShortName shortName;
   private Map<Metric, Float> weights;
 
+  public StartRequestParams() {
+    super();
+  }
+
   public StartRequestParams(AlgorithmType a, ShortName s, Map<Metric, Float> w) {
     this.algoType = a;
     this.shortName = s;

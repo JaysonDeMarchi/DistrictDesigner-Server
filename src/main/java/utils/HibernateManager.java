@@ -1,6 +1,5 @@
 package utils;
 
-
 import java.util.Collection;
 import java.util.List;
 import java.util.Arrays;
@@ -54,6 +53,7 @@ public class HibernateManager {
    * @return success statue
    * @throws Throwable : use getStackTrace() to find the error
    */
+
   public boolean saveObjectToDB(Object o) throws Throwable {
     Session session = sessionFactory.openSession();
     session.beginTransaction();
@@ -64,9 +64,6 @@ public class HibernateManager {
   }
 
   /**
-   * Method to get objects as entries in DB by conditions if conditions are
-   * empty return all objects
-   *
    * @param c objects to be get from DB
    * @param conditions constraints to data look for
    * @return a collection of objects
@@ -92,7 +89,6 @@ public class HibernateManager {
    */
   public Collection<Object> getObjectsByConditions(Class c, QueryCondition queryCondition) throws Throwable {
       return getObjectsByConditions(c,Arrays.asList(queryCondition));
-
   }
 
 }

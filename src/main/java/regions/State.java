@@ -19,11 +19,13 @@ import javax.persistence.Transient;
 @Table(name = "STATE")
 public class State implements Serializable {
 
+
   private Integer id;
   private String name;
   private String shortName;
   private Collection<District> districts;
   private Collection<Precinct> precincts;
+
 
   public State() {
   }
@@ -122,5 +124,4 @@ public class State implements Serializable {
     return resultList;
   }
   
-
 }

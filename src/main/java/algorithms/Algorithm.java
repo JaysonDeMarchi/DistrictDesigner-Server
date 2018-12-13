@@ -21,11 +21,13 @@ public abstract class Algorithm {
 
   State state;
   Map<Metric, Float> weights;
+  Collection<District> districts;
 
 
   public Algorithm(ShortName shortName, Map<Metric, Float> weights) {
 
     this.weights = weights;
+
 
     try {
       HibernateManager hb = new HibernateManager();
@@ -46,6 +48,7 @@ public abstract class Algorithm {
 
   public State getState() {
     return this.state;
+
   }
 
   public void setState(State state) {
@@ -59,5 +62,5 @@ public abstract class Algorithm {
   public void setWeights(Map<Metric, Float> weights) {
     this.weights = weights;
   }
-  
+
 }

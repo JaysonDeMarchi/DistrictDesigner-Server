@@ -60,6 +60,7 @@ public class District implements Serializable {
     this.id = id;
   }
 
+
   @Column(name = "STATE")
   public String getStateName() {
     return this.stateName;
