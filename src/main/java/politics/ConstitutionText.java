@@ -3,10 +3,8 @@ package politics;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import javax.persistence.Transient;
 
 /**
  *
@@ -15,6 +13,7 @@ import javax.persistence.Transient;
 @Entity
 @Table(name = "CONSTITUTION_TEXT")
 public class ConstitutionText {
+  private Integer id;
   private String jurisdiction;
   private String shortName;
   private String document;
@@ -27,20 +26,30 @@ public class ConstitutionText {
   public ConstitutionText(){}
   
  
-  @Column(name = "JURISDICTION")
-  public String getJurisdiction() {
-    return jurisdiction;
+  @Id
+  @GeneratedValue
+  @Column(name = "ROWID")
+  public Integer getId() {
+    return this.id;
   }
 
+  public void setId(Integer id) {
+    this.id = id;
+  }
+
+  @Column(name = "JURISDICTION")
+  public String getJurisdiction() {
+    return this.jurisdiction;
+  }
 
   public void setJurisdiction(String jurisdiction) {
     this.jurisdiction = jurisdiction;
   }
   
-  @Id
+
   @Column(name = "SHORTNAME")
   public String getShortName() {
-    return shortName;
+    return this.shortName;
   }
 
   public void setShortName(String shortName) {
@@ -49,27 +58,25 @@ public class ConstitutionText {
 
   @Column(name="DOCUMENT")
   public String getDocument() {
-    return document;
+    return this.document;
   }
 
   public void setDocument(String document) {
     this.document = document;
   }
 
-  @Id
   @Column(name = "OFFICE")
   public String getOffice() {
-    return office;
+    return this.office;
   }
 
   public void setOffice(String office) {
     this.office = office;
   }
 
-  @Id
   @Column(name="ARTICLE")
   public String getArticle() {
-    return article;
+    return this.article;
   }
 
   public void setArticle(String article) {
@@ -78,7 +85,7 @@ public class ConstitutionText {
 
   @Column(name = "SECTION")
   public String getSection() {
-    return section;
+    return this.section;
   }
 
   public void setSection(String section) {
@@ -87,7 +94,7 @@ public class ConstitutionText {
 
   @Column(name = "BODY")
   public String getBody() {
-    return body;
+    return this.body;
   }
 
   public void setBody(String body) {
@@ -96,13 +103,11 @@ public class ConstitutionText {
 
   @Column(name = "NOTES")
   public String getNotes() {
-    return notes;
+    return this.notes;
   }
 
   public void setNotes(String notes) {
     this.notes = notes;
   }
-  
-  
   
 }

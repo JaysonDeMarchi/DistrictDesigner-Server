@@ -76,7 +76,7 @@ public class ConstitutionRequirements {
 
   @Column(name = "PRESERVE_COMMUNITIES_INCUMBANTS")
   public String getPreserveCommunitiesIncumbants() {
-    return preserveCommunitiesIncumbants;
+    return this.preserveCommunitiesIncumbants;
   }
 
   public void setPreserveCommunitiesIncumbants(String preserveCommunitiesIncumbants) {
