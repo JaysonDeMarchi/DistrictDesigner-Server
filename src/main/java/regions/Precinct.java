@@ -6,10 +6,10 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import utils.Validator;
+
+
 
 /**
- *
  * @author Hengqi Zhu
  */
 @Entity
@@ -18,24 +18,20 @@ public class Precinct implements Serializable {
 
   private String id;
   private String name;
-  private String boundaryJSON;
-  private String state;
+  private String boundary;
+  private String stateName;
   private String districtId;
-  private String adjPrecincts;
+  private String adjPrecinctsList;
 
-  public Precinct() {}
 
-  public Precinct(String precinctId, String districtId, String boundaryJSON, String adjPrecincts) throws Exception {
+  public Precinct() {
+  }
+
+  public Precinct(String precinctId, String stateName, String boundary, String adjPrecincts) throws Exception {
     this.id = precinctId;
-    if (!Validator.isJSONValid(boundaryJSON)) {
-      throw new Exception("boundaryJSON value is not a valid JSON");
-    }
-    this.boundaryJSON = boundaryJSON;
-    this.districtId = districtId;
-    if (!Validator.isJSONValid(adjPrecincts)) {
-      throw new Exception("boundaryJSON value is not a valid JSON");
-    }
-    this.adjPrecincts = adjPrecincts;
+    this.boundary = boundary;
+    this.stateName = stateName;
+    this.adjPrecinctsList = adjPrecincts;
   }
 
   @Id
@@ -59,15 +55,12 @@ public class Precinct implements Serializable {
   }
 
   @Column(name = "BOUNDARY")
-  public String getBoundaryJSON() {
-    return this.boundaryJSON;
+  public String getBoundary() {
+    return this.boundary;
   }
 
-  public void setboundaryJSON(String boundaryJSON) throws Exception {
-    if (!Validator.isJSONValid(boundaryJSON)) {
-      throw new Exception("boundaryJSON value is not a valid JSON");
-    }
-    this.boundaryJSON = boundaryJSON;
+  public void setBoundary(String boundary) {
+    this.boundary = boundary;
   }
 
   @Column(name = "DISTRICT")
@@ -80,21 +73,21 @@ public class Precinct implements Serializable {
   }
 
   @Column(name = "ADJPRECINCTS")
-  public String getAdjPrecincts() {
-    return this.adjPrecincts;
+  public String getAdjPrecinctsList() {
+    return this.adjPrecinctsList;
   }
 
-  public void setAdjPrecincts(String adjPrecincts) {
-    this.adjPrecincts = adjPrecincts;
+  public void setAdjPrecinctsList(String adjPrecinctsList) {
+    this.adjPrecinctsList = adjPrecinctsList;
   }
 
   @Column(name = "STATE")
-  public String getState() {
-    return this.state;
+  public String getStateName() {
+    return this.stateName;
   }
 
-  public void setState(String state) {
-    this.state = state;
-  }
-
+  public void setStateName(String stateName) {
+    this.stateName = stateName;
+  } 
+  
 }

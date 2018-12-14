@@ -1,14 +1,17 @@
 package algorithms;
 
+import enums.ComparisonType;
 import enums.Metric;
+import enums.QueryField;
 import enums.ShortName;
 import java.util.Collection;
-import java.util.HashMap;
+import java.util.List;
 import regions.State;
 import java.util.Map;
 import regions.District;
 import regions.Precinct;
 import utils.HibernateManager;
+import utils.QueryCondition;
 
 /**
  *
@@ -20,27 +23,32 @@ public abstract class Algorithm {
   Map<Metric, Float> weights;
   Collection<District> districts;
 
+
   public Algorithm(ShortName shortName, Map<Metric, Float> weights) {
-    this.state = new State(shortName);
+
     this.weights = weights;
+
+
     try {
       HibernateManager hb = new HibernateManager();
-      Map<String, Object> criteria = new HashMap<>();
-      criteria.put("state", this.getState().getShortName().toString());
-      this.setDistricts((Collection<District>) (Collection) hb.getRecordsBasedOnCriteria(District.class, criteria));
-      for (District d : this.districts) {
-        criteria.put("districtId", d.getId());
-        d.setPrecincts((Collection<Precinct>) (Collection) hb.getRecordsBasedOnCriteria(Precinct.class, criteria));
-      }
+      
+      QueryCondition queryCondition = new QueryCondition(QueryField.shortName, shortName.toString(), ComparisonType.EQUAL);
+      this.setState((State)((List)hb.getObjectsByConditions(State.class, queryCondition)).get(0));
+      queryCondition = new QueryCondition(QueryField.stateName, shortName.toString(), ComparisonType.EQUAL);
+      this.state.setDistricts((Collection) hb.getObjectsByConditions(District.class, queryCondition));
+      queryCondition = new QueryCondition(QueryField.stateName, shortName.toString(), ComparisonType.EQUAL);
+      this.state.setPrecincts((Collection) hb.getObjectsByConditions(Precinct.class, queryCondition));
+      this.state.initiatePrecinctsInDistrict();
     } catch (Throwable e) {
-      System.out.println("Exception: " + e.getMessage());
+      System.out.println(e.getMessage());
     }
   }
 
   public abstract Boolean start();
 
   public State getState() {
-    return state;
+    return this.state;
+
   }
 
   public void setState(State state) {
@@ -48,19 +56,11 @@ public abstract class Algorithm {
   }
 
   public Map<Metric, Float> getWeights() {
-    return weights;
+    return this.weights;
   }
 
   public void setWeights(Map<Metric, Float> weights) {
     this.weights = weights;
-  }
-
-  public Collection<District> getDistricts() {
-    return districts;
-  }
-
-  public void setDistricts(Collection<District> districts) {
-    this.districts = districts;
   }
 
 }
