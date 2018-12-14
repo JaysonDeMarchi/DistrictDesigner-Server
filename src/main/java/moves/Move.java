@@ -1,6 +1,5 @@
 package moves;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import enums.MoveAttribute;
 import regions.District;
 import regions.Precinct;
@@ -29,15 +28,15 @@ public class Move {
     return this.size;
   }
 
-  public Integer getPrecinctId() {
+  public String getPrecinctId() {
     return this.precinct.getId();
   }
 
-  public Integer getOldDistrictId() {
+  public String getOldDistrictId() {
     return this.oldDistrict.getId();
   }
 
-  public Integer getNewDistrictId() {
+  public String getNewDistrictId() {
     return this.newDistrict.getId();
   }
 

@@ -6,16 +6,16 @@ Begin redistricting the provided state using the provided algorithm and the prov
 
 |Method|URL|
 |--|--|
-|POST|`/startAlgorithm/`|
+|POST|`/StartAlgorithm/`|
 
 |param|Type|required|
 |:--:|:--:|:--:|
 |`shortName`|`String`|yes|
 |`algoType`|`String`|yes|
-|`weights`|`HashMap<Metric,Float>`|yes|
+|`weights`|`Map<Metric,Float>`|yes|
 - **Successful Response:**
 	- Code: 200
-	- Content: 
+	- Content:
 	```json
 	{
 		algorithmStarted: true
@@ -23,8 +23,6 @@ Begin redistricting the provided state using the provided algorithm and the prov
 	```
 
 ## Update Precincts
-
-
 
 |Method|URL|
 |--|--|
@@ -48,4 +46,21 @@ Begin redistricting the provided state using the provided algorithm and the prov
             },
             . . .
         ]
+	```
+
+## Stop Algorithm
+
+Stop the currently running algorithm. Discards the algorithm state on the server side.
+
+|Method|URL|
+|--|--|
+|GET|`/StopAlgorithm/`|
+
+- **Successful Response:**
+	- Code: 200
+	- Content:
+	```json
+	{
+		algorithmStopped: true
+	}
 	```

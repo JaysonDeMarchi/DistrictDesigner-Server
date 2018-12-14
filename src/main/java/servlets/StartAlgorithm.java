@@ -10,9 +10,11 @@ import enums.SessionAttribute;
 import enums.ShortName;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.HashMap;
 import java.util.Map;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -33,6 +35,10 @@ public class StartAlgorithm extends HttpServlet {
   protected void processRequest(HttpServletRequest request, HttpServletResponse response)
           throws ServletException, IOException {
     BufferedReader br = request.getReader();
+    
+    Map<Metric, Float> criteria = new HashMap<>();
+    RegionGrowing rg = new RegionGrowing(ShortName.UT, criteria);
+    
     String requestBody = br.readLine();
     StartRequestParams requestParams = mapper.readValue(requestBody, StartRequestParams.class);
     HttpSession session = request.getSession();
@@ -61,6 +67,7 @@ public class StartAlgorithm extends HttpServlet {
     response.setHeader("Access-Control-Allow-Origin", request.getHeader("Origin"));
     responseBody.put(ResponseAttribute.ALGO_STARTED.toString(), status);
     pw.print(responseBody.toString());
+    pw.close();
   }
 
   // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

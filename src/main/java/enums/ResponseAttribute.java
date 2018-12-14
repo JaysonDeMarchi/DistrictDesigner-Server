@@ -10,5 +10,6 @@ public enum ResponseAttribute {
   PRECINCT_ID,
   OLD_DISTRICT_ID,
   NEW_DISTRICT_ID,
-  SUCCESS_STATUS;
+  SUCCESS_STATUS,
+  ALGO_STOPPED;
 }
