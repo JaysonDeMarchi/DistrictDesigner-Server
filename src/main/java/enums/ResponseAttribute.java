@@ -9,5 +9,4 @@ public enum ResponseAttribute {
   ALGO_STOPPED,
   CONSTITUTION_REQUIREMENTS,
   CONSTITUTION_TEXT;
-
 }
