@@ -32,6 +32,8 @@
         <mapping class="politics.ConstitutionRequirements" />
         <mapping class="politics.ConstitutionText" />
         <mapping class="electionResults.HouseResult" />
+        <mapping class="user.User" />
+
  
     </session-factory>
 
