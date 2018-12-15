@@ -16,8 +16,19 @@ public enum ResponseAttribute {
       return "Error: User could not be created";
     }
   },
-  USER_LOGGED_IN,
-  USER_LOGGED_OUT;
+  USER_KEY,
+  USER_LOGGED_IN {
+    @Override
+    public String getErrorMessage() {
+      return "Error: Invalid Username";
+    }
+  },
+  USER_LOGGED_OUT {
+    @Override
+    public String getErrorMessage() {
+      return "Error: User could not log out";
+    }
+  };
 
   public String getErrorMessage() {
     return "Error";
