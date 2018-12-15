@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <?xml version='1.0' encoding='utf-8'?>
     <!DOCTYPE hibernate-configuration PUBLIC
         "-//Hibernate/Hibernate Configuration DTD 3.0//EN"
@@ -33,3 +34,42 @@
     </session-factory>
 
 </hibernate-configuration>
+=======
+<?xml version='1.0' encoding='utf-8'?>
+    <!DOCTYPE hibernate-configuration PUBLIC
+        "-//Hibernate/Hibernate Configuration DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-configuration-3.0.dtd">
+
+<hibernate-configuration>
+
+    <session-factory>
+
+        <!-- JDBC Database connection settings -->
+        <property name="connection.driver_class">com.mysql.cj.jdbc.Driver</property>
+        <property name="connection.url">jdbc:mysql://mysql4.cs.stonybrook.edu/henzhu?useSSL=false&amp;serverTimezone=UTC</property>
+        <property name="connection.username">henzhu</property>
+        <property name="connection.password">111212811</property>
+
+        <!-- JDBC connection pool settings ... using built-in test pool -->
+        <property name="connection.pool_size">1</property>
+
+        <!-- Select our SQL dialect -->
+        <property name="dialect">org.hibernate.dialect.MySQLDialect</property>
+
+        <!-- Echo the SQL to stdout -->
+        <property name="show_sql">true</property>
+
+        <!-- Set the current session context -->
+        <property name="current_session_context_class">thread</property>
+
+        <!-- conf files -->
+        <mapping class="regions.Precinct" />
+        <mapping class="regions.District" />
+        <mapping class="regions.State" />
+        <mapping class="politics.ConstitutionRequirements" />
+        <mapping class="politics.ConstitutionText" />
+ 
+    </session-factory>
+
+</hibernate-configuration>
+>>>>>>> 7d7fcbc5f485d4cfc32260fdf4f38f34e3f85626

@@ -1,22 +1,23 @@
 package utils;
 import enums.ComparisonType;
+import enums.QueryField;
 /**
  *
  * @author Hengqi Zhu
  */
 public class QueryCondition {
-  String fieldToCompare;
-  Object value;
-  ComparisonType comparisonType;
+  private String fieldToCompare;
+  private Object value;
+  private ComparisonType comparisonType;
 
-  public QueryCondition(String fieldToCompare, Object value, ComparisonType Type) {
-    this.fieldToCompare = fieldToCompare;
+  public QueryCondition(QueryField fieldToCompare, Object value, ComparisonType Type) {
+    this.fieldToCompare = fieldToCompare.toString();
     this.value = value;
     this.comparisonType = Type;
   }
 
   public String getFieldToCompare() {
-    return fieldToCompare;
+    return this.fieldToCompare;
   }
 
   public void setFieldToCompare(String fieldToCompare) {
@@ -24,7 +25,7 @@ public class QueryCondition {
   }
 
   public Object getValue() {
-    return value;
+    return this.value;
   }
 
   public void setValue(Object value) {
@@ -32,7 +33,7 @@ public class QueryCondition {
   }
 
   public ComparisonType getType() {
-    return comparisonType;
+    return this.comparisonType;
   }
 
   public void setType(ComparisonType Type) {
