@@ -3,16 +3,23 @@ package servlets;
 import beans.CreateAccountParams;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import enums.ComparisonType;
+import enums.QueryField;
 import enums.ResponseAttribute;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
+import user.User;
+import utils.HibernateManager;
+import utils.QueryCondition;
 
 /**
  *
@@ -24,18 +31,23 @@ public class CreateAccount extends HttpServlet {
   ObjectMapper mapper = new ObjectMapper();
 
   protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-          throws ServletException, IOException {
+          throws ServletException, IOException, Exception, Throwable {
     BufferedReader br = request.getReader();
-
     String requestBody = br.readLine();
     CreateAccountParams accountParams = mapper.readValue(requestBody, CreateAccountParams.class);
-    HttpSession session = request.getSession();
-
     processResponse(response, request, createUser(accountParams));
   }
 
-  public Boolean createUser(CreateAccountParams accountParams) {
-    return true;
+  public Boolean createUser(CreateAccountParams accountParams) throws Exception, Throwable {
+    String username = accountParams.getUsername();
+    User user = new User(username, accountParams.getPassword());
+    HibernateManager hb = new HibernateManager();
+    QueryCondition queryCondition = new QueryCondition(QueryField.username, username, ComparisonType.EQUAL);
+    ArrayList<User> existingUsers = (ArrayList) hb.getObjectsByConditions(User.class, queryCondition);
+    if (existingUsers.isEmpty()) {
+      return hb.saveObjectToDB(user);
+    }
+    return false;
   }
 
   private void processResponse(HttpServletResponse response, HttpServletRequest request, Boolean userCreated) throws IOException {
@@ -63,7 +75,11 @@ public class CreateAccount extends HttpServlet {
   @Override
   protected void doGet(HttpServletRequest request, HttpServletResponse response)
           throws ServletException, IOException {
-    processRequest(request, response);
+    try {
+      processRequest(request, response);
+    } catch (Throwable ex) {
+      Logger.getLogger(CreateAccount.class.getName()).log(Level.SEVERE, null, ex);
+    }
   }
 
   /**
@@ -77,7 +93,11 @@ public class CreateAccount extends HttpServlet {
   @Override
   protected void doPost(HttpServletRequest request, HttpServletResponse response)
           throws ServletException, IOException {
-    processRequest(request, response);
+    try {
+      processRequest(request, response);
+    } catch (Throwable ex) {
+      Logger.getLogger(CreateAccount.class.getName()).log(Level.SEVERE, null, ex);
+    }
   }
 
   /**
