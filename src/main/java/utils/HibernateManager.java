@@ -53,11 +53,10 @@ public class HibernateManager {
    * @return success statue
    * @throws Throwable : use getStackTrace() to find the error
    */
-
   public boolean saveObjectToDB(Object o) throws Throwable {
     Session session = sessionFactory.openSession();
     session.beginTransaction();
-    session.persist(o);
+    session.saveOrUpdate(o);
     session.getTransaction().commit();
     session.close();
     return true;
@@ -76,8 +75,8 @@ public class HibernateManager {
     if (conditions != null && !conditions.isEmpty()) {
       for (QueryCondition qc : conditions) {
         criteria.add(qc.getType().getRestriction(qc.getFieldToCompare(), qc.getValue()));
-        }
       }
+    }
     Collection<Object> entites = criteria.list();
     transaction.commit();
     session.close();
@@ -88,7 +87,7 @@ public class HibernateManager {
    * Overload of getObjectsByConditions
    */
   public Collection<Object> getObjectsByConditions(Class c, QueryCondition queryCondition) throws Throwable {
-      return getObjectsByConditions(c,Arrays.asList(queryCondition));
+    return getObjectsByConditions(c, Arrays.asList(queryCondition));
   }
 
 }
