@@ -22,10 +22,10 @@ public class ConstitutionText {
   private String section;
   private String body;
   private String notes;
-  
-  public ConstitutionText(){}
-  
- 
+
+  public ConstitutionText() {
+  }
+
   @Id
   @GeneratedValue
   @Column(name = "ROWID")
@@ -45,7 +45,6 @@ public class ConstitutionText {
   public void setJurisdiction(String jurisdiction) {
     this.jurisdiction = jurisdiction;
   }
-  
 
   @Column(name = "SHORTNAME")
   public String getShortName() {
@@ -56,7 +55,7 @@ public class ConstitutionText {
     this.shortName = shortName;
   }
 
-  @Column(name="DOCUMENT")
+  @Column(name = "DOCUMENT")
   public String getDocument() {
     return this.document;
   }
@@ -74,7 +73,7 @@ public class ConstitutionText {
     this.office = office;
   }
 
-  @Column(name="ARTICLE")
+  @Column(name = "ARTICLE")
   public String getArticle() {
     return this.article;
   }
