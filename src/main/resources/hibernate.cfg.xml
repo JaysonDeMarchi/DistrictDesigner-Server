@@ -29,6 +29,8 @@
         <mapping class="regions.Precinct" />
         <mapping class="regions.District" />
         <mapping class="regions.State" />
+        <mapping class="politics.ConstitutionRequirements" />
+        <mapping class="politics.ConstitutionText" />
  
     </session-factory>
 
