@@ -22,7 +22,7 @@ public class RegionGrowing extends Algorithm {
 
   public RegionGrowing(ShortName shortName, Map<Metric, Float> weights) {
     super(shortName, weights);
-    this.start();
+//    this.start();
   }
 
   @Override
@@ -51,8 +51,7 @@ public class RegionGrowing extends Algorithm {
         newDistrict.removePrecinct(p);
       }
 
-      System.out.println("best precinct is " + bestPrecinct.getName());
-         
+      System.out.println("best precinct is " + bestPrecinct.getName());  
     } catch (Exception ex) {
       System.out.println(ex.getMessage());
     }
