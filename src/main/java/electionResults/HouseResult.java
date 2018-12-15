@@ -26,7 +26,7 @@ public class HouseResult {
   @GeneratedValue
   @Column(name = "ID")
   public Integer getId() {
-    return id;
+    return this.id;
   }
 
   public void setId(Integer id) {
@@ -35,7 +35,7 @@ public class HouseResult {
 
   @Column(name="PRECINCT")
   public String getPrecinctName() {
-    return precinctName;
+    return this.precinctName;
   }
 
   public void setPrecinctName(String precinctName) {
@@ -44,7 +44,7 @@ public class HouseResult {
 
   @Column(name="CANDIDATE")
   public String getCandidate() {
-    return candidate;
+    return this.candidate;
   }
 
   public void setCandidate(String candidate) {
@@ -53,7 +53,7 @@ public class HouseResult {
 
   @Column(name = "PARTY")
   public String getPraty() {
-    return praty;
+    return this.praty;
   }
 
   public void setPraty(String praty) {
@@ -62,7 +62,7 @@ public class HouseResult {
 
   @Column(name="STATE")
   public String getShortName() {
-    return shortName;
+    return this.shortName;
   }
 
   public void setShortName(String shortName) {
@@ -71,7 +71,7 @@ public class HouseResult {
 
   @Column(name="NUMOFVOTER")
   public Integer getNumOfVoter() {
-    return numOfVoter;
+    return this.numOfVoter;
   }
 
   public void setNumOfVoter(Integer numOfVoter) {
