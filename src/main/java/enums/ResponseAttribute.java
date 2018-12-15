@@ -6,5 +6,8 @@ package enums;
  */
 public enum ResponseAttribute {
   ALGO_STARTED,
-  ALGO_STOPPED;
+  ALGO_STOPPED,
+  CONSTITUTION_REQUIREMENTS,
+  CONSTITUTION_TEXT;
+
 }
