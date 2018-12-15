@@ -1,33 +1,58 @@
 package user;
 
+import enums.AccountType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
 /**
  *
  * @author Jayson
  */
+@Entity
+@Table(name = "USER")
 public class User {
 
-  private Boolean isAdmin;
   private String password;
+  private String type;
   private String username;
 
   public User() {
   }
 
   public User(String username, String password) {
-    this.username = username;
     this.password = password;
-    this.isAdmin = false;
+    this.type = AccountType.GENERAL.toString();
+    this.username = username;
   }
 
+  @Column(name = "PASSWORD")
+  public String getPassword() {
+    return this.password;
+  }
+
+  public void setPassword(String password) {
+    this.password = password;
+  }
+
+  @Id
+  @Column(name = "USERNAME")
   public String getUsername() {
     return this.username;
   }
 
-  public Boolean getIsAdmin() {
-    return this.isAdmin;
+  public void setUsername(String username) {
+    this.username = username;
   }
 
-  public void setIsAdmin(Boolean status) {
-    this.isAdmin = status;
+  @Column(name = "TYPE")
+  public String getType() {
+    return this.type;
   }
+
+  public void setType(String type) {
+    this.type = type;
+  }
+
 }
