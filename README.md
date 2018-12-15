@@ -14,32 +14,32 @@ Returns the constitution texts specifically involving redistricting associated w
 	```json
 	{
             CONSTITUTION_REQUIREMENTS: {
-                shortName:"WI",
-                equalPopulation:"0.1",
-                compact:"PREFERED",
-                countyLine:"PREFERED",
-                contiguous:"REQUIRED",
-                preserveCommunitiesIncumbants:"OPTIONAL"
+                "shortName":"WI",
+                "equalPopulation:"0.1",
+                "compact":"PREFERED",
+                "countyLine":"PREFERED",
+                "contiguous":"REQUIRED",
+                "preserveCommunitiesIncumbants":"OPTIONAL"
             },
             CONSTITUTION_TEXT: [
                 {
-                    jurisdiction:"state",
-                    shortName:"WI",
-                    document:"State Constitution",
-                    office:"house",
-                    article:"IV",
-                    section:"4",
-                    body:". . .",
-                    notes:"NA"
+                    "jurisdiction":"state",
+                    "shortName":"WI",
+                    "document":"State Constitution",
+                    "office":"house",
+                    "article":"IV",
+                    "section":"4",
+                    "body":". . .",
+                    "notes":"NA"
                 },{
-                    jurisdiction:"federal",
-                    shortName:"USA",
-                    document:"US Constitution",
-                    office:"all",
-                    article:"V",
-                    section:"2",
-                    body:". . .",
-                    notes:"NA"
+                    "jurisdiction":"federal",
+                    "shortName":"USA",
+                    "document":"US Constitution",
+                    "office":"all",
+                    "article":"V",
+                    "section":"2",
+                    "body":". . .",
+                    "notes":"NA"
                 }
             ]
         }
@@ -63,7 +63,7 @@ Begin redistricting the provided state using the provided algorithm and the prov
 	- Content:
 	```json
 	{
-		algorithmStarted: true
+		"algorithmStarted": true
 	}
 	```
 
@@ -80,6 +80,6 @@ Stop the currently running algorithm. Discards the algorithm state on the server
 	- Content:
 	```json
 	{
-		algorithmStopped: true
+		"algorithmStopped": true
 	}
 	```
