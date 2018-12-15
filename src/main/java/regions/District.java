@@ -95,6 +95,7 @@ public class District implements Serializable {
 
   public void setCandidatePrecincts(Collection<Precinct> candidatePrecincts) {
     this.candidatePrecincts = candidatePrecincts;
+    this.candidatePrecincts.removeAll(this.precincts);
   }
  
   @Transient
