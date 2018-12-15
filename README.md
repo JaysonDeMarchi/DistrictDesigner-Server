@@ -1,5 +1,36 @@
 # District Designer
 
+## Account Creation
+
+User sends a username and password to create an account.
+
+|Method|URL|
+|--|--|
+|POST|`/CreateAccount/`|
+
+|param|Type|required|
+|:--:|:--:|:--:|
+|`username`|`String`|yes|
+|`password`|`String`|yes|
+- **Successful Response:**
+	- Code: 200
+	- Content:
+	```json
+	{
+            "USER_CREATED": true
+	}
+	```
+
+- **Failed Response:**
+	- Code: 200
+	- Content:
+	```json
+	{
+            "USER_CREATED": false,
+            "ERROR_MESSAGE": "Error: User could not be created"
+        }
+	```
+
 ## Constitution Texts and Information
 
 Returns the constitution texts specifically involving redistricting associated with the provided state.
