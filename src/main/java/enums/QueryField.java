@@ -9,5 +9,6 @@ public enum QueryField {
   shortName,
   id,
   username,
-  stateName;
+  stateName,
+  precinctName;
 }
