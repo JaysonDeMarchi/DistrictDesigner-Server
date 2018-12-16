@@ -1,10 +1,6 @@
 package regions;
 
-import com.vividsolutions.jts.geom.Geometry;
-import com.vividsolutions.jts.geom.GeometryCollection;
-import com.vividsolutions.jts.geom.GeometryFactory;
-import com.vividsolutions.jts.io.ParseException;
-import com.vividsolutions.jts.io.WKTReader;
+
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.HashSet;
@@ -14,6 +10,12 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Transient;
+import org.locationtech.jts.geom.Geometry;
+import org.locationtech.jts.geom.GeometryCollection;
+import org.locationtech.jts.geom.GeometryFactory;
+import org.locationtech.jts.io.ParseException;
+import org.locationtech.jts.io.WKTReader;
+import org.wololo.jts2geojson.GeoJSONReader;
 
 /**
  * @author Hengqi
@@ -29,8 +31,9 @@ public class District implements Serializable {
   private Collection<Precinct> precincts;
   private Collection<Geometry> geoBoundary;
   private Collection<Precinct> candidatePrecincts;
-  GeometryFactory geometryFactory;
-  WKTReader reader;
+  private GeometryFactory geometryFactory;
+  private WKTReader reader;
+  
   
 
   public District() {
@@ -39,7 +42,7 @@ public class District implements Serializable {
     this.geoBoundary = new HashSet<>();
   }
 
-  public District(String id,Precinct seed) throws ParseException {
+  public District(String id,Precinct seed) {
     this.geometryFactory = new GeometryFactory();
     this.reader = new WKTReader();
     this.id = id;
@@ -108,19 +111,21 @@ public class District implements Serializable {
   }
 
   public void addPrecinct(Precinct precinct) {
-    this.precincts.add(precinct);
     try {
+      this.precincts.add(precinct);
       this.geoBoundary.add(this.reader.read(precinct.getBoundary()));
     } catch (ParseException ex) {
       System.out.println(ex.getMessage());
     }
+
+
   }
   
   public void removePrecinct(Precinct precinct){
     this.precincts.remove(precinct);
     try {
       this.geoBoundary.remove(this.reader.read(precinct.getBoundary()));
-    } catch (ParseException ex) {
+    } catch (Exception ex) {
       System.out.println(ex.getMessage());
     }
   }

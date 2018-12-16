@@ -1,6 +1,5 @@
 package algorithms;
 
-import com.vividsolutions.jts.geom.Geometry;
 import enums.Metric;
 import enums.ShortName;
 import java.util.ArrayList;
@@ -9,6 +8,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import org.locationtech.jts.geom.Geometry;
+import org.wololo.geojson.GeoJSON;
+import org.wololo.jts2geojson.GeoJSONWriter;
 import regions.District;
 import regions.Precinct;
 
@@ -30,33 +32,44 @@ public class RegionGrowing extends Algorithm {
 
     Precinct seed = (Precinct) ((List) this.state.getPrecincts()).get(100);
     System.out.println("seed is " + seed.getBoundary());
-
-   
+    int counter=0;
+    District newDistrict = new District("ut-1", seed);
+    newDistrict.setCandidatePrecincts(this.state.findAdjPrecincts(seed));
+    double maxCompactness;
+    int precinctVisited;
     try {
-      District newDistrict = new District("ut-1", seed);
-      newDistrict.setCandidatePrecincts(this.state.findAdjPrecincts(seed));
-      double maxCompactness = 0.0;
-      Precinct bestPrecinct = null;
+      while(counter<10){
+        maxCompactness = 0.0;
+        Precinct bestPrecinct = null;
+        precinctVisited = 0;
+        Iterator iterator = newDistrict.getCandidatePrecincts().iterator();
+        while (iterator.hasNext()&&precinctVisited<20) {
+          Precinct p = (Precinct) iterator.next();
+          newDistrict.addPrecinct(p);
+          Geometry districtShape = newDistrict.getGeometryShape();
 
-      Iterator iterator = newDistrict.getCandidatePrecincts().iterator();
-      while (iterator.hasNext()) {
-        Precinct p = (Precinct) iterator.next();
-        newDistrict.addPrecinct(p);
-        Geometry districtShape = newDistrict.getGeometryShape();
-
-        if (calCompactness(districtShape.getArea(), districtShape.getLength()) > maxCompactness) {
-          maxCompactness = calCompactness(districtShape.getArea(), districtShape.getLength());
-          bestPrecinct = p;
+          if (calCompactness(districtShape.getArea(), districtShape.getLength()) > maxCompactness) {
+            maxCompactness = calCompactness(districtShape.getArea(), districtShape.getLength());
+            bestPrecinct = p;
+          }
+          newDistrict.removePrecinct(p);
+          precinctVisited++;
         }
-        newDistrict.removePrecinct(p);
+       
+        System.out.println("in loop "+counter +" the best precinct is"+ bestPrecinct.getName());
+        newDistrict.addPrecinct(bestPrecinct);
+        newDistrict.getCandidatePrecincts().addAll(this.state.findAdjPrecincts(bestPrecinct));
+        newDistrict.setCandidatePrecincts(newDistrict.getCandidatePrecincts());
+        counter++;
       }
-
-      System.out.println("best precinct is " + bestPrecinct.getName());
-         
+      GeoJSONWriter writer = new GeoJSONWriter();
+      GeoJSON json = writer.write(newDistrict.getGeometryShape());
+      System.out.println(json.toString());
+      
     } catch (Exception ex) {
-      System.out.println(ex.getMessage());
+     System.out.println(ex.getMessage());
     }
-   
+    
     return true;
   }
   
