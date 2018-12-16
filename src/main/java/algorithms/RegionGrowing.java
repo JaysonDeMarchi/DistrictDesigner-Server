@@ -51,8 +51,6 @@ public class RegionGrowing extends Algorithm {
         newDistrict.removePrecinct(p);
       }
 
-      System.out.println("best precinct is " + bestPrecinct.getName());
-         
     } catch (Exception ex) {
       System.out.println(ex.getMessage());
     }
