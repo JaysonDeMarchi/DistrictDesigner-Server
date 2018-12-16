@@ -29,12 +29,13 @@ public class StopAlgorithm extends HttpServlet {
 
   private void processResponse(HttpServletRequest request, HttpServletResponse response, Boolean status) throws IOException {
     ObjectNode responseBody = mapper.createObjectNode();
-    PrintWriter pw = response.getWriter();
+    try (PrintWriter pw = response.getWriter()) {
+      response.setContentType("application/json;charset=UTF-8");
+      response.setHeader("Access-Control-Allow-Origin", request.getHeader("Origin"));
+      responseBody.put(ResponseAttribute.ALGO_STOPPED.toString(), status);
+      pw.print(responseBody.toString());
+    }
 
-    response.setContentType("application/json;charset=UTF-8");
-    response.setHeader("Access-Control-Allow-Origin", request.getHeader("Origin"));
-    responseBody.put(ResponseAttribute.ALGO_STOPPED.toString(), status);
-    pw.print(responseBody.toString());
   }
 
   // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

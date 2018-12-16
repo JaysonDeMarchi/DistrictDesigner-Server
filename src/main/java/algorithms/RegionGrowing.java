@@ -23,7 +23,6 @@ public class RegionGrowing extends Algorithm {
 
   public RegionGrowing(ShortName shortName, Map<Metric, Float> weights) {
     super(shortName, weights);
-    this.start();
   }
 
   @Override
