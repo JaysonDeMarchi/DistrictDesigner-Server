@@ -10,12 +10,11 @@ import enums.SessionAttribute;
 import enums.ShortName;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.HashMap;
 import java.util.Map;
+import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -35,39 +34,29 @@ public class StartAlgorithm extends HttpServlet {
   protected void processRequest(HttpServletRequest request, HttpServletResponse response)
           throws ServletException, IOException {
     BufferedReader br = request.getReader();
-    
-    Map<Metric, Float> criteria = new HashMap<>();
-    RegionGrowing rg = new RegionGrowing(ShortName.UT, criteria);
-    
     String requestBody = br.readLine();
     StartRequestParams requestParams = mapper.readValue(requestBody, StartRequestParams.class);
     HttpSession session = request.getSession();
-
-    processResponse(response, request, initiateAlgorithm(session, requestParams));
+    processResponse(response, request, session.getId(), initiateAlgorithm(session, requestParams));
   }
 
   private Boolean initiateAlgorithm(HttpSession session, StartRequestParams requestParams) {
     AlgorithmType algoType = requestParams.getAlgoType();
     ShortName shortName = requestParams.getShortName();
     Map<Metric, Float> weights = requestParams.getWeights();
-
-    if (algoType == AlgorithmType.REGION_GROWING) {
-      session.setAttribute(SessionAttribute.ALGORITHM.toString(), new RegionGrowing(shortName, weights));
-    } else if (algoType == AlgorithmType.SIMULATED_ANNEALING) {
-      session.setAttribute(SessionAttribute.ALGORITHM.toString(), new SimulatedAnnealing(shortName, weights));
-    }
+    session.setAttribute(SessionAttribute.ALGORITHM.toString(), algoType.createAlgorithm(shortName, weights));
     return true;
   }
 
-  private void processResponse(HttpServletResponse response, HttpServletRequest request, Boolean status) throws IOException {
+  private void processResponse(HttpServletResponse response, HttpServletRequest request, String sessionId, Boolean status) throws IOException {
     ObjectNode responseBody = mapper.createObjectNode();
-    PrintWriter pw = response.getWriter();
-
-    response.setContentType("application/json;charset=UTF-8");
-    response.setHeader("Access-Control-Allow-Origin", request.getHeader("Origin"));
-    responseBody.put(ResponseAttribute.ALGO_STARTED.toString(), status);
-    pw.print(responseBody.toString());
-    pw.close();
+    try (PrintWriter pw = response.getWriter()) {
+      response.setContentType("application/json;charset=UTF-8");
+      response.setHeader("Access-Control-Allow-Origin", request.getHeader("Origin"));
+      responseBody.put(ResponseAttribute.ALGO_STARTED.toString(), status);
+      responseBody.put(ResponseAttribute.SESSION_ID.toString(), sessionId);
+      pw.print(responseBody.toString());
+    }
   }
 
   // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

@@ -45,7 +45,8 @@ public class Precinct implements Serializable {
 
   public void setId(String id) {
     this.id = id;
-  } 
+  }
+
   @Column(name = "NAME")
   public String getName() {
     return this.name;
@@ -89,9 +90,9 @@ public class Precinct implements Serializable {
 
   public void setStateName(String stateName) {
     this.stateName = stateName;
-  } 
-  
-  @Column(name="POPULATION")
+  }
+
+  @Column(name = "POPULATION")
   public Integer getPopulation() {
     return this.population;
   }
@@ -100,7 +101,7 @@ public class Precinct implements Serializable {
     this.population = population;
   }
 
-  @Column(name="WHITE")
+  @Column(name = "WHITE")
   public Integer getWhite() {
     return this.white;
   }
@@ -109,7 +110,7 @@ public class Precinct implements Serializable {
     this.white = white;
   }
 
-  @Column(name="BLACK")
+  @Column(name = "BLACK")
   public Integer getBlack() {
     return this.black;
   }
@@ -118,7 +119,7 @@ public class Precinct implements Serializable {
     this.black = black;
   }
 
-  @Column(name="ASIAN")
+  @Column(name = "ASIAN")
   public Integer getAsian() {
     return this.asian;
   }
@@ -127,12 +128,13 @@ public class Precinct implements Serializable {
     this.asian = asian;
   }
 
-  @Column(name="HISPANIC")
+  @Column(name = "HISPANIC")
   public Integer getHispanic() {
     return this.hispanic;
   }
 
   public void setHispanic(Integer hispanic) {
     this.hispanic = hispanic;
-  } 
+  }
+
 }
