@@ -1,5 +1,6 @@
 package politics;
 
+import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -12,7 +13,7 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "CONSTITUTION_TEXT")
-public class ConstitutionText {
+public class ConstitutionText implements Serializable {
   private Integer id;
   private String jurisdiction;
   private String shortName;

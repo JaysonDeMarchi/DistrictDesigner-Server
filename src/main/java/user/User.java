@@ -1,6 +1,7 @@
 package user;
 
 import enums.AccountType;
+import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -12,7 +13,7 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "USER")
-public class User {
+public class User implements Serializable {
 
   private String password;
   private String type;
