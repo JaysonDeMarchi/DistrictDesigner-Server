@@ -22,7 +22,6 @@ public class RegionGrowing extends Algorithm {
 
   public RegionGrowing(ShortName shortName, Map<Metric, Float> weights) {
     super(shortName, weights);
-    this.start();
   }
 
   @Override
@@ -31,7 +30,6 @@ public class RegionGrowing extends Algorithm {
     Precinct seed = (Precinct) ((List) this.state.getPrecincts()).get(100);
     System.out.println("seed is " + seed.getBoundary());
 
-   
     try {
       District newDistrict = new District("ut-1", seed);
       newDistrict.setCandidatePrecincts(this.state.findAdjPrecincts(seed));
