@@ -1,6 +1,5 @@
 package regions;
 
-
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.HashSet;
@@ -13,8 +12,6 @@ import javax.persistence.Transient;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.GeometryCollection;
 import org.locationtech.jts.geom.GeometryFactory;
-import org.locationtech.jts.io.ParseException;
-import org.locationtech.jts.io.WKTReader;
 import org.wololo.jts2geojson.GeoJSONReader;
 
 /**
@@ -35,8 +32,6 @@ public class District implements Serializable {
   private GeoJSONReader reader;
   private int population;
   
-  
-
   public District() {
     this.reader = new GeoJSONReader();
     this.precincts = new HashSet<>();

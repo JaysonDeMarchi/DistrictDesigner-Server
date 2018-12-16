@@ -1,5 +1,6 @@
 package algorithms;
 
+import electionResults.HouseResult;
 import enums.ComparisonType;
 import enums.Metric;
 import enums.QueryField;
@@ -29,7 +30,7 @@ public abstract class Algorithm {
     this.weights = weights;
 
     try {
-      HibernateManager hb = new HibernateManager();
+      HibernateManager hb = new HibernateManager();      
       QueryCondition queryCondition = new QueryCondition(QueryField.shortName, shortName.toString(), ComparisonType.EQUAL);
       this.setState((State)((List)hb.getObjectsByConditions(State.class, queryCondition)).get(0));
       queryCondition = new QueryCondition(QueryField.stateName, shortName.toString(), ComparisonType.EQUAL);

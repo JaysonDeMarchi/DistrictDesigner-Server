@@ -8,9 +8,6 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
-
-
-
 /**
  * @author Hengqi Zhu
  */
@@ -23,9 +20,13 @@ public class Precinct implements Serializable {
   private String boundary;
   private String stateName;
   private String districtId;
+  private Integer population;
+  private Integer white;
+  private Integer black;
+  private Integer asian;
+  private Integer hispanic;
   private String adjPrecinctsList;
   private boolean movable;
-  private Integer population;
 
   public Precinct() {
     this.movable = true;
@@ -47,8 +48,7 @@ public class Precinct implements Serializable {
 
   public void setId(String id) {
     this.id = id;
-  }
-
+  } 
   @Column(name = "NAME")
   public String getName() {
     return this.name;
@@ -114,5 +114,40 @@ public class Precinct implements Serializable {
     this.movable = movable;
   }
   
-  
+
+  @Column(name="WHITE")
+  public Integer getWhite() {
+    return this.white;
+  }
+
+  public void setWhite(Integer white) {
+    this.white = white;
+  }
+
+  @Column(name="BLACK")
+  public Integer getBlack() {
+    return this.black;
+  }
+
+  public void setBlack(Integer black) {
+    this.black = black;
+  }
+
+  @Column(name="ASIAN")
+  public Integer getAsian() {
+    return this.asian;
+  }
+
+  public void setAsian(Integer asian) {
+    this.asian = asian;
+  }
+
+  @Column(name="HISPANIC")
+  public Integer getHispanic() {
+    return this.hispanic;
+  }
+
+  public void setHispanic(Integer hispanic) {
+    this.hispanic = hispanic;
+  } 
 }

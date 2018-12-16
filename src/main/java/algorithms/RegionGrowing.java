@@ -1,5 +1,6 @@
 package algorithms;
 
+
 import enums.Metric;
 import enums.ShortName;
 import java.util.ArrayList;
@@ -27,18 +28,18 @@ public class RegionGrowing extends Algorithm {
 
   @Override
   public Boolean start() {
-    this.setSeedsRandomly(10);
+    this.setSeedsRandomly(8);
     int districtNameIndex = 0;
     List<District> newDistricts = new ArrayList<>();
     for(Precinct p : this.seeds){
-      District newDistrict = new District(Integer.toString(districtNameIndex++), p);
+      District newDistrict = new District(Integer.toString(districtNameIndex++),p);
       p.setMovable(false);
       newDistrict.setCandidatePrecincts(this.state.findAdjPrecincts(p));
       newDistricts.add(newDistrict);
     }
     
     int counter = 0;
-    while(counter<100){
+    while(counter<50){
       for(District d: newDistricts){
         districtGrowing(d);
       }
@@ -48,8 +49,9 @@ public class RegionGrowing extends Algorithm {
     WKTWriter wktWriter = new WKTWriter();
     
     for(District d: newDistricts){
-        System.out.println(wktWriter.write(d.getGeometryShape()));
+        System.out.println(wktWriter.write(d.getGeometryShape())+"population is "+d.getPopulation());
     }
+
     return true;
   }
   
@@ -59,6 +61,7 @@ public class RegionGrowing extends Algorithm {
    *
    * @param districts
    */
+
   public void setSeedsRandomly(int n) {
     this.seeds = new ArrayList<>();
     for (int i=0;i<n;i++) {
@@ -75,7 +78,7 @@ public class RegionGrowing extends Algorithm {
     double score = 1 / (perimeter / equalAreaPerimeter);
     return score;
   }
-  
+
   
   private void districtGrowing(District newDistrict){
     double maxCompactness;
@@ -105,7 +108,6 @@ public class RegionGrowing extends Algorithm {
         bestPrecinct.setMovable(false);
         newDistrict.getCandidatePrecincts().addAll(this.state.findAdjPrecincts(bestPrecinct));
         newDistrict.setCandidatePrecincts(newDistrict.getCandidatePrecincts());
-        System.out.println("best precinct is "+bestPrecinct.getName());
     } catch (Exception ex) {
      System.out.println(ex.getMessage());
     }
