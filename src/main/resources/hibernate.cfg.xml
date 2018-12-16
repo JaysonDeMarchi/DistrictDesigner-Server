@@ -33,6 +33,8 @@
         <mapping class="politics.ConstitutionText" />
         <mapping class="electionResults.HouseResult" />
         <mapping class="user.User" />
+        <mapping class="user.UserWeights" />
+
  
     </session-factory>
 
