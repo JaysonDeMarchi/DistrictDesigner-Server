@@ -6,6 +6,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 
 
@@ -23,8 +24,11 @@ public class Precinct implements Serializable {
   private String stateName;
   private String districtId;
   private String adjPrecinctsList;
+  private boolean movable;
+  private Integer population;
 
   public Precinct() {
+    this.movable = true;
   }
 
   public Precinct(String precinctId, String stateName, String boundary, String adjPrecincts) throws Exception {
@@ -63,6 +67,17 @@ public class Precinct implements Serializable {
     this.boundary = boundary;
   }
 
+  @Column(name = "POPULATION")
+  public Integer getPopulation() {
+    return population;
+  }
+
+  public void setPopulation(Integer population) {
+    this.population = population;
+  }
+
+  
+  
   @Column(name = "DISTRICT")
   public String getDistrictId() {
     return this.districtId;
@@ -89,5 +104,15 @@ public class Precinct implements Serializable {
   public void setStateName(String stateName) {
     this.stateName = stateName;
   } 
+
+  @Transient
+  public boolean isMovable() {
+    return this.movable;
+  }
+
+  public void setMovable(boolean movable) {
+    this.movable = movable;
+  }
+  
   
 }

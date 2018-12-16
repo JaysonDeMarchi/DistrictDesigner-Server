@@ -33,6 +33,7 @@ public class District implements Serializable {
   private Collection<Precinct> candidatePrecincts;
   private GeometryFactory geometryFactory;
   private GeoJSONReader reader;
+  private int population;
   
   
 
@@ -40,6 +41,7 @@ public class District implements Serializable {
     this.reader = new GeoJSONReader();
     this.precincts = new HashSet<>();
     this.geoBoundary = new HashSet<>();
+    this.population = 0;
   }
 
   public District(String id,Precinct seed) {
@@ -50,6 +52,7 @@ public class District implements Serializable {
     this.geoBoundary = new HashSet<>();
     this.candidatePrecincts = new HashSet<>();
     this.addPrecinct(seed);
+    this.population=0;
   }
 
   @Id
@@ -92,6 +95,15 @@ public class District implements Serializable {
   }
 
   @Transient
+  public int getPopulation() {
+    return population;
+  }
+
+  public void setPopulation(int population) {
+    this.population = population;
+  }
+ 
+  @Transient
   public Collection<Precinct> getCandidatePrecincts() {
     return candidatePrecincts;
   }
@@ -111,23 +123,15 @@ public class District implements Serializable {
   }
 
   public void addPrecinct(Precinct precinct) {
-    try {
-      this.precincts.add(precinct);
-      this.geoBoundary.add(this.reader.read(precinct.getBoundary()));
-    } catch (Exception ex) {
-      System.out.println(ex.getMessage());
-    }
-
-
+    this.precincts.add(precinct);
+    this.geoBoundary.add(this.reader.read(precinct.getBoundary()));
+    this.setPopulation(this.population+precinct.getPopulation());
   }
   
   public void removePrecinct(Precinct precinct){
     this.precincts.remove(precinct);
-    try {
-      this.geoBoundary.remove(this.reader.read(precinct.getBoundary()));
-    } catch (Exception ex) {
-      System.out.println(ex.getMessage());
-    }
+    this.geoBoundary.remove(this.reader.read(precinct.getBoundary()));
+    this.setPopulation(this.population-precinct.getPopulation());
   }
 
   @Transient
