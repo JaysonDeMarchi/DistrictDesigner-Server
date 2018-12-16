@@ -32,19 +32,19 @@ public class District implements Serializable {
   private Collection<Geometry> geoBoundary;
   private Collection<Precinct> candidatePrecincts;
   private GeometryFactory geometryFactory;
-  private WKTReader reader;
+  private GeoJSONReader reader;
   
   
 
   public District() {
-    this.reader = new WKTReader();
+    this.reader = new GeoJSONReader();
     this.precincts = new HashSet<>();
     this.geoBoundary = new HashSet<>();
   }
 
   public District(String id,Precinct seed) {
     this.geometryFactory = new GeometryFactory();
-    this.reader = new WKTReader();
+    this.reader = new GeoJSONReader();
     this.id = id;
     this.precincts = new HashSet<>();
     this.geoBoundary = new HashSet<>();
@@ -114,7 +114,7 @@ public class District implements Serializable {
     try {
       this.precincts.add(precinct);
       this.geoBoundary.add(this.reader.read(precinct.getBoundary()));
-    } catch (ParseException ex) {
+    } catch (Exception ex) {
       System.out.println(ex.getMessage());
     }
 
@@ -155,11 +155,11 @@ public class District implements Serializable {
   }
 
   @Transient
-  public WKTReader getReader() {
+  public GeoJSONReader getReader() {
     return reader;
   }
 
-  public void setReader(WKTReader reader) {
+  public void setReader(GeoJSONReader reader) {
     this.reader = reader;
   }
   

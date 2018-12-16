@@ -10,6 +10,7 @@ import java.util.Map;
 import java.util.Random;
 import org.locationtech.jts.geom.Geometry;
 import org.wololo.geojson.GeoJSON;
+import org.wololo.jts2geojson.GeoJSONReader;
 import org.wololo.jts2geojson.GeoJSONWriter;
 import regions.District;
 import regions.Precinct;
@@ -29,7 +30,7 @@ public class RegionGrowing extends Algorithm {
 
   @Override
   public Boolean start() {
-
+    
     Precinct seed = (Precinct) ((List) this.state.getPrecincts()).get(100);
     System.out.println("seed is " + seed.getBoundary());
     int counter=0;
@@ -38,7 +39,7 @@ public class RegionGrowing extends Algorithm {
     double maxCompactness;
     int precinctVisited;
     try {
-      while(counter<10){
+      while(counter<100){
         maxCompactness = 0.0;
         Precinct bestPrecinct = null;
         precinctVisited = 0;
