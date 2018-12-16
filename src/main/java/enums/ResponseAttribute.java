@@ -10,6 +10,11 @@ public enum ResponseAttribute {
   CONSTITUTION_REQUIREMENTS,
   CONSTITUTION_TEXT,
   ERROR_MESSAGE,
+  NEW_DISTRICT_ID,
+  OLD_DISTRICT_ID,
+  PRECINCT_ID,
+  SUCCESS_STATUS,
+  UPDATED_PRECINCTS,
   USER_CREATED {
     @Override
     public String getErrorMessage() {
@@ -33,4 +38,5 @@ public enum ResponseAttribute {
   public String getErrorMessage() {
     return "Error";
   }
+
 }

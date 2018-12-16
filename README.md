@@ -67,6 +67,32 @@ Begin redistricting the provided state using the provided algorithm and the prov
 	}
 	```
 
+## Update Precincts
+
+|Method|URL|
+|--|--|
+|GET|`/updatePrecincts/`|
+
+- **Successful Response:**
+	- Code: 200
+	- Content: 
+	```json
+	[
+            {
+                precinctId: 234,
+                oldDistrictId: 2,
+                newDistrictId: 3,
+                successStatus: true,
+            },{
+                precinctId: 123,
+                oldDistrictId: 1,
+                newDistrictId: 2,
+                successStatus: false,
+            },
+            . . .
+        ]
+	```
+
 ## Stop Algorithm
 
 Stop the currently running algorithm. Discards the algorithm state on the server side.
