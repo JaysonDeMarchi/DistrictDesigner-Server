@@ -14,6 +14,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Map;
+import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -36,7 +37,7 @@ public class StartAlgorithm extends HttpServlet {
     String requestBody = br.readLine();
     StartRequestParams requestParams = mapper.readValue(requestBody, StartRequestParams.class);
     HttpSession session = request.getSession();
-    processResponse(response, request, initiateAlgorithm(session, requestParams));
+    processResponse(response, request, session.getId(), initiateAlgorithm(session, requestParams));
   }
 
   private Boolean initiateAlgorithm(HttpSession session, StartRequestParams requestParams) {
@@ -47,12 +48,13 @@ public class StartAlgorithm extends HttpServlet {
     return true;
   }
 
-  private void processResponse(HttpServletResponse response, HttpServletRequest request, Boolean status) throws IOException {
+  private void processResponse(HttpServletResponse response, HttpServletRequest request, String sessionId, Boolean status) throws IOException {
     ObjectNode responseBody = mapper.createObjectNode();
     try (PrintWriter pw = response.getWriter()) {
       response.setContentType("application/json;charset=UTF-8");
       response.setHeader("Access-Control-Allow-Origin", request.getHeader("Origin"));
       responseBody.put(ResponseAttribute.ALGO_STARTED.toString(), status);
+      responseBody.put(ResponseAttribute.SESSION_ID.toString(), sessionId);
       pw.print(responseBody.toString());
     }
   }

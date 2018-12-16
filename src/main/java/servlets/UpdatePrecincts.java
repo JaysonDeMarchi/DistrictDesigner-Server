@@ -1,14 +1,17 @@
 package servlets;
 
 import algorithms.Algorithm;
+import beans.UpdateRequestParams;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import enums.ResponseAttribute;
 import enums.SessionAttribute;
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Collection;
+import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -28,8 +31,11 @@ public class UpdatePrecincts extends HttpServlet {
   ObjectMapper mapper = new ObjectMapper();
 
   protected void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-    HttpSession session = request.getSession();
+    BufferedReader br = request.getReader();
+    String requestBody = br.readLine();
+    UpdateRequestParams requestParams = mapper.readValue(requestBody, UpdateRequestParams.class);
 
+    HttpSession session = getSessionById(requestParams.getSessionId());
     processResponse(response, request, getUpdates((Algorithm) session.getAttribute(SessionAttribute.ALGORITHM.toString())));
   }
 
@@ -59,6 +65,12 @@ public class UpdatePrecincts extends HttpServlet {
     });
 
     pw.print(responseBody.toString());
+  }
+
+  private HttpSession getSessionById(final String sessionId) {
+    final ServletContext context = getServletContext();
+    final HttpSession session = (HttpSession) context.getAttribute(sessionId);
+    return session;
   }
 
   // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
