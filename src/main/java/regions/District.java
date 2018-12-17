@@ -1,5 +1,6 @@
 package regions;
 
+
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.HashSet;
@@ -28,6 +29,7 @@ public class District implements Serializable {
   private Collection<Precinct> precincts;
   private Collection<Geometry> geoBoundary;
   private Collection<Precinct> candidatePrecincts;
+
   private GeometryFactory geometryFactory;
   private GeoJSONReader reader;
   private int population;
@@ -48,6 +50,7 @@ public class District implements Serializable {
     this.candidatePrecincts = new HashSet<>();
     this.addPrecinct(seed);
     this.population=0;
+
   }
 
   @Id
@@ -60,7 +63,6 @@ public class District implements Serializable {
   public void setId(String id) {
     this.id = id;
   }
-
 
   @Column(name = "STATE")
   public String getStateName() {
@@ -107,7 +109,7 @@ public class District implements Serializable {
     this.candidatePrecincts = candidatePrecincts;
     this.candidatePrecincts.removeAll(this.precincts);
   }
- 
+
   @Transient
   public Collection<Precinct> getPrecincts() {
     return this.precincts;
@@ -137,7 +139,7 @@ public class District implements Serializable {
   public void setGeoBoundary(Collection<Geometry> geoBoundary) {
     this.geoBoundary = geoBoundary;
   }
-  
+
   @Transient
   public GeometryFactory getGeometryFactory() {
     return geometryFactory;

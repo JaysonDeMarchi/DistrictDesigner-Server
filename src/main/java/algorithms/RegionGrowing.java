@@ -10,6 +10,8 @@ import java.util.Map;
 import java.util.Random;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.io.WKTWriter;
+import java.util.function.Function;
+import managers.UpdateManager;
 import regions.District;
 import regions.Precinct;
 
@@ -20,9 +22,11 @@ public class RegionGrowing extends Algorithm {
 
   List<Precinct> seeds;
 
-  public RegionGrowing(ShortName shortName, Map<Metric, Float> weights) {
+  public RegionGrowing(ShortName shortName, Map<Metric, Float> weights) throws Exception {
     super(shortName, weights);
-    this.start();
+    this.state.setDistricts(new ArrayList<>());
+    this.state.getPrecincts().forEach((precinct) -> precinct.setDistrictId(""));
+    start();
   }
 
   @Override
@@ -44,8 +48,10 @@ public class RegionGrowing extends Algorithm {
           continue;
         }else{
           districtGrowing(d,newDistricts);
+
         }
       }
+
       counter++;
     }
     WKTWriter wktWriter = new WKTWriter();
@@ -55,7 +61,12 @@ public class RegionGrowing extends Algorithm {
 
     return true;
   }
-  
+
+  @Override
+  public UpdateManager run() {
+    return this.getUpdateManager();
+  }
+
   /**
    * This is used to get precincts randomly to start region growing according to
    * existing districts.

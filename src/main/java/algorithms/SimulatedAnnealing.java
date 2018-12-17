@@ -3,6 +3,7 @@ package algorithms;
 import enums.Metric;
 import enums.ShortName;
 import java.util.Map;
+import managers.UpdateManager;
 
 /**
  *
@@ -10,12 +11,17 @@ import java.util.Map;
  */
 public class SimulatedAnnealing extends Algorithm {
 
-  public SimulatedAnnealing(ShortName shortName, Map<Metric, Float> weights) {
+  public SimulatedAnnealing(ShortName shortName, Map<Metric, Float> weights) throws Exception {
     super(shortName, weights);
   }
 
   @Override
   public Boolean start() {
     return true;
+  }
+
+  @Override
+  public UpdateManager run() {
+    return this.getUpdateManager();
   }
 }

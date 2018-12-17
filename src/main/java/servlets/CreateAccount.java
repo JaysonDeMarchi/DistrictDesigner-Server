@@ -41,7 +41,7 @@ public class CreateAccount extends HttpServlet {
   public Boolean createUser(CreateAccountParams accountParams) throws Exception, Throwable {
     String username = accountParams.getUsername();
     User user = new User(username, accountParams.getPassword());
-    HibernateManager hb = new HibernateManager();
+    HibernateManager hb = HibernateManager.getInstance();
     QueryCondition queryCondition = new QueryCondition(QueryField.username, username, ComparisonType.EQUAL);
     ArrayList<User> existingUsers = (ArrayList) hb.getObjectsByConditions(User.class, queryCondition);
     if (existingUsers.isEmpty()) {

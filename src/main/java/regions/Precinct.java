@@ -16,6 +16,7 @@ import javax.persistence.Transient;
 public class Precinct implements Serializable {
 
   private String id;
+//  private Integer rowId;
   private String name;
   private String boundary;
   private String stateName;
@@ -48,12 +49,22 @@ public class Precinct implements Serializable {
 
   public void setId(String id) {
     this.id = id;
-  } 
+  }
+
   @Column(name = "NAME")
   public String getName() {
     return this.name;
   }
 
+//  @Column(name = "ROWID")
+//  public Integer getRowId() {
+//    return rowId;
+//  }
+//
+//  public void setRowId(Integer rowId) {
+//    this.rowId = rowId;
+//  }
+  
   public void setName(String name) {
     this.name = name;
   }
@@ -115,7 +126,7 @@ public class Precinct implements Serializable {
   }
   
 
-  @Column(name="WHITE")
+  @Column(name = "WHITE")
   public Integer getWhite() {
     return this.white;
   }
@@ -124,7 +135,7 @@ public class Precinct implements Serializable {
     this.white = white;
   }
 
-  @Column(name="BLACK")
+  @Column(name = "BLACK")
   public Integer getBlack() {
     return this.black;
   }
@@ -133,7 +144,7 @@ public class Precinct implements Serializable {
     this.black = black;
   }
 
-  @Column(name="ASIAN")
+  @Column(name = "ASIAN")
   public Integer getAsian() {
     return this.asian;
   }
@@ -142,12 +153,13 @@ public class Precinct implements Serializable {
     this.asian = asian;
   }
 
-  @Column(name="HISPANIC")
+  @Column(name = "HISPANIC")
   public Integer getHispanic() {
     return this.hispanic;
   }
 
   public void setHispanic(Integer hispanic) {
     this.hispanic = hispanic;
-  } 
+  }
+
 }
