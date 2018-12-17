@@ -15,6 +15,7 @@ import javax.persistence.Table;
 public class Precinct implements Serializable {
 
   private String id;
+  private Integer rowId;
   private String name;
   private String boundary;
   private String stateName;
@@ -51,6 +52,15 @@ public class Precinct implements Serializable {
     return this.name;
   }
 
+  @Column(name = "ROWID")
+  public Integer getRowId() {
+    return rowId;
+  }
+
+  public void setRowId(Integer rowId) {
+    this.rowId = rowId;
+  }
+  
   public void setName(String name) {
     this.name = name;
   }
