@@ -41,7 +41,7 @@ public class RegionGrowing extends Algorithm {
     }
     
     int counter = 0;
-    while(counter<1){
+    while(counter<50){
       for(District d: newDistricts){
         if(d.getPopulation()>=this.state.getPopulation()/2){
           continue;
@@ -49,12 +49,13 @@ public class RegionGrowing extends Algorithm {
           districtGrowing(d,newDistricts);
         }
       }
-
       counter++;
     }
     WKTWriter wktWriter = new WKTWriter();
     for(District d: newDistricts){
         System.out.println(wktWriter.write(d.getGeometryShape())+"population is "+d.getPopulation());
+        System.out.println("democratic got "+d.getPartyResult().get("democratic"));
+        System.out.println("republican got "+d.getPartyResult().get("republican"));
     }
 
     return true;

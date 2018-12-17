@@ -36,14 +36,14 @@ public class District implements Serializable {
   private HashMap<String,Integer> partyResult;
   private GeometryFactory geometryFactory;
   private GeoJSONReader reader;
-  private int population;
+  private Integer population;
   
   public District() {
     this.reader = new GeoJSONReader();
     this.precincts = new HashSet<>();
     this.geoBoundary = new HashSet<>();
     this.partyResult = new HashMap<>();
-    this.population = 0;
+    this.population = new Integer(0);
   }
 
   public District(String id,Precinct seed) {
@@ -54,7 +54,7 @@ public class District implements Serializable {
     this.partyResult = new HashMap<>();
     this.geoBoundary = new HashSet<>();
     this.candidatePrecincts = new HashSet<>();
-    this.population=0;
+    this.population= new Integer(0);
     this.addPrecinct(seed);
   }
 
@@ -97,11 +97,11 @@ public class District implements Serializable {
   }
 
   @Transient
-  public int getPopulation() {
+  public Integer getPopulation() {
     return this.population;
   }
 
-  public void setPopulation(int population) {
+  public void setPopulation(Integer population) {
     this.population = population;
   }
  
@@ -185,5 +185,16 @@ public class District implements Serializable {
   public void setReader(GeoJSONReader reader) {
     this.reader = reader;
   }
+  
+  @Transient
+  public HashMap<String, Integer> getPartyResult() {
+    return this.partyResult;
+  }
+
+  public void setPartyResult(HashMap<String, Integer> partyResult) {
+    this.partyResult = partyResult;
+  }
+  
+  
   
 }
