@@ -1,6 +1,5 @@
 package regions;
 
-import enums.ShortName;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.HashSet;
@@ -25,6 +24,7 @@ public class State implements Serializable {
   private String shortName;
   private Collection<District> districts;
   private Collection<Precinct> precincts;
+  private Integer population;
 
 
   public State() {
@@ -59,6 +59,15 @@ public class State implements Serializable {
     this.name = name;
   }
 
+  @Column(name = "POPULATION")
+  public Integer getPopulation() {
+    return this.population;
+  }
+
+  public void setPopulation(Integer population) {
+    this.population = population;
+  }
+  
   @Column(name="SHORTNAME")
   public String getShortName() {
     return this.shortName;

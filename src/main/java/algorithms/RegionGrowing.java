@@ -14,9 +14,8 @@ import regions.District;
 import regions.Precinct;
 
 /**
- *
- * @author Jayson
- */
+* @author Jayson
+*/
 public class RegionGrowing extends Algorithm {
 
   List<Precinct> seeds;
@@ -28,9 +27,9 @@ public class RegionGrowing extends Algorithm {
 
   @Override
   public Boolean start() {
-    this.setSeedsRandomly(8);
+    this.setSeedsRandomly(2);
     int districtNameIndex = 0;
-    List<District> newDistricts = new ArrayList<>();
+    ArrayList<District> newDistricts = new ArrayList<>();
     for(Precinct p : this.seeds){
       District newDistrict = new District(Integer.toString(districtNameIndex++),p);
       p.setMovable(false);
@@ -41,13 +40,15 @@ public class RegionGrowing extends Algorithm {
     int counter = 0;
     while(counter<50){
       for(District d: newDistricts){
-        districtGrowing(d);
+        if(d.getPopulation()>=this.state.getPopulation()/2){
+          continue;
+        }else{
+          districtGrowing(d,newDistricts);
+        }
       }
       counter++;
     }
-    
     WKTWriter wktWriter = new WKTWriter();
-    
     for(District d: newDistricts){
         System.out.println(wktWriter.write(d.getGeometryShape())+"population is "+d.getPopulation());
     }
@@ -69,22 +70,24 @@ public class RegionGrowing extends Algorithm {
     }
   }
 
-  /**
-   * just for test
-   */
   private double calCompactness(double area, double perimeter) {
     double r = Math.sqrt(area / Math.PI);
     double equalAreaPerimeter = 2 * Math.PI * r;
     double score = 1 / (perimeter / equalAreaPerimeter);
     return score;
   }
-
   
-  private void districtGrowing(District newDistrict){
-    double maxCompactness;
+  private double calPopulationEqualty(ArrayList<District> districts){
+    District max = districts.stream().max((d1, d2) -> d1.getPopulation() - d2.getPopulation()).get();
+    District min = districts.stream().min((d1, d2) -> d1.getPopulation() - d2.getPopulation()).get();
+    return 1-(max.getPopulation()-min.getPopulation())/(this.state.getPopulation()/districts.size());
+  }
+
+  private void districtGrowing(District newDistrict,ArrayList<District> districts){
+    double maxObjFunction;
     int precinctVisited;
     try {
-        maxCompactness = 0.0;
+        maxObjFunction = 0.0;
         Precinct bestPrecinct = null;
         precinctVisited = 0;
         Iterator iterator = newDistrict.getCandidatePrecincts().iterator();
@@ -95,15 +98,14 @@ public class RegionGrowing extends Algorithm {
           }
           newDistrict.addPrecinct(p);
           Geometry districtShape = newDistrict.getGeometryShape();
-
-          if (calCompactness(districtShape.getArea(), districtShape.getLength()) > maxCompactness) {
-            maxCompactness = calCompactness(districtShape.getArea(), districtShape.getLength());
+          double tempObjFunction  =  calCompactness(districtShape.getArea(), districtShape.getLength())+calPopulationEqualty(districts);
+          if (tempObjFunction > maxObjFunction) {
+            maxObjFunction = tempObjFunction;
             bestPrecinct = p;
           }
           newDistrict.removePrecinct(p);
           precinctVisited++;
         }
-
         newDistrict.addPrecinct(bestPrecinct);
         bestPrecinct.setMovable(false);
         newDistrict.getCandidatePrecincts().addAll(this.state.findAdjPrecincts(bestPrecinct));
