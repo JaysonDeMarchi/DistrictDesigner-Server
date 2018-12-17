@@ -1,11 +1,13 @@
 package electionResults;
 
+import enums.ElectionType;
 import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 /**
  *
@@ -21,8 +23,10 @@ public class HouseResult extends Election implements Serializable {
   private String party;
   private String shortName;
   private Integer numOfVoter;
+  private String office;
 
   public HouseResult() {
+    this.office = ElectionType.HOUSE.toString();
   }
 
   @Id
@@ -46,6 +50,7 @@ public class HouseResult extends Election implements Serializable {
   }
 
   @Column(name = "CANDIDATE")
+  @Override
   public String getCandidate() {
     return this.candidate;
   }
@@ -55,11 +60,12 @@ public class HouseResult extends Election implements Serializable {
   }
 
   @Column(name = "PARTY")
-  public String getPraty() {
+  @Override
+  public String getParty() {
     return this.party;
   }
 
-  public void setPraty(String party) {
+  public void setParty(String party) {
     this.party = party;
   }
 
@@ -79,5 +85,17 @@ public class HouseResult extends Election implements Serializable {
 
   public void setNumOfVoter(Integer numOfVoter) {
     this.numOfVoter = numOfVoter;
+  }
+
+  @Transient
+  @Override
+  public String getVoterCount() {
+    return Integer.toString(this.getNumOfVoter());
+  }
+
+  @Transient
+  @Override
+  public String getOffice() {
+    return this.office;
   }
 }
