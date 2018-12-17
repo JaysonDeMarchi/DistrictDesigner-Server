@@ -1,7 +1,5 @@
 package servlets;
 
-import algorithms.RegionGrowing;
-import algorithms.SimulatedAnnealing;
 import beans.StartRequestParams;
 import enums.AlgorithmType;
 import enums.Metric;
@@ -14,7 +12,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Map;
-import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
