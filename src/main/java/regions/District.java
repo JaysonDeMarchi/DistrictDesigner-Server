@@ -5,8 +5,10 @@ import com.vividsolutions.jts.geom.GeometryCollection;
 import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.io.ParseException;
 import com.vividsolutions.jts.io.WKTReader;
+import enums.Metric;
 import java.io.Serializable;
 import java.util.Collection;
+import java.util.EnumMap;
 import java.util.HashSet;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -29,6 +31,7 @@ public class District extends Region implements Serializable {
   private Collection<Precinct> precincts;
   private Collection<Geometry> geoBoundary;
   private Collection<Precinct> candidatePrecincts;
+  private Double objectiveFunction;
   GeometryFactory geometryFactory;
   WKTReader reader;
 
@@ -156,4 +159,25 @@ public class District extends Region implements Serializable {
     this.reader = reader;
   }
 
+  @Transient
+  public Double getObjectiveFunction() {
+    return this.objectiveFunction;
+  }
+
+  public void setObjectiveFunction(Double objectiveFunction) {
+    this.objectiveFunction = objectiveFunction;
+  }
+
+  public Double calculateObjectiveFunction(EnumMap<Metric, Double> weights) {
+    Double objectiveFunc = 0.0;
+    Integer validMetrics = 0;
+    for (Metric metric : Metric.values()) {
+      Double result = metric.getValue(this, weights.get(metric));
+      if (result >= 0.0) {
+        objectiveFunc += metric.getValue(this, weights.get(metric));
+        validMetrics++;
+      }
+    }
+    return objectiveFunc / validMetrics;
+  }
 }
