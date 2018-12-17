@@ -1,11 +1,12 @@
 package regions;
 
-
 import electionResults.Election;
 import electionResults.HouseResult;
 import enums.ElectionType;
+import enums.Metric;
 import java.io.Serializable;
 import java.util.Collection;
+import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.HashSet;
 import javax.persistence.Column;
@@ -37,7 +38,8 @@ public class District implements Serializable {
   private GeometryFactory geometryFactory;
   private GeoJSONReader reader;
   private Integer population;
-  
+  private Double objectiveFunction;
+
   public District() {
     this.reader = new GeoJSONReader();
     this.precincts = new HashSet<>();
@@ -45,6 +47,7 @@ public class District implements Serializable {
     this.partyResult = new HashMap<>();
     this.population = new Integer(0);
   }
+
 
   public District(String id,Precinct seed) {
     this.geometryFactory = new GeometryFactory();
@@ -191,10 +194,26 @@ public class District implements Serializable {
     return this.partyResult;
   }
 
-  public void setPartyResult(HashMap<String, Integer> partyResult) {
-    this.partyResult = partyResult;
+  @Transient
+  public Double getObjectiveFunction() {
+    return this.objectiveFunction;
   }
-  
-  
-  
+
+  public void setObjectiveFunction(Double objectiveFunction) {
+    this.objectiveFunction = objectiveFunction;
+  }
+
+  public Double calculateObjectiveFunction(EnumMap<Metric, Double> weights) {
+    Double objectiveFunc = 0.0;
+    Integer validMetrics = 0;
+    for (Metric metric : Metric.values()) {
+      Double result = metric.getValue(this, weights.get(metric));
+      if (result >= 0.0) {
+        objectiveFunc += metric.getValue(this, weights.get(metric));
+        validMetrics++;
+      }
+    }
+    return objectiveFunc / validMetrics;
+  }
+
 }

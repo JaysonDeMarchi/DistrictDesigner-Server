@@ -1,8 +1,10 @@
 package regions;
 
+import enums.Metric;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.EnumMap;
 import java.util.HashSet;
 import java.util.Set;
 import javax.persistence.Column;
@@ -29,6 +31,7 @@ public class State implements Serializable {
   private Collection<Precinct> precincts;
   private ConstitutionRequirements constitutionRequirements;
   private Collection<ConstitutionText> constitutionTexts;
+  private Double objectiveFunction;
 
 
 
@@ -170,5 +173,27 @@ public class State implements Serializable {
 
   public void setConstitutionTexts(Collection<ConstitutionText> texts) {
     this.constitutionTexts = texts;
+  }
+
+  @Transient
+  public Double getObjectiveFunction() {
+    return this.objectiveFunction;
+  }
+
+  public void setObjectiveFunction(Double objectiveFunction) {
+    this.objectiveFunction = objectiveFunction;
+  }
+
+  public Double calculateObjectiveFunction(EnumMap<Metric, Double> weights) {
+    Double objectiveFunc = 0.0;
+    Integer validMetrics = 0;
+    for (Metric metric : Metric.values()) {
+      Double result = metric.getValue(this, weights.get(metric));
+      if (result >= 0.0) {
+        objectiveFunc += metric.getValue(this, weights.get(metric));
+        validMetrics++;
+      }
+    }
+    return objectiveFunc / validMetrics;
   }
 }
