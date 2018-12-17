@@ -1,5 +1,6 @@
 package politics;
 
+import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -13,7 +14,7 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "STATE")
-public class ConstitutionRequirements {
+public class ConstitutionRequirements implements Serializable {
   private String shortName;
   private double equalPopulation;
   private String compact;

@@ -38,6 +38,7 @@ public class District implements Serializable {
     this.geoBoundary = new HashSet<>();
   }
 
+
   public District(String id, Precinct seed) throws ParseException {
     this.geometryFactory = new GeometryFactory();
     this.reader = new WKTReader();
@@ -113,7 +114,8 @@ public class District implements Serializable {
     }
   }
 
-  public void removePrecinct(Precinct precinct) {
+  
+  public void removePrecinct(Precinct precinct){
     this.precincts.remove(precinct);
     try {
       this.geoBoundary.remove(this.reader.read(precinct.getBoundary()));
@@ -139,6 +141,7 @@ public class District implements Serializable {
   public void setGeometryFactory(GeometryFactory geometryFactory) {
     this.geometryFactory = geometryFactory;
   }
+
 
   @Transient
   public Geometry getGeometryShape() {
