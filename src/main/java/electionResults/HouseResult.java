@@ -13,15 +13,17 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "HOUSE_RESULT")
-public class HouseResult implements Serializable {
+public class HouseResult extends Election implements Serializable {
+
   private Integer id;
   private String precinctName;
   private String candidate;
-  private String praty;
+  private String party;
   private String shortName;
   private Integer numOfVoter;
-  
-  public HouseResult(){}
+
+  public HouseResult() {
+  }
 
   @Id
   @GeneratedValue
@@ -34,7 +36,7 @@ public class HouseResult implements Serializable {
     this.id = id;
   }
 
-  @Column(name="PRECINCT")
+  @Column(name = "PRECINCT")
   public String getPrecinctName() {
     return this.precinctName;
   }
@@ -43,7 +45,7 @@ public class HouseResult implements Serializable {
     this.precinctName = precinctName;
   }
 
-  @Column(name="CANDIDATE")
+  @Column(name = "CANDIDATE")
   public String getCandidate() {
     return this.candidate;
   }
@@ -54,14 +56,14 @@ public class HouseResult implements Serializable {
 
   @Column(name = "PARTY")
   public String getPraty() {
-    return this.praty;
+    return this.party;
   }
 
-  public void setPraty(String praty) {
-    this.praty = praty;
+  public void setPraty(String party) {
+    this.party = party;
   }
 
-  @Column(name="STATE")
+  @Column(name = "STATE")
   public String getShortName() {
     return this.shortName;
   }
@@ -70,7 +72,7 @@ public class HouseResult implements Serializable {
     this.shortName = shortName;
   }
 
-  @Column(name="NUMOFVOTER")
+  @Column(name = "NUMOFVOTER")
   public Integer getNumOfVoter() {
     return this.numOfVoter;
   }

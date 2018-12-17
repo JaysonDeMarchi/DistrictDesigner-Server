@@ -1,11 +1,23 @@
 package regions;
 
+import electionResults.Election;
+import electionResults.HouseResult;
+import enums.ComparisonType;
+import enums.ElectionType;
+import enums.QueryField;
 import java.io.Serializable;
+import java.util.Collection;
+import java.util.EnumMap;
+import java.util.List;
+import java.util.Map;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Transient;
+import utils.HibernateManager;
+import utils.QueryCondition;
 
 /**
  * @author Hengqi Zhu
@@ -15,7 +27,6 @@ import javax.persistence.Table;
 public class Precinct implements Serializable {
 
   private String id;
-  private Integer rowId;
   private String name;
   private String boundary;
   private String stateName;
@@ -26,8 +37,10 @@ public class Precinct implements Serializable {
   private Integer asian;
   private Integer hispanic;
   private String adjPrecinctsList;
+  private Map<ElectionType, Collection<Election>> electionResults;
 
   public Precinct() {
+    this.electionResults = new EnumMap<>(ElectionType.class);
   }
 
   public Precinct(String precinctId, String stateName, String boundary, String adjPrecincts) throws Exception {
@@ -35,6 +48,17 @@ public class Precinct implements Serializable {
     this.boundary = boundary;
     this.stateName = stateName;
     this.adjPrecinctsList = adjPrecincts;
+    this.electionResults = new EnumMap<>(ElectionType.class);
+  }
+
+  public void initiateElectionResults() {
+    try {
+      HibernateManager hb = new HibernateManager();
+      QueryCondition queryCondition = new QueryCondition(QueryField.precinctName, this.getName(), ComparisonType.EQUAL);
+      this.getElectionResults().get(ElectionType.HOUSE).addAll((List) hb.getObjectsByConditions(HouseResult.class, queryCondition));
+    } catch (Throwable e) {
+      System.out.println(e.getMessage());
+    }
   }
 
   @Id
@@ -53,15 +77,6 @@ public class Precinct implements Serializable {
     return this.name;
   }
 
-  @Column(name = "ROWID")
-  public Integer getRowId() {
-    return rowId;
-  }
-
-  public void setRowId(Integer rowId) {
-    this.rowId = rowId;
-  }
-  
   public void setName(String name) {
     this.name = name;
   }
@@ -145,6 +160,11 @@ public class Precinct implements Serializable {
 
   public void setHispanic(Integer hispanic) {
     this.hispanic = hispanic;
+  }
+
+  @Transient
+  public Map<ElectionType, Collection<Election>> getElectionResults() {
+    return this.electionResults;
   }
 
 }

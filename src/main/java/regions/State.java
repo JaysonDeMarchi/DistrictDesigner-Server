@@ -1,6 +1,5 @@
 package regions;
 
-import enums.ShortName;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.HashSet;
@@ -19,13 +18,11 @@ import javax.persistence.Transient;
 @Table(name = "STATE")
 public class State implements Serializable {
 
-
   private Integer id;
   private String name;
   private String shortName;
   private Collection<District> districts;
   private Collection<Precinct> precincts;
-
 
   public State() {
   }
@@ -59,7 +56,7 @@ public class State implements Serializable {
     this.name = name;
   }
 
-  @Column(name="SHORTNAME")
+  @Column(name = "SHORTNAME")
   public String getShortName() {
     return this.shortName;
   }
@@ -91,37 +88,38 @@ public class State implements Serializable {
       this.getDistrictById(p.getDistrictId()).addPrecinct(p);
     }
   }
-  
-  public Collection<Precinct> findAdjPrecincts(Precinct p){
+
+  public Collection<Precinct> findAdjPrecincts(Precinct p) {
     Set<Precinct> adjPrecincts = new HashSet<>();
-    String[] adjPrecinctsId  = stringToList(p.getAdjPrecinctsList());
-    for(String precinctId : adjPrecinctsId){
+    String[] adjPrecinctsId = stringToList(p.getAdjPrecinctsList());
+    for (String precinctId : adjPrecinctsId) {
       adjPrecincts.add(getPrecinctById(precinctId));
     }
     return adjPrecincts;
   }
-  
-  
-  private District getDistrictById(String id){
-    for(District d : this.getDistricts()){
-      if(d.getId().equals(id))
+
+  private District getDistrictById(String id) {
+    for (District d : this.getDistricts()) {
+      if (d.getId().equals(id)) {
         return d;
+      }
     }
     return null;
   }
 
-  private Precinct getPrecinctById(String id){
-    for(Precinct p: this.getPrecincts()){
-      if(p.getId().equals(id))
+  private Precinct getPrecinctById(String id) {
+    for (Precinct p : this.getPrecincts()) {
+      if (p.getId().equals(id)) {
         return p;
+      }
     }
     return null;
   }
-  
-  private String[] stringToList(String str){
+
+  private String[] stringToList(String str) {
     str = str.replaceAll("\\[|\\]|'", "");
     String[] resultList = str.split(",");
     return resultList;
   }
-  
+
 }
