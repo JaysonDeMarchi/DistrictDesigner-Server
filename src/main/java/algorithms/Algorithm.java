@@ -1,18 +1,13 @@
 package algorithms;
 
-import enums.ComparisonType;
 import enums.Metric;
-import enums.QueryField;
 import enums.ShortName;
 import java.util.Collection;
-import java.util.List;
 import regions.State;
 import java.util.Map;
 import managers.UpdateManager;
 import regions.District;
-import regions.Precinct;
 import utils.HibernateManager;
-import utils.QueryCondition;
 
 /**
  *

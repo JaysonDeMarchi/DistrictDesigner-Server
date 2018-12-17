@@ -5,8 +5,10 @@ import com.vividsolutions.jts.geom.GeometryCollection;
 import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.io.ParseException;
 import com.vividsolutions.jts.io.WKTReader;
+import enums.Metric;
 import java.io.Serializable;
 import java.util.Collection;
+import java.util.EnumMap;
 import java.util.HashSet;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -29,6 +31,7 @@ public class District implements Serializable {
   private Collection<Precinct> precincts;
   private Collection<Geometry> geoBoundary;
   private Collection<Precinct> candidatePrecincts;
+  private Double objectiveFunction;
   GeometryFactory geometryFactory;
   WKTReader reader;
 
@@ -37,7 +40,6 @@ public class District implements Serializable {
     this.precincts = new HashSet<>();
     this.geoBoundary = new HashSet<>();
   }
-
 
   public District(String id, Precinct seed) throws ParseException {
     this.geometryFactory = new GeometryFactory();
@@ -114,8 +116,7 @@ public class District implements Serializable {
     }
   }
 
-  
-  public void removePrecinct(Precinct precinct){
+  public void removePrecinct(Precinct precinct) {
     this.precincts.remove(precinct);
     try {
       this.geoBoundary.remove(this.reader.read(precinct.getBoundary()));
@@ -142,7 +143,6 @@ public class District implements Serializable {
     this.geometryFactory = geometryFactory;
   }
 
-
   @Transient
   public Geometry getGeometryShape() {
     GeometryCollection geometryShape = (GeometryCollection) this.getGeometryFactory().buildGeometry(this.getGeoBoundary());
@@ -158,4 +158,25 @@ public class District implements Serializable {
     this.reader = reader;
   }
 
+  @Transient
+  public Double getObjectiveFunction() {
+    return this.objectiveFunction;
+  }
+
+  public void setObjectiveFunction(Double objectiveFunction) {
+    this.objectiveFunction = objectiveFunction;
+  }
+
+  public Double calculateObjectiveFunction(EnumMap<Metric, Double> weights) {
+    Double objectiveFunc = 0.0;
+    Integer validMetrics = 0;
+    for (Metric metric : Metric.values()) {
+      Double result = metric.getValue(this, weights.get(metric));
+      if (result >= 0.0) {
+        objectiveFunc += metric.getValue(this, weights.get(metric));
+        validMetrics++;
+      }
+    }
+    return objectiveFunc / validMetrics;
+  }
 }
