@@ -113,7 +113,7 @@ public enum ShortName {
         }
         electionNode.put(electionType.toString(), electionTypeNode);
       }
-      precinctNode.put(ResponseAttribute.ELECTION_RESULTS.toString(), electionNode);
+      propertiesNode.put(ResponseAttribute.ELECTION_RESULTS.toString(), electionNode);
 
       precinctNode.put(propertiesLabel, propertiesNode);
       return precinctNode;
