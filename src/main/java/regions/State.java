@@ -1,6 +1,5 @@
 package regions;
 
-import enums.ShortName;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
