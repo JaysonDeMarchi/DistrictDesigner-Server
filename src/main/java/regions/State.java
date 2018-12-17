@@ -2,6 +2,7 @@ package regions;
 
 import enums.ShortName;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
@@ -11,6 +12,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Transient;
+import politics.ConstitutionRequirements;
+import politics.ConstitutionText;
 
 /**
  * @author Hengqi Zhu
@@ -19,23 +22,29 @@ import javax.persistence.Transient;
 @Table(name = "STATE")
 public class State implements Serializable {
 
-
   private Integer id;
   private String name;
   private String shortName;
   private Collection<District> districts;
   private Collection<Precinct> precincts;
-
+  private ConstitutionRequirements constitutionRequirements;
+  private Collection<ConstitutionText> constitutionTexts;
 
   public State() {
+    this.constitutionRequirements = new ConstitutionRequirements();
+    this.constitutionTexts = new ArrayList<>();
   }
 
   public State(int id, String name) {
+    this.constitutionRequirements = new ConstitutionRequirements();
+    this.constitutionTexts = new ArrayList<>();
     this.id = id;
     this.name = name;
   }
 
   public State(String shortName) {
+    this.constitutionRequirements = new ConstitutionRequirements();
+    this.constitutionTexts = new ArrayList<>();
     this.shortName = shortName;
   }
 
@@ -59,7 +68,7 @@ public class State implements Serializable {
     this.name = name;
   }
 
-  @Column(name="SHORTNAME")
+  @Column(name = "SHORTNAME")
   public String getShortName() {
     return this.shortName;
   }
@@ -78,6 +87,15 @@ public class State implements Serializable {
   }
 
   @Transient
+  public ConstitutionRequirements getConstitutionRequirements() {
+    return this.constitutionRequirements;
+  }
+
+  public void setConstitutionRequirements(ConstitutionRequirements requirements) {
+    this.constitutionRequirements = requirements;
+  }
+
+  @Transient
   public Collection<Precinct> getPrecincts() {
     return precincts;
   }
@@ -91,37 +109,46 @@ public class State implements Serializable {
       this.getDistrictById(p.getDistrictId()).addPrecinct(p);
     }
   }
-  
-  public Collection<Precinct> findAdjPrecincts(Precinct p){
+
+  public Collection<Precinct> findAdjPrecincts(Precinct p) {
     Set<Precinct> adjPrecincts = new HashSet<>();
-    String[] adjPrecinctsId  = stringToList(p.getAdjPrecinctsList());
-    for(String precinctId : adjPrecinctsId){
+    String[] adjPrecinctsId = stringToList(p.getAdjPrecinctsList());
+    for (String precinctId : adjPrecinctsId) {
       adjPrecincts.add(getPrecinctById(precinctId));
     }
     return adjPrecincts;
   }
-  
-  
-  private District getDistrictById(String id){
-    for(District d : this.getDistricts()){
-      if(d.getId().equals(id))
+
+  private District getDistrictById(String id) {
+    for (District d : this.getDistricts()) {
+      if (d.getId().equals(id)) {
         return d;
+      }
     }
     return null;
   }
 
-  private Precinct getPrecinctById(String id){
-    for(Precinct p: this.getPrecincts()){
-      if(p.getId().equals(id))
+  private Precinct getPrecinctById(String id) {
+    for (Precinct p : this.getPrecincts()) {
+      if (p.getId().equals(id)) {
         return p;
+      }
     }
     return null;
   }
-  
-  private String[] stringToList(String str){
+
+  private String[] stringToList(String str) {
     str = str.replaceAll("\\[|\\]|'", "");
     String[] resultList = str.split(",");
     return resultList;
   }
-  
+
+  @Transient
+  public Collection<ConstitutionText> getConstitutionTexts() {
+    return this.constitutionTexts;
+  }
+
+  public void setConstitutionTexts(Collection<ConstitutionText> texts) {
+    this.constitutionTexts = texts;
+  }
 }

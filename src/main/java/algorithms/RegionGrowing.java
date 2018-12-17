@@ -9,6 +9,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.function.Function;
 import managers.UpdateManager;
 import regions.District;
 import regions.Precinct;
@@ -21,8 +22,10 @@ public class RegionGrowing extends Algorithm {
 
   List<Precinct> seeds;
 
-  public RegionGrowing(ShortName shortName, Map<Metric, Float> weights) {
+  public RegionGrowing(ShortName shortName, Map<Metric, Float> weights) throws Exception {
     super(shortName, weights);
+    this.state.setDistricts(new ArrayList<>());
+    this.state.getPrecincts().forEach((precinct) -> precinct.setDistrictId(""));
   }
 
   @Override

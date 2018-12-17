@@ -23,23 +23,13 @@ public abstract class Algorithm {
   State state;
   Map<Metric, Float> weights;
   UpdateManager updateManager;
-  Collection< District> districts;
+  Collection<District> districts;
 
-  public Algorithm(ShortName shortName, Map<Metric, Float> weights) {
+  public Algorithm(ShortName shortName, Map<Metric, Float> weights) throws Exception {
     this.weights = weights;
     this.updateManager = new UpdateManager();
-    try {
-      HibernateManager hb = new HibernateManager();
-      QueryCondition queryCondition = new QueryCondition(QueryField.shortName, shortName.toString(), ComparisonType.EQUAL);
-      this.setState((State) ((List) hb.getObjectsByConditions(State.class, queryCondition)).get(0));
-      queryCondition = new QueryCondition(QueryField.stateName, shortName.toString(), ComparisonType.EQUAL);
-      this.state.setDistricts((Collection) hb.getObjectsByConditions(District.class, queryCondition));
-      queryCondition = new QueryCondition(QueryField.stateName, shortName.toString(), ComparisonType.EQUAL);
-      this.state.setPrecincts((Collection) hb.getObjectsByConditions(Precinct.class, queryCondition));
-      this.state.initiatePrecinctsInDistrict();
-    } catch (Throwable e) {
-      System.out.println(e.getMessage());
-    }
+    HibernateManager hb = HibernateManager.getInstance();
+    this.state = hb.getStateByShortName(shortName);
   }
 
   public abstract Boolean start();
