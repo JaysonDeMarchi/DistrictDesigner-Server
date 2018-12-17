@@ -6,6 +6,7 @@ import enums.ComparisonType;
 import enums.ElectionType;
 import enums.QueryField;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.EnumMap;
 import java.util.List;
@@ -41,6 +42,7 @@ public class Precinct implements Serializable {
 
   public Precinct() {
     this.electionResults = new EnumMap<>(ElectionType.class);
+    this.electionResults.put(ElectionType.HOUSE, new ArrayList<Election>());
   }
 
   public Precinct(String precinctId, String stateName, String boundary, String adjPrecincts) throws Exception {
@@ -49,16 +51,7 @@ public class Precinct implements Serializable {
     this.stateName = stateName;
     this.adjPrecinctsList = adjPrecincts;
     this.electionResults = new EnumMap<>(ElectionType.class);
-  }
-
-  public void initiateElectionResults() {
-    try {
-      HibernateManager hb = new HibernateManager();
-      QueryCondition queryCondition = new QueryCondition(QueryField.precinctName, this.getName(), ComparisonType.EQUAL);
-      this.getElectionResults().get(ElectionType.HOUSE).addAll((List) hb.getObjectsByConditions(HouseResult.class, queryCondition));
-    } catch (Throwable e) {
-      System.out.println(e.getMessage());
-    }
+    this.electionResults.put(ElectionType.HOUSE, new ArrayList<Election>());
   }
 
   @Id
