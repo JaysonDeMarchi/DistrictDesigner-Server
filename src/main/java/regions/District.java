@@ -91,7 +91,7 @@ public class District implements Serializable {
 
   @Transient
   public int getPopulation() {
-    return population;
+    return this.population;
   }
 
   public void setPopulation(int population) {

@@ -1,9 +1,9 @@
 package algorithms;
 
-
 import enums.Metric;
 import enums.ShortName;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -78,8 +78,8 @@ public class RegionGrowing extends Algorithm {
   }
   
   private double calPopulationEqualty(ArrayList<District> districts){
-    District max = districts.stream().max((d1, d2) -> d1.getPopulation() - d2.getPopulation()).get();
-    District min = districts.stream().min((d1, d2) -> d1.getPopulation() - d2.getPopulation()).get();
+    District max = districts.stream().max(Comparator.comparing(District::getPopulation)).get();
+    District min = districts.stream().min(Comparator.comparing(District::getPopulation)).get();
     return 1-(max.getPopulation()-min.getPopulation())/(this.state.getPopulation()/districts.size());
   }
 
