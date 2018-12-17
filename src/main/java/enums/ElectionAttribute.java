@@ -1,12 +1,30 @@
 package enums;
 
+import electionResults.Election;
+
 /**
  *
  * @author Jayson
  */
 public enum ElectionAttribute {
-  OFFICE,
-  CANDIDATE,
-  PARTY,
-  VOTER_COUNT;
+  CANDIDATE {
+    @Override
+    public String getValue(Election election) {
+      return election.getCandidate();
+    }
+  },
+  PARTY {
+    @Override
+    public String getValue(Election election) {
+      return election.getParty();
+    }
+  },
+  VOTER_COUNT {
+    @Override
+    public String getValue(Election election) {
+      return election.getVoterCount();
+    }
+  };
+
+  public abstract String getValue(Election election);
 }
