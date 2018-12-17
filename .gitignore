@@ -2,3 +2,7 @@
 
 # misc
 .DS_Store
+
+# generated data for preprocessing
+src/main/python/resources
+

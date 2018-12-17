@@ -48,6 +48,7 @@ public enum ShortName {
   SD,
   TN,
   TX,
+  USA,
   UT,
   VA,
   VT,

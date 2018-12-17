@@ -1,17 +1,21 @@
 package algorithms;
 
+import com.vividsolutions.jts.geom.Geometry;
 import enums.Metric;
 import enums.SelectionType;
 import enums.ShortName;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 import java.util.Stack;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import managers.UpdateManager;
 import regions.District;
 import regions.Precinct;
 
@@ -34,6 +38,34 @@ public class RegionGrowing extends Algorithm {
 
   @Override
   public Boolean start() {
+
+    Precinct seed = (Precinct) ((List) this.state.getPrecincts()).get(100);
+    System.out.println("seed is " + seed.getBoundary());
+    try {
+      District newDistrict = new District("ut-1", seed);
+      newDistrict.setCandidatePrecincts(this.state.findAdjPrecincts(seed));
+      double maxCompactness = 0.0;
+      Precinct bestPrecinct = null;
+
+      Iterator iterator = newDistrict.getCandidatePrecincts().iterator();
+      while (iterator.hasNext()) {
+        Precinct p = (Precinct) iterator.next();
+        newDistrict.addPrecinct(p);
+        Geometry districtShape = newDistrict.getGeometryShape();
+
+        if (calCompactness(districtShape.getArea(), districtShape.getLength()) > maxCompactness) {
+          maxCompactness = calCompactness(districtShape.getArea(), districtShape.getLength());
+          bestPrecinct = p;
+        }
+        newDistrict.removePrecinct(p);
+      }
+
+      System.out.println("best precinct is " + bestPrecinct.getName());
+
+    } catch (Exception ex) {
+      System.out.println(ex.getMessage());
+    }
+
     return true;
   }
 
@@ -49,7 +81,7 @@ public class RegionGrowing extends Algorithm {
         this.getGeneratedDistricts().forEach((district) -> {
           Precinct precinct = ((ArrayList<Precinct>) allPrecincts).get(indexes.pop());
           seeds.add(precinct);
-          district.add(precinct);
+          district.addPrecinct(precinct);
         });
         break;
       case WORST_FIT:
@@ -72,6 +104,34 @@ public class RegionGrowing extends Algorithm {
       generated.add(index);
     }
     return generated;
+  }
+
+  @Override
+  public UpdateManager run() {
+    return this.getUpdateManager();
+  }
+
+  /**
+   * This is used to get precincts randomly to start region growing according to
+   * existing districts.
+   *
+   * @param districts
+   */
+  public void setSeedsRandomly(Collection<District> districts) {
+    this.seeds = new ArrayList<>();
+    districts.forEach((d) -> {
+      this.seeds.add(((List<Precinct>) (List) d.getPrecincts()).get(new Random().nextInt(d.getPrecincts().size())));
+    });
+  }
+
+  /**
+   * just for test
+   */
+  private double calCompactness(double area, double perimeter) {
+    double r = Math.sqrt(area / Math.PI);
+    double equalAreaPerimeter = 2 * Math.PI * r;
+    double score = 1 / (perimeter / equalAreaPerimeter);
+    return score;
   }
 
 }

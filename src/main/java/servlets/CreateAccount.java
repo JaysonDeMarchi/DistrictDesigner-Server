@@ -1,63 +1,64 @@
 package servlets;
 
-import algorithms.RegionGrowing;
-import algorithms.SimulatedAnnealing;
-import beans.StartRequestParams;
-import enums.AlgorithmType;
-import enums.Metric;
-import enums.ResponseAttribute;
-import enums.SessionAttribute;
-import enums.ShortName;
+import beans.CreateAccountParams;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import enums.SelectionType;
+import enums.ComparisonType;
+import enums.QueryField;
+import enums.ResponseAttribute;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.Map;
-import javax.servlet.ServletContext;
+import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
+import user.User;
+import utils.HibernateManager;
+import utils.QueryCondition;
 
 /**
  *
  * @author Jayson
  */
-@WebServlet(name = "StartAlgorithm", urlPatterns = {"/StartAlgorithm"})
-public class StartAlgorithm extends HttpServlet {
+@WebServlet(name = "CreateAccount", urlPatterns = {"/CreateAccount"})
+public class CreateAccount extends HttpServlet {
 
   ObjectMapper mapper = new ObjectMapper();
 
   protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-          throws ServletException, IOException {
+          throws ServletException, IOException, Exception, Throwable {
     BufferedReader br = request.getReader();
     String requestBody = br.readLine();
-    StartRequestParams requestParams = mapper.readValue(requestBody, StartRequestParams.class);
-    HttpSession session = request.getSession();
-    processResponse(response, request, session.getId(), initiateAlgorithm(session, requestParams));
+    CreateAccountParams accountParams = mapper.readValue(requestBody, CreateAccountParams.class);
+    processResponse(response, request, createUser(accountParams));
   }
 
-  private Boolean initiateAlgorithm(HttpSession session, StartRequestParams requestParams) {
-    AlgorithmType algoType = requestParams.getAlgoType();
-    Integer numOfDistricts = requestParams.getNumOfDistricts();
-    SelectionType selectionType = requestParams.getSelectionType();
-    ShortName shortName = requestParams.getShortName();
-    Map<Metric, Float> weights = requestParams.getWeights();
-    session.setAttribute(SessionAttribute.ALGORITHM.toString(), algoType.createAlgorithm(shortName, weights));
-    return true;
+  public Boolean createUser(CreateAccountParams accountParams) throws Exception, Throwable {
+    String username = accountParams.getUsername();
+    User user = new User(username, accountParams.getPassword());
+    HibernateManager hb = new HibernateManager();
+    QueryCondition queryCondition = new QueryCondition(QueryField.username, username, ComparisonType.EQUAL);
+    ArrayList<User> existingUsers = (ArrayList) hb.getObjectsByConditions(User.class, queryCondition);
+    if (existingUsers.isEmpty()) {
+      return hb.saveObjectToDB(user);
+    }
+    return false;
   }
 
-  private void processResponse(HttpServletResponse response, HttpServletRequest request, String sessionId, Boolean status) throws IOException {
+  private void processResponse(HttpServletResponse response, HttpServletRequest request, Boolean userCreated) throws IOException {
     ObjectNode responseBody = mapper.createObjectNode();
     try (PrintWriter pw = response.getWriter()) {
       response.setContentType("application/json;charset=UTF-8");
       response.setHeader("Access-Control-Allow-Origin", request.getHeader("Origin"));
-      responseBody.put(ResponseAttribute.ALGO_STARTED.toString(), status);
-      responseBody.put(ResponseAttribute.SESSION_ID.toString(), sessionId);
+      responseBody.put(ResponseAttribute.USER_CREATED.toString(), userCreated);
+      if (!userCreated) {
+        responseBody.put(ResponseAttribute.ERROR_MESSAGE.toString(), ResponseAttribute.USER_CREATED.getErrorMessage());
+      }
       pw.print(responseBody.toString());
     }
   }
@@ -74,7 +75,11 @@ public class StartAlgorithm extends HttpServlet {
   @Override
   protected void doGet(HttpServletRequest request, HttpServletResponse response)
           throws ServletException, IOException {
-    processRequest(request, response);
+    try {
+      processRequest(request, response);
+    } catch (Throwable ex) {
+      Logger.getLogger(CreateAccount.class.getName()).log(Level.SEVERE, null, ex);
+    }
   }
 
   /**
@@ -88,7 +93,11 @@ public class StartAlgorithm extends HttpServlet {
   @Override
   protected void doPost(HttpServletRequest request, HttpServletResponse response)
           throws ServletException, IOException {
-    processRequest(request, response);
+    try {
+      processRequest(request, response);
+    } catch (Throwable ex) {
+      Logger.getLogger(CreateAccount.class.getName()).log(Level.SEVERE, null, ex);
+    }
   }
 
   /**
