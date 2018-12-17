@@ -1,15 +1,11 @@
 package regions;
 
 import electionResults.Election;
-import electionResults.HouseResult;
-import enums.ComparisonType;
 import enums.ElectionType;
-import enums.QueryField;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.EnumMap;
-import java.util.List;
 import java.util.Map;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -17,15 +13,13 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Transient;
-import utils.HibernateManager;
-import utils.QueryCondition;
 
 /**
  * @author Hengqi Zhu
  */
 @Entity
 @Table(name = "PRECINCT")
-public class Precinct implements Serializable {
+public class Precinct extends Region implements Serializable {
 
   private String id;
   private String name;
@@ -57,6 +51,7 @@ public class Precinct implements Serializable {
   @Id
   @GeneratedValue
   @Column(name = "ID")
+  @Override
   public String getId() {
     return this.id;
   }

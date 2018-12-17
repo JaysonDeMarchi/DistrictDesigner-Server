@@ -1,14 +1,8 @@
 package servlets;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import electionResults.Election;
-import enums.Demographic;
-import enums.ElectionAttribute;
-import enums.ElectionType;
 import enums.RequestParam;
-import enums.ResponseAttribute;
 import enums.ShortName;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -19,58 +13,27 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import regions.State;
-import utils.HibernateManager;
 
 /**
  *
  * @author Jayson
  */
-@WebServlet(name = "PopulationInfo", urlPatterns = {"/PopulationInfo"})
-public class PopulationInfo extends HttpServlet {
+@WebServlet(name = "OriginalMapData", urlPatterns = {"/OriginalMapData"})
+public class OriginalMapData extends HttpServlet {
 
   ObjectMapper mapper = new ObjectMapper();
 
   protected void processRequest(HttpServletRequest request, HttpServletResponse response)
           throws ServletException, IOException, Exception {
     ShortName shortName = ShortName.valueOf(request.getParameter(RequestParam.SHORT_NAME.getName()));
-    HibernateManager hb = HibernateManager.getInstance();
-    processResponse(response, request, hb.getStateByShortName(shortName));
+    processResponse(response, request, shortName);
   }
 
-  private void processResponse(HttpServletResponse response, HttpServletRequest request, State state) throws IOException {
-    ObjectNode responseBody = mapper.createObjectNode();
-    ArrayNode populationInfo = mapper.createArrayNode();
-    state.getPrecincts().stream().map((precinct) -> {
-      ObjectNode precinctNode = mapper.createObjectNode();
-      ObjectNode demographicsNode = mapper.createObjectNode();
-      ObjectNode electionNode = mapper.createObjectNode();
-      for (Demographic d : Demographic.values()) {
-        demographicsNode.put(d.toString(), d.getPopulation(precinct));
-      }
-      for (ElectionType electionType : ElectionType.values()) {
-        ArrayNode electionTypeNode = mapper.createArrayNode();
-        if (!precinct.getElectionResults().isEmpty()) {
-          precinct.getElectionResults().get(electionType).stream().map((result) -> {
-            ObjectNode resultNode = mapper.createObjectNode();
-            for (ElectionAttribute attribute : ElectionAttribute.values()) {
-              resultNode.put(attribute.toString(), attribute.getValue(result));
-            }
-            return resultNode;
-          }).forEachOrdered((resultNode) -> {
-            electionTypeNode.add(resultNode);
-          });
-        }
-        electionNode.put(electionType.toString(), electionTypeNode);
-      }
-      precinctNode.put(ResponseAttribute.DEMOGRAPHICS.toString(), demographicsNode);
-      precinctNode.put(ResponseAttribute.ELECTION_RESULTS.toString(), electionNode);
-      return precinctNode;
-    }).forEachOrdered((precinctNode) -> populationInfo.add(precinctNode));
+  private void processResponse(HttpServletResponse response, HttpServletRequest request, ShortName shortName) throws IOException, Exception {
+    ObjectNode responseBody = shortName.getOriginalMap();
     try (PrintWriter pw = response.getWriter()) {
       response.setContentType("application/json;charset=UTF-8");
       response.setHeader("Access-Control-Allow-Origin", request.getHeader("Origin"));
-      responseBody.put(ResponseAttribute.POPULATION_INFO.toString(), populationInfo);
       pw.print(responseBody);
     }
   }
@@ -90,7 +53,7 @@ public class PopulationInfo extends HttpServlet {
     try {
       processRequest(request, response);
     } catch (Exception ex) {
-      Logger.getLogger(PopulationInfo.class.getName()).log(Level.SEVERE, null, ex);
+      Logger.getLogger(OriginalMapData.class.getName()).log(Level.SEVERE, null, ex);
     }
   }
 
@@ -108,7 +71,7 @@ public class PopulationInfo extends HttpServlet {
     try {
       processRequest(request, response);
     } catch (Exception ex) {
-      Logger.getLogger(PopulationInfo.class.getName()).log(Level.SEVERE, null, ex);
+      Logger.getLogger(OriginalMapData.class.getName()).log(Level.SEVERE, null, ex);
     }
   }
 
