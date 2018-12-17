@@ -1,6 +1,7 @@
 package regions;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
@@ -10,6 +11,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Transient;
+import politics.ConstitutionRequirements;
+import politics.ConstitutionText;
 
 /**
  * @author Hengqi Zhu
@@ -23,16 +26,24 @@ public class State implements Serializable {
   private String shortName;
   private Collection<District> districts;
   private Collection<Precinct> precincts;
+  private ConstitutionRequirements constitutionRequirements;
+  private Collection<ConstitutionText> constitutionTexts;
 
   public State() {
+    this.constitutionRequirements = new ConstitutionRequirements();
+    this.constitutionTexts = new ArrayList<>();
   }
 
   public State(int id, String name) {
+    this.constitutionRequirements = new ConstitutionRequirements();
+    this.constitutionTexts = new ArrayList<>();
     this.id = id;
     this.name = name;
   }
 
   public State(String shortName) {
+    this.constitutionRequirements = new ConstitutionRequirements();
+    this.constitutionTexts = new ArrayList<>();
     this.shortName = shortName;
   }
 
@@ -72,6 +83,15 @@ public class State implements Serializable {
 
   public void setDistricts(Collection<District> districts) {
     this.districts = districts;
+  }
+
+  @Transient
+  public ConstitutionRequirements getConstitutionRequirements() {
+    return this.constitutionRequirements;
+  }
+
+  public void setConstitutionRequirements(ConstitutionRequirements requirements) {
+    this.constitutionRequirements = requirements;
   }
 
   @Transient
@@ -122,4 +142,12 @@ public class State implements Serializable {
     return resultList;
   }
 
+  @Transient
+  public Collection<ConstitutionText> getConstitutionTexts() {
+    return this.constitutionTexts;
+  }
+
+  public void setConstitutionTexts(Collection<ConstitutionText> texts) {
+    this.constitutionTexts = texts;
+  }
 }

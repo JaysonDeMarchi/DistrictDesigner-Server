@@ -11,7 +11,7 @@ import managers.UpdateManager;
  */
 public class SimulatedAnnealing extends Algorithm {
 
-  public SimulatedAnnealing(ShortName shortName, Map<Metric, Float> weights) {
+  public SimulatedAnnealing(ShortName shortName, Map<Metric, Float> weights) throws Exception {
     super(shortName, weights);
   }
 

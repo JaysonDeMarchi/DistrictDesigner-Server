@@ -1,8 +1,13 @@
 package utils;
 
+import enums.ComparisonType;
+import enums.QueryField;
+import enums.ShortName;
 import java.util.Collection;
 import java.util.List;
 import java.util.Arrays;
+import java.util.EnumMap;
+import java.util.Map;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -10,6 +15,11 @@ import org.hibernate.Transaction;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.service.ServiceRegistry;
 import org.hibernate.service.ServiceRegistryBuilder;
+import politics.ConstitutionRequirements;
+import politics.ConstitutionText;
+import regions.District;
+import regions.Precinct;
+import regions.State;
 
 /**
  *
@@ -18,20 +28,23 @@ import org.hibernate.service.ServiceRegistryBuilder;
 public class HibernateManager {
 
   private static HibernateManager instance;
-  private SessionFactory sessionFactory;
-  private Configuration configuration;
+  private final SessionFactory sessionFactory;
+  private final Configuration configuration;
+  private final Map<ShortName, State> states;
 
   /**
    * Constructor
    *
+   * @throws java.lang.Exception
    * @throws HibernateException
    */
-  public HibernateManager() throws Exception {
+  private HibernateManager() throws Exception {
     configuration = new Configuration();
     configuration.configure();
     ServiceRegistry serviceRegistry = new ServiceRegistryBuilder().applySettings(
             configuration.getProperties()).buildServiceRegistry();
     sessionFactory = configuration.buildSessionFactory(serviceRegistry);
+    states = new EnumMap<>(ShortName.class);
   }
 
   /**
@@ -88,6 +101,36 @@ public class HibernateManager {
    */
   public Collection<Object> getObjectsByConditions(Class c, QueryCondition queryCondition) throws Throwable {
     return getObjectsByConditions(c, Arrays.asList(queryCondition));
+  }
+
+  public Map<ShortName, State> getStates() {
+    return this.states;
+  }
+
+  public State getStateByShortName(ShortName shortName) {
+    if (this.getStates().containsKey(shortName)) {
+      return this.getStates().get(shortName);
+    }
+    State state = new State();
+    try {
+      QueryCondition queryCondition = new QueryCondition(QueryField.shortName, shortName.toString(), ComparisonType.EQUAL);
+      state = ((State) ((List) this.getObjectsByConditions(State.class, queryCondition)).get(0));
+      queryCondition = new QueryCondition(QueryField.stateName, shortName.toString(), ComparisonType.EQUAL);
+      state.setDistricts((Collection) this.getObjectsByConditions(District.class, queryCondition));
+      queryCondition = new QueryCondition(QueryField.stateName, shortName.toString(), ComparisonType.EQUAL);
+      state.setPrecincts((Collection) this.getObjectsByConditions(Precinct.class, queryCondition));
+      state.initiatePrecinctsInDistrict();
+      queryCondition = new QueryCondition(QueryField.shortName, shortName.toString(), ComparisonType.EQUAL);
+      state.setConstitutionRequirements((ConstitutionRequirements) ((List) this.getObjectsByConditions(ConstitutionRequirements.class, queryCondition)).get(0));
+      queryCondition = new QueryCondition(QueryField.shortName, shortName.toString(), ComparisonType.EQUAL);
+      state.getConstitutionTexts().addAll((Collection) this.getObjectsByConditions(ConstitutionText.class, queryCondition));
+      queryCondition = new QueryCondition(QueryField.shortName, ShortName.USA.toString(), ComparisonType.EQUAL);
+      state.getConstitutionTexts().addAll((Collection) this.getObjectsByConditions(ConstitutionText.class, queryCondition));
+    } catch (Throwable e) {
+      System.out.println(e.getMessage());
+    }
+    this.getStates().put(shortName, state);
+    return state;
   }
 
 }
