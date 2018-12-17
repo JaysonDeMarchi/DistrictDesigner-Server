@@ -3,27 +3,24 @@ package servlets;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import enums.ComparisonType;
+import electionResults.Election;
 import enums.Demographic;
+import enums.ElectionAttribute;
 import enums.ElectionType;
-import enums.QueryField;
+import enums.RequestParam;
 import enums.ResponseAttribute;
 import enums.ShortName;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.math.BigDecimal;
-import java.util.Collection;
-import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import regions.District;
-import regions.Precinct;
 import regions.State;
 import utils.HibernateManager;
-import utils.QueryCondition;
 
 /**
  *
@@ -35,26 +32,10 @@ public class PopulationInfo extends HttpServlet {
   ObjectMapper mapper = new ObjectMapper();
 
   protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-          throws ServletException, IOException {
-    ShortName shortName = ShortName.valueOf(request.getParameter(QueryField.shortName.toString()));
-    processResponse(response, request, getStateByShortName(shortName.toString()));
-  }
-
-  private State getStateByShortName(String shortName) {
-    State state = new State();
-    try {
-      HibernateManager hb = new HibernateManager();
-      QueryCondition queryCondition = new QueryCondition(QueryField.shortName, shortName, ComparisonType.EQUAL);
-      state = ((State) ((List) hb.getObjectsByConditions(State.class, queryCondition)).get(0));
-      queryCondition = new QueryCondition(QueryField.stateName, shortName, ComparisonType.EQUAL);
-      state.setDistricts((Collection) hb.getObjectsByConditions(District.class, queryCondition));
-      queryCondition = new QueryCondition(QueryField.stateName, shortName, ComparisonType.EQUAL);
-      state.setPrecincts((Collection) hb.getObjectsByConditions(Precinct.class, queryCondition));
-      state.initiatePrecinctsInDistrict();
-    } catch (Throwable e) {
-      System.out.println(e.getMessage());
-    }
-    return state;
+          throws ServletException, IOException, Exception {
+    ShortName shortName = ShortName.valueOf(request.getParameter(RequestParam.SHORT_NAME.getName()));
+    HibernateManager hb = HibernateManager.getInstance();
+    processResponse(response, request, hb.getStateByShortName(shortName));
   }
 
   private void processResponse(HttpServletResponse response, HttpServletRequest request, State state) throws IOException {
@@ -67,11 +48,27 @@ public class PopulationInfo extends HttpServlet {
       for (Demographic d : Demographic.values()) {
         demographicsNode.put(d.toString(), d.getPopulation(precinct));
       }
-      precinctNode.put("Demographics", demographicsNode);
-      precinctNode.put("ElectionResults", electionNode);
+      for (ElectionType electionType : ElectionType.values()) {
+        ArrayNode electionTypeNode = mapper.createArrayNode();
+        if (!precinct.getElectionResults().isEmpty()) {
+          precinct.getElectionResults().get(electionType).stream().map((result) -> {
+            ObjectNode resultNode = mapper.createObjectNode();
+            for (ElectionAttribute attribute : ElectionAttribute.values()) {
+              resultNode.put(attribute.toString(), attribute.getValue(result));
+            }
+            return resultNode;
+          }).forEachOrdered((resultNode) -> {
+            electionTypeNode.add(resultNode);
+          });
+        }
+        electionNode.put(electionType.toString(), electionTypeNode);
+      }
+      precinctNode.put(ResponseAttribute.DEMOGRAPHICS.toString(), demographicsNode);
+      precinctNode.put(ResponseAttribute.ELECTION_RESULTS.toString(), electionNode);
       return precinctNode;
     }).forEachOrdered((precinctNode) -> populationInfo.add(precinctNode));
     try (PrintWriter pw = response.getWriter()) {
+      System.out.println("READY TO SEND");
       response.setContentType("application/json;charset=UTF-8");
       response.setHeader("Access-Control-Allow-Origin", request.getHeader("Origin"));
       responseBody.put(ResponseAttribute.POPULATION_INFO.toString(), populationInfo);
@@ -91,7 +88,11 @@ public class PopulationInfo extends HttpServlet {
   @Override
   protected void doGet(HttpServletRequest request, HttpServletResponse response)
           throws ServletException, IOException {
-    processRequest(request, response);
+    try {
+      processRequest(request, response);
+    } catch (Exception ex) {
+      Logger.getLogger(PopulationInfo.class.getName()).log(Level.SEVERE, null, ex);
+    }
   }
 
   /**
@@ -105,7 +106,11 @@ public class PopulationInfo extends HttpServlet {
   @Override
   protected void doPost(HttpServletRequest request, HttpServletResponse response)
           throws ServletException, IOException {
-    processRequest(request, response);
+    try {
+      processRequest(request, response);
+    } catch (Exception ex) {
+      Logger.getLogger(PopulationInfo.class.getName()).log(Level.SEVERE, null, ex);
+    }
   }
 
   /**
