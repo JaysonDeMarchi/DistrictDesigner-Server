@@ -28,6 +28,12 @@ public enum ResponseAttribute {
     public String getErrorMessage() {
       return "Error: User could not log out";
     }
+  },
+  WEIGHTS_SAVED{
+    @Override
+    public String getErrorMessage() {
+      return "Error: Weights could not be saved";
+    }
   };
 
   public String getErrorMessage() {
