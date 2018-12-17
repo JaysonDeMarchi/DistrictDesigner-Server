@@ -2,6 +2,7 @@ package utils;
 
 import electionResults.HouseResult;
 import enums.ComparisonType;
+import enums.ElectionType;
 import enums.QueryField;
 import enums.ShortName;
 import java.util.Collection;
@@ -127,8 +128,13 @@ public class HibernateManager {
       state.getConstitutionTexts().addAll((Collection) this.getObjectsByConditions(ConstitutionText.class, queryCondition));
       queryCondition = new QueryCondition(QueryField.shortName, ShortName.USA.toString(), ComparisonType.EQUAL);
       state.getConstitutionTexts().addAll((Collection) this.getObjectsByConditions(ConstitutionText.class, queryCondition));
-      queryCondition = new QueryCondition(QueryField.shortName, shortName.toString(), ComparisonType.EQUAL);
-      state.setHouseResult((Collection)this.getObjectsByConditions(HouseResult.class, queryCondition));
+      queryCondition = new QueryCondition(QueryField.shortName, state.getShortName(), ComparisonType.EQUAL);
+      Collection<HouseResult> statewideHouseResults = ((List) this.getObjectsByConditions(HouseResult.class, queryCondition));
+      state.getPrecincts().forEach(precinct -> {
+        statewideHouseResults.stream().filter((result) -> (result.getPrecinctName().equals(precinct.getName()))).forEachOrdered((result) -> {
+          precinct.getElectionResults().get(ElectionType.HOUSE).add(result);
+        });
+      });
     } catch (Throwable e) {
       System.out.println(e.getMessage());
     }

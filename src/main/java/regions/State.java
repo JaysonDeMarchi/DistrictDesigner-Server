@@ -1,6 +1,5 @@
 package regions;
 
-import electionResults.HouseResult;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -30,19 +29,17 @@ public class State implements Serializable {
   private Collection<Precinct> precincts;
   private ConstitutionRequirements constitutionRequirements;
   private Collection<ConstitutionText> constitutionTexts;
-  private Collection<HouseResult> houseResult;
+
 
 
   public State() {
     this.constitutionRequirements = new ConstitutionRequirements();
     this.constitutionTexts = new ArrayList<>();
-    this.houseResult = new ArrayList<>();
   }
 
   public State(int id, String name) {
     this.constitutionRequirements = new ConstitutionRequirements();
     this.constitutionTexts = new ArrayList<>();
-    this.houseResult = new ArrayList<>();
     this.id = id;
     this.name = name;
   }
@@ -50,7 +47,6 @@ public class State implements Serializable {
   public State(String shortName) {
     this.constitutionRequirements = new ConstitutionRequirements();
     this.constitutionTexts = new ArrayList<>();
-    this.houseResult = new ArrayList<>();
     this.shortName = shortName;
   }
 
@@ -119,14 +115,14 @@ public class State implements Serializable {
     this.precincts = precincts;
   }
 
-  @Transient
-  public Collection<HouseResult> getHouseResult() {
-    return houseResult;
-  }
-
-  public void setHouseResult(Collection<HouseResult> houseResult) {
-    this.houseResult = houseResult;
-  }
+//  @Transient
+//  public Collection<HouseResult> getHouseResult() {
+//    return houseResult;
+//  }
+//
+//  public void setHouseResult(Collection<HouseResult> houseResult) {
+//    this.houseResult = houseResult;
+//  }
   
   public void initiatePrecinctsInDistrict() {
     for (Precinct p : this.getPrecincts()) {

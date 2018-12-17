@@ -1,11 +1,13 @@
 package electionResults;
 
+import enums.ElectionType;
 import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 /**
  *
@@ -13,15 +15,19 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "HOUSE_RESULT")
-public class HouseResult implements Serializable {
+public class HouseResult extends Election implements Serializable {
+
   private Integer id;
   private String precinctName;
   private String candidate;
-  private String praty;
+  private String party;
   private String shortName;
   private Integer numOfVoter;
-  
-  public HouseResult(){}
+  private String office;
+
+  public HouseResult() {
+    this.office = ElectionType.HOUSE.toString();
+  }
 
   @Id
   @GeneratedValue
@@ -34,7 +40,7 @@ public class HouseResult implements Serializable {
     this.id = id;
   }
 
-  @Column(name="PRECINCT")
+  @Column(name = "PRECINCT")
   public String getPrecinctName() {
     return this.precinctName;
   }
@@ -43,7 +49,8 @@ public class HouseResult implements Serializable {
     this.precinctName = precinctName;
   }
 
-  @Column(name="CANDIDATE")
+  @Column(name = "CANDIDATE")
+  @Override
   public String getCandidate() {
     return this.candidate;
   }
@@ -53,15 +60,16 @@ public class HouseResult implements Serializable {
   }
 
   @Column(name = "PARTY")
-  public String getPraty() {
-    return this.praty;
+  @Override
+  public String getParty() {
+    return this.party;
   }
 
-  public void setPraty(String praty) {
-    this.praty = praty;
+  public void setParty(String party) {
+    this.party = party;
   }
 
-  @Column(name="STATE")
+  @Column(name = "STATE")
   public String getShortName() {
     return this.shortName;
   }
@@ -70,12 +78,24 @@ public class HouseResult implements Serializable {
     this.shortName = shortName;
   }
 
-  @Column(name="NUMOFVOTER")
+  @Column(name = "NUMOFVOTER")
   public Integer getNumOfVoter() {
     return this.numOfVoter;
   }
 
   public void setNumOfVoter(Integer numOfVoter) {
     this.numOfVoter = numOfVoter;
+  }
+
+  @Transient
+  @Override
+  public String getVoterCount() {
+    return Integer.toString(this.getNumOfVoter());
+  }
+
+  @Transient
+  @Override
+  public String getOffice() {
+    return this.office;
   }
 }

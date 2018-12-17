@@ -3,17 +3,14 @@ package servlets;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import enums.ComparisonType;
 import enums.ConstitutionRequirementsAttribute;
 import enums.ConstitutionTextAttribute;
-import enums.QueryField;
+import enums.RequestParam;
 import enums.ResponseAttribute;
 import enums.ShortName;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.servlet.ServletException;
@@ -25,7 +22,6 @@ import politics.ConstitutionRequirements;
 import politics.ConstitutionText;
 import regions.State;
 import utils.HibernateManager;
-import utils.QueryCondition;
 
 /**
  *
@@ -38,7 +34,7 @@ public class Constitution extends HttpServlet {
 
   protected void processRequest(HttpServletRequest request, HttpServletResponse response)
           throws ServletException, IOException, Exception {
-    ShortName shortName = ShortName.valueOf(request.getParameter(QueryField.shortName.toString()));
+    ShortName shortName = ShortName.valueOf(request.getParameter(RequestParam.SHORT_NAME.getName()));
     HibernateManager hb = HibernateManager.getInstance();
     State state = hb.getStateByShortName(shortName);
     processResponse(response, request, state.getConstitutionRequirements(), state.getConstitutionTexts());
