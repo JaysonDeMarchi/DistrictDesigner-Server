@@ -82,6 +82,14 @@ public class RegionGrowing extends Algorithm {
     District min = districts.stream().min(Comparator.comparing(District::getPopulation)).get();
     return 1-(max.getPopulation()-min.getPopulation())/(this.state.getPopulation()/districts.size());
   }
+  
+  private double calEfficiencyGap(District district){
+    //Formula 1 = Wasted of won party = ticketsOfWonParty - ticketsOfLostparty
+    //Formula 2 = Wasted of lost party = ticketsOfLostParty
+    //|1-2|/total
+  
+    return 0.0;
+  }
 
   private void districtGrowing(District newDistrict,ArrayList<District> districts){
     double maxObjFunction;
