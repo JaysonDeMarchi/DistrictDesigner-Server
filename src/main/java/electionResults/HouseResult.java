@@ -1,5 +1,6 @@
 package electionResults;
 
+import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -12,7 +13,7 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "HOUSE_RESULT")
-public class HouseResult {
+public class HouseResult implements Serializable {
   private Integer id;
   private String precinctName;
   private String candidate;
@@ -77,9 +78,4 @@ public class HouseResult {
   public void setNumOfVoter(Integer numOfVoter) {
     this.numOfVoter = numOfVoter;
   }
-  
-  
-  
-  
-  
 }

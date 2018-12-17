@@ -3,6 +3,7 @@ package algorithms;
 import enums.Metric;
 import enums.ShortName;
 import java.util.Map;
+import managers.UpdateManager;
 
 /**
  *
@@ -17,5 +18,10 @@ public class SimulatedAnnealing extends Algorithm {
   @Override
   public Boolean start() {
     return true;
+  }
+
+  @Override
+  public UpdateManager run() {
+    return this.getUpdateManager();
   }
 }

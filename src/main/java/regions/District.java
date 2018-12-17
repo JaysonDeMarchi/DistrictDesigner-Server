@@ -31,7 +31,6 @@ public class District implements Serializable {
   private Collection<Precinct> candidatePrecincts;
   GeometryFactory geometryFactory;
   WKTReader reader;
-  
 
   public District() {
     this.reader = new WKTReader();
@@ -39,7 +38,8 @@ public class District implements Serializable {
     this.geoBoundary = new HashSet<>();
   }
 
-  public District(String id,Precinct seed) throws ParseException {
+
+  public District(String id, Precinct seed) throws ParseException {
     this.geometryFactory = new GeometryFactory();
     this.reader = new WKTReader();
     this.id = id;
@@ -59,7 +59,6 @@ public class District implements Serializable {
   public void setId(String id) {
     this.id = id;
   }
-
 
   @Column(name = "STATE")
   public String getStateName() {
@@ -96,7 +95,7 @@ public class District implements Serializable {
   public void setCandidatePrecincts(Collection<Precinct> candidatePrecincts) {
     this.candidatePrecincts = candidatePrecincts;
   }
- 
+
   @Transient
   public Collection<Precinct> getPrecincts() {
     return this.precincts;
@@ -114,6 +113,7 @@ public class District implements Serializable {
       System.out.println(ex.getMessage());
     }
   }
+
   
   public void removePrecinct(Precinct precinct){
     this.precincts.remove(precinct);
@@ -132,7 +132,7 @@ public class District implements Serializable {
   public void setGeoBoundary(Collection<Geometry> geoBoundary) {
     this.geoBoundary = geoBoundary;
   }
-  
+
   @Transient
   public GeometryFactory getGeometryFactory() {
     return geometryFactory;
@@ -141,11 +141,12 @@ public class District implements Serializable {
   public void setGeometryFactory(GeometryFactory geometryFactory) {
     this.geometryFactory = geometryFactory;
   }
-  
+
+
   @Transient
-  public Geometry getGeometryShape(){
-     GeometryCollection geometryShape = (GeometryCollection)this.getGeometryFactory().buildGeometry(this.getGeoBoundary());
-     return geometryShape.union(); 
+  public Geometry getGeometryShape() {
+    GeometryCollection geometryShape = (GeometryCollection) this.getGeometryFactory().buildGeometry(this.getGeoBoundary());
+    return geometryShape.union();
   }
 
   @Transient
@@ -156,5 +157,5 @@ public class District implements Serializable {
   public void setReader(WKTReader reader) {
     this.reader = reader;
   }
-  
+
 }
