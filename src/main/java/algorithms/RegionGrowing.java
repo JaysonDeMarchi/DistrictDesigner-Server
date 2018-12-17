@@ -10,7 +10,6 @@ import java.util.Map;
 import java.util.Random;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.io.WKTWriter;
-import java.util.function.Function;
 import managers.UpdateManager;
 import regions.District;
 import regions.Precinct;
@@ -42,13 +41,12 @@ public class RegionGrowing extends Algorithm {
     }
     
     int counter = 0;
-    while(counter<50){
+    while(counter<1){
       for(District d: newDistricts){
         if(d.getPopulation()>=this.state.getPopulation()/2){
           continue;
         }else{
           districtGrowing(d,newDistricts);
-
         }
       }
 

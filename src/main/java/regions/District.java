@@ -1,8 +1,12 @@
 package regions;
 
 
+import electionResults.Election;
+import electionResults.HouseResult;
+import enums.ElectionType;
 import java.io.Serializable;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -29,7 +33,7 @@ public class District implements Serializable {
   private Collection<Precinct> precincts;
   private Collection<Geometry> geoBoundary;
   private Collection<Precinct> candidatePrecincts;
-
+  private HashMap<String,Integer> partyResult;
   private GeometryFactory geometryFactory;
   private GeoJSONReader reader;
   private int population;
@@ -38,6 +42,7 @@ public class District implements Serializable {
     this.reader = new GeoJSONReader();
     this.precincts = new HashSet<>();
     this.geoBoundary = new HashSet<>();
+    this.partyResult = new HashMap<>();
     this.population = 0;
   }
 
@@ -46,11 +51,11 @@ public class District implements Serializable {
     this.reader = new GeoJSONReader();
     this.id = id;
     this.precincts = new HashSet<>();
+    this.partyResult = new HashMap<>();
     this.geoBoundary = new HashSet<>();
     this.candidatePrecincts = new HashSet<>();
-    this.addPrecinct(seed);
     this.population=0;
-
+    this.addPrecinct(seed);
   }
 
   @Id
@@ -122,13 +127,30 @@ public class District implements Serializable {
   public void addPrecinct(Precinct precinct) {
     this.precincts.add(precinct);
     this.geoBoundary.add(this.reader.read(precinct.getBoundary()));
-    this.setPopulation(this.population+precinct.getPopulation());
+    this.population += precinct.getPopulation();
+    Collection<Election> houseResults = precinct.getElectionResults().get(ElectionType.HOUSE);
+    for(Election hr : houseResults){
+      HouseResult temp = (HouseResult) hr;
+      int value;
+      if(this.partyResult.get(temp.getParty())==null){
+       value = temp.getNumOfVoter();
+      }else{
+       value = this.partyResult.get(temp.getParty())+temp.getNumOfVoter();
+      }
+      this.partyResult.put(temp.getParty(), value);
+    }
   }
   
   public void removePrecinct(Precinct precinct){
     this.precincts.remove(precinct);
     this.geoBoundary.remove(this.reader.read(precinct.getBoundary()));
-    this.setPopulation(this.population-precinct.getPopulation());
+    this.population-=precinct.getPopulation();
+    Collection<Election> houseResults = precinct.getElectionResults().get(ElectionType.HOUSE);
+    for(Election hr : houseResults){
+      HouseResult temp = (HouseResult) hr;
+      int value = this.partyResult.get(temp.getParty())-temp.getNumOfVoter();
+      this.partyResult.put(temp.getParty(), value);
+    }
   }
 
   @Transient

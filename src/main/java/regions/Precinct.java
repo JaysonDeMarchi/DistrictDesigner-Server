@@ -39,6 +39,7 @@ public class Precinct implements Serializable {
 
   public Precinct() {
     this.electionResults = new EnumMap<>(ElectionType.class);
+    this.movable = true;
     this.electionResults.put(ElectionType.HOUSE, new ArrayList<Election>());
   }
 
@@ -47,6 +48,7 @@ public class Precinct implements Serializable {
     this.boundary = boundary;
     this.stateName = stateName;
     this.adjPrecinctsList = adjPrecincts;
+    this.movable = true;
     this.electionResults = new EnumMap<>(ElectionType.class);
     this.electionResults.put(ElectionType.HOUSE, new ArrayList<Election>());
   }
