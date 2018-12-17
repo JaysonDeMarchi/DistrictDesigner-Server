@@ -2,6 +2,7 @@ package algorithms;
 
 import enums.Metric;
 import enums.ShortName;
+import java.util.EnumMap;
 import java.util.Map;
 import managers.UpdateManager;
 
@@ -11,7 +12,7 @@ import managers.UpdateManager;
  */
 public class SimulatedAnnealing extends Algorithm {
 
-  public SimulatedAnnealing(ShortName shortName, Map<Metric, Float> weights) throws Exception {
+  public SimulatedAnnealing(ShortName shortName, EnumMap<Metric, Float> weights) throws Exception {
     super(shortName, weights);
   }
 

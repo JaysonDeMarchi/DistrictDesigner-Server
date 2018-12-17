@@ -9,6 +9,7 @@ import java.util.Collection;
 import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -203,7 +204,7 @@ public class District implements Serializable {
     this.objectiveFunction = objectiveFunction;
   }
 
-  public Double calculateObjectiveFunction(EnumMap<Metric, Double> weights) {
+  public Double calculateObjectiveFunction(EnumMap<Metric, Float> weights) {
     Double objectiveFunc = 0.0;
     Integer validMetrics = 0;
     for (Metric metric : Metric.values()) {

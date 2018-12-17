@@ -14,6 +14,7 @@ import static enums.ShortName.UT;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
@@ -46,7 +47,7 @@ public class StartAlgorithm extends HttpServlet {
   private Boolean initiateAlgorithm(HttpSession session, StartRequestParams requestParams) {
     AlgorithmType algoType = requestParams.getAlgoType();
     ShortName shortName = requestParams.getShortName();
-    Map<Metric, Float> weights = requestParams.getWeights();
+    EnumMap<Metric, Float> weights = requestParams.getWeights();
     session.setAttribute(SessionAttribute.ALGORITHM.toString(), algoType.createAlgorithm(shortName, weights));
     return true;
   }

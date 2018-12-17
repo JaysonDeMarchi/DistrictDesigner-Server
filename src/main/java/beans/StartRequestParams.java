@@ -4,6 +4,7 @@ import java.util.Map;
 import enums.ShortName;
 import enums.AlgorithmType;
 import enums.Metric;
+import java.util.EnumMap;
 
 /**
  *
@@ -13,13 +14,13 @@ public class StartRequestParams {
 
   private AlgorithmType algoType;
   private ShortName shortName;
-  private Map<Metric, Float> weights;
+  private EnumMap<Metric, Float> weights;
 
   public StartRequestParams() {
     super();
   }
 
-  public StartRequestParams(AlgorithmType a, ShortName s, Map<Metric, Float> w) {
+  public StartRequestParams(AlgorithmType a, ShortName s, EnumMap<Metric, Float>  w) {
     this.algoType = a;
     this.shortName = s;
     this.weights = w;
@@ -33,7 +34,7 @@ public class StartRequestParams {
     return this.shortName;
   }
 
-  public Map<Metric, Float> getWeights() {
+  public EnumMap<Metric, Float> getWeights() {
     return this.weights;
   }
 
@@ -45,7 +46,7 @@ public class StartRequestParams {
     this.shortName = s;
   }
 
-  public void setWeights(Map<Metric, Float> w) {
+  public void setWeights(EnumMap<Metric, Float> w) {
     this.weights = w;
   }
 
