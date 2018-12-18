@@ -57,4 +57,5 @@ public enum Metric {
   int repVotes = partyResult.get(Party.REPUBLICAN.toString()) == null ? 0 : partyResult.get(Party.REPUBLICAN.toString());
   return demVotes>= repVotes ? Party.REPUBLICAN : Party.DEMOCRATIC;
   }
+
 }

@@ -68,7 +68,6 @@ public class PopulationInfo extends HttpServlet {
       return precinctNode;
     }).forEachOrdered((precinctNode) -> populationInfo.add(precinctNode));
     try (PrintWriter pw = response.getWriter()) {
-      System.out.println("READY TO SEND");
       response.setContentType("application/json;charset=UTF-8");
       response.setHeader("Access-Control-Allow-Origin", request.getHeader("Origin"));
       responseBody.put(ResponseAttribute.POPULATION_INFO.toString(), populationInfo);

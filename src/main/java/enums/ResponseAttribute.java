@@ -10,12 +10,14 @@ public enum ResponseAttribute {
   CONSTITUTION_REQUIREMENTS,
   CONSTITUTION_TEXT,
   DEMOGRAPHICS,
+  DISTRICTS,
   ELECTION_RESULTS,
   ERROR_MESSAGE,
   NEW_DISTRICT_ID,
   OLD_DISTRICT_ID,
   POPULATION,
   POPULATION_INFO,
+  PRECINCTS,
   PRECINCT_ID,
   SESSION_ID,
   SUCCESS_STATUS,
@@ -39,6 +41,7 @@ public enum ResponseAttribute {
       return "Error: User could not log out";
     }
   },
+
   WEIGHTS_SAVED {
     @Override
     public String getErrorMessage() {

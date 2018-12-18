@@ -14,13 +14,12 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
-
 /**
  * @author Hengqi Zhu
  */
 @Entity
 @Table(name = "PRECINCT")
-public class Precinct implements Serializable {
+public class Precinct extends Region implements Serializable {
 
   private String id;
   private String name;
@@ -53,6 +52,7 @@ public class Precinct implements Serializable {
   @Id
   @GeneratedValue
   @Column(name = "ID")
+  @Override
   public String getId() {
     return this.id;
   }

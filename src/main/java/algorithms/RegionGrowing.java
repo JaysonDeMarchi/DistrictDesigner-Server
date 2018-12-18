@@ -2,6 +2,7 @@ package algorithms;
 
 import enums.Metric;
 import enums.Party;
+import enums.SelectionType;
 import enums.ShortName;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -10,6 +11,7 @@ import java.util.EnumMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 import org.locationtech.jts.io.WKTWriter;
 import managers.UpdateManager;
@@ -23,8 +25,9 @@ public class RegionGrowing extends Algorithm {
 
   List<Precinct> seeds;
 
-  public RegionGrowing(ShortName shortName, EnumMap<Metric, Float> weights) throws Exception {
-    super(shortName, weights);
+
+  public RegionGrowing(ShortName shortName, SelectionType selectionType, EnumMap<Metric, Float> weights, Integer numOfDistricts) throws Exception {
+    super(shortName, selectionType, weights);
     this.state.setDistricts(new ArrayList<>());
     this.state.getPrecincts().forEach((precinct) -> precinct.setDistrictId(""));
     run();
@@ -39,7 +42,7 @@ public class RegionGrowing extends Algorithm {
 
   @Override
   public UpdateManager run() {
-//    while(!this.getUpdateManager().isReady()) {
+    while(!this.getUpdateManager().isReady()) {
       WKTWriter wktWriter = new WKTWriter();
       this.setSeedsRandomly(5);
       int districtNameIndex = 0;
@@ -62,16 +65,8 @@ public class RegionGrowing extends Algorithm {
           continue;
         }
         precinctIndistrict = precinctInDistrict(this.state.getDistricts());
-        System.out.println(precinctIndistrict+"have done");
       }
-
-      for(District d: this.state.getDistricts()){
-        System.out.println(wktWriter.write(d.getGeometryShape()));
-        System.out.println("Population is "+d.getPopulation());
-        System.out.println("democratic got "+d.getPartyResult().get(Party.DEMOCRATIC.toString()));
-        System.out.println("republician got "+d.getPartyResult().get(Party.REPUBLICAN.toString()));
-      }
-//    }
+    }
     return this.getUpdateManager();
   }
 

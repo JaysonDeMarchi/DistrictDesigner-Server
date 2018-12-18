@@ -26,7 +26,7 @@ import org.wololo.jts2geojson.GeoJSONReader;
  */
 @Entity
 @Table(name = "DISTRICT")
-public class District implements Serializable {
+public class District extends Region implements Serializable {
 
   private String id;
   private String boundary;
@@ -66,6 +66,7 @@ public class District implements Serializable {
   @Id
   @GeneratedValue
   @Column(name = "ID")
+  @Override
   public String getId() {
     return this.id;
   }

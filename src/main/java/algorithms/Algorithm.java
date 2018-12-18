@@ -1,6 +1,7 @@
 package algorithms;
 
 import enums.Metric;
+import enums.SelectionType;
 import enums.ShortName;
 import java.util.Collection;
 import java.util.EnumMap;
@@ -20,10 +21,13 @@ public abstract class Algorithm {
   EnumMap<Metric, Float> weights;
   UpdateManager updateManager;
   Collection<District> districts;
+  SelectionType selectionType;
 
-  public Algorithm(ShortName shortName, EnumMap<Metric, Float> weights) throws Exception {
+
+  public Algorithm(ShortName shortName, SelectionType selectionType, EnumMap<Metric, Float> weights) throws Exception {
     this.weights = weights;
     this.updateManager = new UpdateManager();
+    this.selectionType = selectionType;
     HibernateManager hb = HibernateManager.getInstance();
     this.state = hb.getStateByShortName(shortName);
   }
@@ -44,7 +48,15 @@ public abstract class Algorithm {
     this.state = state;
   }
 
-  public Map<Metric, Float> getWeights() {
+  public SelectionType getSelectionType() {
+    return this.selectionType;
+  }
+
+  public void setSelectionType(SelectionType selectionType) {
+    this.selectionType = selectionType;
+  }
+
+  public EnumMap<Metric, Float> getWeights() {
     return this.weights;
   }
 

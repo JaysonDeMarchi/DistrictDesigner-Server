@@ -40,7 +40,7 @@ public class HibernateManager {
    * @throws java.lang.Exception
    * @throws HibernateException
    */
-  private HibernateManager() throws Exception {
+  public HibernateManager() throws Exception {
     configuration = new Configuration();
     configuration.configure();
     ServiceRegistry serviceRegistry = new ServiceRegistryBuilder().applySettings(
