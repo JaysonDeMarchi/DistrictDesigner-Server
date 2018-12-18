@@ -2,15 +2,16 @@ package servlets;
 
 import algorithms.Algorithm;
 import beans.UpdateRequestParams;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import org.wololo.jts2geojson.GeoJSONWriter;
 import enums.ResponseAttribute;
 import enums.SessionAttribute;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.Collection;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -19,7 +20,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import managers.UpdateManager;
-import moves.Move;
+import regions.District;
 
 /**
  *
@@ -39,31 +40,48 @@ public class UpdatePrecincts extends HttpServlet {
     processResponse(response, request, getUpdates((Algorithm) session.getAttribute(SessionAttribute.ALGORITHM.toString())));
   }
 
-  private Collection<Move> getUpdates(Algorithm algorithm) {
-    UpdateManager updateManager = algorithm.getUpdateManager();
-    algorithm.run();
-    Collection<Move> moves = updateManager.getMoves();
+  private JsonNode getUpdates(Algorithm algorithm) {
+    System.out.println("Run");
+    UpdateManager updateManager = algorithm.run();
+    ObjectNode updateNode = mapper.createObjectNode();
+    ArrayNode districtNodes = mapper.createArrayNode();
+    GeoJSONWriter writer = new GeoJSONWriter();
+    algorithm.getState().getDistricts().stream().map((district) -> {
+      ObjectNode districtNode = mapper.createObjectNode();
+      districtNode.put("geometry", writer.write(district.getGeometryShape()).toString());
+      districtNode.put("properties", getPropertiesNode(district));
+      return districtNode;
+    }).forEachOrdered(districtNode -> {
+      districtNodes.add(districtNode);
+    });
+
     updateManager.reset();
-    return moves;
+    return updateNode.put(ResponseAttribute.DISTRICTS.toString(), districtNodes);
   }
 
-  private void processResponse(HttpServletResponse response, HttpServletRequest request, Collection<Move> moves) throws IOException {
+  public ObjectNode getPropertiesNode(District district) {
+    ObjectNode propertiesNode = mapper.createObjectNode();
+    propertiesNode.put("population", district.getPopulation());
+    return propertiesNode;
+  }
+
+  private void processResponse(HttpServletResponse response, HttpServletRequest request, JsonNode updateNode) throws IOException {
     ObjectNode responseBody = mapper.createObjectNode();
     PrintWriter pw = response.getWriter();
     response.setContentType("application/json;charset=UTF-8");
     response.setHeader("Access-Control-Allow-Origin", request.getHeader("Origin"));
-    ArrayNode movesArray = responseBody.putArray(ResponseAttribute.UPDATED_PRECINCTS.toString());
-    moves.stream().map((move) -> {
-      ObjectNode updatedPrecinct = mapper.createObjectNode();
-      updatedPrecinct.put(ResponseAttribute.PRECINCT_ID.toString(), move.getPrecinctId())
-              .put(ResponseAttribute.OLD_DISTRICT_ID.toString(), move.getOldDistrictId())
-              .put(ResponseAttribute.NEW_DISTRICT_ID.toString(), move.getNewDistrictId())
-              .put(ResponseAttribute.SUCCESS_STATUS.toString(), move.getSuccessStatus());
-      return updatedPrecinct;
-    }).forEach((updatedPrecinct) -> {
-      movesArray.add(updatedPrecinct);
-    });
-
+//    ArrayNode movesArray = responseBody.putArray(ResponseAttribute.UPDATED_PRECINCTS.toString());
+//    moves.stream().map((move) -> {
+//      ObjectNode updatedPrecinct = mapper.createObjectNode();
+//      updatedPrecinct.put(ResponseAttribute.PRECINCT_ID.toString(), move.getPrecinctId())
+//              .put(ResponseAttribute.OLD_DISTRICT_ID.toString(), move.getOldDistrictId())
+//              .put(ResponseAttribute.NEW_DISTRICT_ID.toString(), move.getNewDistrictId())
+//              .put(ResponseAttribute.SUCCESS_STATUS.toString(), move.getSuccessStatus());
+//      return updatedPrecinct;
+//    }).forEach((updatedPrecinct) -> {
+//      movesArray.add(updatedPrecinct);
+//    });
+    responseBody.put(ResponseAttribute.DISTRICTS.toString(), updateNode);
     pw.print(responseBody.toString());
   }
 
