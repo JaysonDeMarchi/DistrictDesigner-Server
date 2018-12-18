@@ -10,10 +10,13 @@ import java.io.Serializable;
 import java.util.Collection;
 import java.util.EnumMap;
 import java.util.HashSet;
+import java.util.Set;
+import java.util.stream.Collectors;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
@@ -179,5 +182,12 @@ public class District extends Region implements Serializable {
       }
     }
     return objectiveFunc / validMetrics;
+  }
+
+  @OneToMany
+  public Set<Precinct> getEdgePrecincts() {
+    return this.getPrecincts().stream()
+            .filter((precinct) -> precinct.isEdgePrecinct())
+            .collect(Collectors.toSet());
   }
 }

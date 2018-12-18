@@ -16,6 +16,14 @@ public class Move {
   private Boolean successStatus;
   private Integer size;
 
+  public Move(Precinct precinct, District oldDistrict, District newDistrict) {
+    this.precinct = precinct;
+    this.oldDistrict = oldDistrict;
+    this.newDistrict = newDistrict;
+    this.successStatus = false;
+    this.size = (this.successStatus) ? MoveAttribute.SIZE_ON_SUCCESS.getValue() : MoveAttribute.SIZE_ON_FAILURE.getValue();
+  }
+
   public Move(Precinct precinct, District oldDistrict, District newDistrict, Boolean successStatus) {
     this.precinct = precinct;
     this.oldDistrict = oldDistrict;
@@ -42,6 +50,10 @@ public class Move {
 
   public Boolean getSuccessStatus() {
     return this.successStatus;
+  }
+
+  public void setSuccessStatus(Boolean status) {
+    this.successStatus = status;
   }
 
 }
