@@ -15,6 +15,8 @@ import java.util.Map;
 import java.util.Random;
 import org.locationtech.jts.io.WKTWriter;
 import managers.UpdateManager;
+import org.locationtech.jts.geom.MultiPolygon;
+import org.wololo.jts2geojson.GeoJSONReader;
 import org.wololo.jts2geojson.GeoJSONWriter;
 import regions.District;
 import regions.Precinct;
@@ -25,12 +27,13 @@ import regions.Precinct;
 public class RegionGrowing extends Algorithm {
 
   List<Precinct> seeds;
-
+  GeoJSONReader reader;
 
   public RegionGrowing(ShortName shortName, SelectionType selectionType, EnumMap<Metric, Float> weights, Integer numOfDistricts) throws Exception {
     super(shortName, selectionType, weights);
     this.state.setDistricts(new ArrayList<>());
     this.state.getPrecincts().forEach((precinct) -> precinct.setDistrictId(""));
+    reader = new GeoJSONReader();
     run();
   }
 
@@ -56,7 +59,7 @@ public class RegionGrowing extends Algorithm {
       
       int precinctIndistrict = precinctInDistrict(this.state.getDistricts());
       int limit = 0;
-      while(this.getState().getPrecincts().size() > precinctIndistrict&&!toGrowDistricts.isEmpty()&&limit<500){
+      while(this.getState().getPrecincts().size() > precinctIndistrict&&!toGrowDistricts.isEmpty()&&limit<1000){
         District minPopDistrict = toGrowDistricts.stream().min(Comparator.comparing(District::getPopulation)).get();
         if(!minPopDistrict.getCandidatePrecincts().isEmpty()){
           districtGrowing(minPopDistrict, (ArrayList<District>) this.state.getDistricts());
@@ -84,20 +87,34 @@ public class RegionGrowing extends Algorithm {
   }
 
   private void districtGrowing(District newDistrict,ArrayList<District> districts){
+    
     double maxObjFunction;
     try {
         maxObjFunction = 0.0;
+        int precinctVisited = 0;
         Precinct bestPrecinct = null;
         Iterator iterator = newDistrict.getCandidatePrecincts().iterator();
-        while (iterator.hasNext()) {
+        while (iterator.hasNext()&&precinctVisited<5) {
           Precinct p = (Precinct) iterator.next();
+          if(newDistrict.getGeometryShape().contains(this.reader.read(p.getBoundary()))) {
+            newDistrict.addPrecinct(p);
+            HashSet<Precinct> bestPrecinctAdj = (HashSet<Precinct>) this.state.findAdjPrecincts(p);
+            newDistrict.getCandidatePrecincts().addAll(bestPrecinctAdj);
+            newDistrict.setCandidatePrecincts(newDistrict.getCandidatePrecincts());
+            return;
+          }
           newDistrict.addPrecinct(p);
+          if(newDistrict.getGeometryShape() instanceof MultiPolygon){
+            newDistrict.removePrecinct(p);
+            continue;
+          }
           Double tempObjFunction = newDistrict.calculateObjectiveFunction(this.weights);
           if (tempObjFunction > maxObjFunction) {
             maxObjFunction = tempObjFunction;
             bestPrecinct = p;
           }
           newDistrict.removePrecinct(p);
+          precinctVisited++;
         }
         newDistrict.addPrecinct(bestPrecinct);
         HashSet<Precinct> bestPrecinctAdj = (HashSet<Precinct>) this.state.findAdjPrecincts(bestPrecinct);

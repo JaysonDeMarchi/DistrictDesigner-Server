@@ -19,6 +19,7 @@ import javax.persistence.Transient;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.GeometryCollection;
 import org.locationtech.jts.geom.GeometryFactory;
+import org.locationtech.jts.geom.Polygon;
 import org.wololo.jts2geojson.GeoJSONReader;
 
 /**
@@ -187,8 +188,12 @@ public class District extends Region implements Serializable {
   
   @Transient
   public Geometry getGeometryShape(){
+    if (this.getGeometryFactory().buildGeometry(this.getGeoBoundary()) instanceof Polygon) {
+      return this.getGeometryFactory().buildGeometry(this.getGeoBoundary());
+    }else{
      GeometryCollection geometryShape = (GeometryCollection)this.getGeometryFactory().buildGeometry(this.getGeoBoundary());
-     return geometryShape.union(); 
+     return geometryShape.union();
+    }
   }
 
   @Transient
