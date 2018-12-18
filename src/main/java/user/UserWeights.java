@@ -24,6 +24,13 @@ public class UserWeights implements Serializable {
   private Float partisanGerrymandering;
   
   public UserWeights(){}
+
+  public UserWeights(String username, Float compactness, Float populationEquality, Float partisanGerrymandering) {
+    this.username = username;
+    this.compactness = compactness;
+    this.populationEquality = populationEquality;
+    this.partisanGerrymandering = partisanGerrymandering;
+  }
   
   @Id
   @GeneratedValue

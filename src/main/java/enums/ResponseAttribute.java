@@ -41,6 +41,7 @@ public enum ResponseAttribute {
       return "Error: User could not log out";
     }
   },
+
   WEIGHTS_SAVED {
     @Override
     public String getErrorMessage() {
