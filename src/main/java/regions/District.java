@@ -9,7 +9,7 @@ import java.util.Collection;
 import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -57,9 +57,10 @@ public class District implements Serializable {
     this.precincts = new HashSet<>();
     this.partyResult = new HashMap<>();
     this.geoBoundary = new HashSet<>();
-    this.candidatePrecincts = new HashSet<>();
+    this.candidatePrecincts = new LinkedHashSet<>();
     this.population= new Integer(0);
     this.addPrecinct(seed);
+    seed.setDistrictId(id);
   }
 
   @Id
@@ -115,8 +116,18 @@ public class District implements Serializable {
   }
 
   public void setCandidatePrecincts(Collection<Precinct> candidatePrecincts) {
+    System.out.println("here25");
     this.candidatePrecincts = candidatePrecincts;
+    System.out.println("here6");
     this.candidatePrecincts.removeAll(this.precincts);
+    System.out.println("here7");
+    System.out.println("here9"+this.candidatePrecincts.size());
+    for(Precinct p : this.candidatePrecincts){
+      if(!p.getDistrictId().equals("")){
+        this.candidatePrecincts.remove(p);
+      }
+    }
+    System.out.println("here8");
   }
 
   @Transient
@@ -143,6 +154,7 @@ public class District implements Serializable {
       }
       this.partyResult.put(temp.getParty(), value);
     }
+    precinct.setDistrictId(this.id);
   }
   
   public void removePrecinct(Precinct precinct){
@@ -155,6 +167,7 @@ public class District implements Serializable {
       int value = this.partyResult.get(temp.getParty())-temp.getNumOfVoter();
       this.partyResult.put(temp.getParty(), value);
     }
+    precinct.setDistrictId("");
   }
 
   @Transient

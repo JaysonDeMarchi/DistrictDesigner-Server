@@ -33,13 +33,11 @@ public class Precinct implements Serializable {
   private Integer asian;
   private Integer hispanic;
   private String adjPrecinctsList;
-  private boolean movable;
   private Map<ElectionType, Collection<Election>> electionResults;
   
 
   public Precinct() {
     this.electionResults = new EnumMap<>(ElectionType.class);
-    this.movable = true;
     this.electionResults.put(ElectionType.HOUSE, new ArrayList<Election>());
   }
 
@@ -48,7 +46,6 @@ public class Precinct implements Serializable {
     this.boundary = boundary;
     this.stateName = stateName;
     this.adjPrecinctsList = adjPrecincts;
-    this.movable = true;
     this.electionResults = new EnumMap<>(ElectionType.class);
     this.electionResults.put(ElectionType.HOUSE, new ArrayList<Election>());
   }
@@ -119,16 +116,6 @@ public class Precinct implements Serializable {
   public void setStateName(String stateName) {
     this.stateName = stateName;
   } 
-
-  @Transient
-  public boolean isMovable() {
-    return this.movable;
-  }
-
-  public void setMovable(boolean movable) {
-    this.movable = movable;
-  }
-  
 
   @Column(name = "WHITE")
   public Integer getWhite() {

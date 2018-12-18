@@ -117,15 +117,6 @@ public class State implements Serializable {
   public void setPrecincts(Collection<Precinct> precincts) {
     this.precincts = precincts;
   }
-
-//  @Transient
-//  public Collection<HouseResult> getHouseResult() {
-//    return houseResult;
-//  }
-//
-//  public void setHouseResult(Collection<HouseResult> houseResult) {
-//    this.houseResult = houseResult;
-//  }
   
   public void initiatePrecinctsInDistrict() {
     for (Precinct p : this.getPrecincts()) {

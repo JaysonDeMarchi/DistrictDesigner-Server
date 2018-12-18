@@ -1,9 +1,13 @@
 package algorithms;
 
 import enums.Metric;
+import enums.Party;
 import enums.ShortName;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Comparator;
 import java.util.EnumMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
@@ -23,6 +27,7 @@ public class RegionGrowing extends Algorithm {
     super(shortName, weights);
     this.state.setDistricts(new ArrayList<>());
     this.state.getPrecincts().forEach((precinct) -> precinct.setDistrictId(""));
+    run();
   }
 
   @Override
@@ -34,41 +39,44 @@ public class RegionGrowing extends Algorithm {
 
   @Override
   public UpdateManager run() {
-    while(!this.getUpdateManager().isReady()) {
+//    while(!this.getUpdateManager().isReady()) {
+      WKTWriter wktWriter = new WKTWriter();
       this.setSeedsRandomly(5);
       int districtNameIndex = 0;
       for(Precinct p : this.seeds){
-        District newDistrict = new District(Integer.toString(districtNameIndex++),p);
-        p.setMovable(false);
+        District newDistrict = new District(this.state.getShortName()+Integer.toString(districtNameIndex++),p);
         newDistrict.setCandidatePrecincts(this.state.findAdjPrecincts(p));
         this.state.getDistricts().add(newDistrict);
       }
-    
-      int counter = 0;
-      while(counter<50){
-        for(District d: this.state.getDistricts()){
-          if(d.getPopulation()>=this.state.getPopulation()/this.state.getDistricts().size()){
-            continue;
-          }else{
-            districtGrowing(d, (ArrayList<District>) this.state.getDistricts());
-          }
+      
+      HashSet<District> toGrowDistricts = new HashSet<>();
+      toGrowDistricts.addAll(this.getState().getDistricts());
+      
+      int precinctIndistrict = precinctInDistrict(this.state.getDistricts());
+      while(this.getState().getPrecincts().size() > precinctIndistrict&&!toGrowDistricts.isEmpty()){
+        System.out.println("here3");
+        District minPopDistrict = toGrowDistricts.stream().min(Comparator.comparing(District::getPopulation)).get();
+        System.out.println(minPopDistrict.getId()+"has "+minPopDistrict.getCandidatePrecincts().size()+"candidate precincts");
+        if(!minPopDistrict.getCandidatePrecincts().isEmpty()){
+          districtGrowing(minPopDistrict, (ArrayList<District>) this.state.getDistricts());
+        }else{
+          toGrowDistricts.remove(minPopDistrict);
+          continue;
         }
-        counter++;
+        System.out.println(minPopDistrict.getId()+"has "+minPopDistrict.getPopulation());
+        precinctIndistrict = precinctInDistrict(this.state.getDistricts());
+        System.out.println(precinctIndistrict+"have done");
       }
-      WKTWriter wktWriter = new WKTWriter();
+
       for(District d: this.state.getDistricts()){
-          System.out.println(wktWriter.write(d.getGeometryShape())+"population is "+d.getPopulation());
+        System.out.println(wktWriter.write(d.getGeometryShape()));
+        System.out.println("Population is "+d.getPopulation());
+        System.out.println("democratic got "+d.getPartyResult().get(Party.DEMOCRATIC.toString()));
+        System.out.println("republician got "+d.getPartyResult().get(Party.REPUBLICAN.toString()));
       }
-    }
+//    }
     return this.getUpdateManager();
   }
-
-  /**
-   * This is used to get precincts randomly to start region growing according to
-   * existing districts.
-   *
-   * @param districts
-   */
 
   public void setSeedsRandomly(int n) {
     this.seeds = new ArrayList<>();
@@ -79,36 +87,41 @@ public class RegionGrowing extends Algorithm {
 
   private void districtGrowing(District newDistrict,ArrayList<District> districts){
     double maxObjFunction;
-    int precinctVisited;
     try {
+        int precinctVisted = 0;
         maxObjFunction = 0.0;
         Precinct bestPrecinct = null;
-        precinctVisited = 0;
         Iterator iterator = newDistrict.getCandidatePrecincts().iterator();
-        while (iterator.hasNext()&&precinctVisited<20) {
+        while (iterator.hasNext()&&precinctVisted<5) {
           Precinct p = (Precinct) iterator.next();
-          if(!p.isMovable()){
-            continue;
-          }
           newDistrict.addPrecinct(p);
-
-//          double tempObjFunction  =  calCompactness(districtShape.getArea(), districtShape.getLength())+calPopulationEqualty(districts);
           Double tempObjFunction = newDistrict.calculateObjectiveFunction(this.weights);
           if (tempObjFunction > maxObjFunction) {
             maxObjFunction = tempObjFunction;
             bestPrecinct = p;
           }
           newDistrict.removePrecinct(p);
-          precinctVisited++;
+          precinctVisted++;
         }
+        System.out.println(bestPrecinct.getName());
         newDistrict.addPrecinct(bestPrecinct);
-        bestPrecinct.setMovable(false);
-        System.out.println("the best precinct is "+ bestPrecinct.getName());
-        newDistrict.getCandidatePrecincts().addAll(this.state.findAdjPrecincts(bestPrecinct));
+        HashSet<Precinct> bestPrecinctAdj = (HashSet<Precinct>) this.state.findAdjPrecincts(bestPrecinct);
+        System.out.println("neiberhoud number is "+bestPrecinctAdj.size());
+        newDistrict.getCandidatePrecincts().addAll(bestPrecinctAdj);
+        System.out.println("here1");
+
         newDistrict.setCandidatePrecincts(newDistrict.getCandidatePrecincts());
+        System.out.println("here2");
     } catch (Exception ex) {
      System.out.println(ex.getMessage());
     }
   }
-
+  
+  private int precinctInDistrict(Collection<District> districts){
+    int numOfprecints = 0;
+    for(District d : districts){
+      numOfprecints += d.getPrecincts().size();
+    }
+    return numOfprecints;
+  }
 }

@@ -17,7 +17,7 @@ public enum Metric {
       double perimeter = district.getGeometryShape().getLength();
       double r = Math.sqrt(area / Math.PI);
       double equalAreaPerimeter = 2 * Math.PI * r;
-      return (1 / (perimeter / equalAreaPerimeter))*weight;
+      return weight*(1 / (perimeter / equalAreaPerimeter));
     }
   },
   PARTISAN_GERRYMANDERING{
@@ -41,8 +41,8 @@ public enum Metric {
         District min = state.getDistricts().stream().min(Comparator.comparing(District::getPopulation)).get();
         return weight*(1-((max.getPopulation()-min.getPopulation())/(state.getPopulation()/Math.pow(state.getDistricts().size(),2)+0.0)));
     }
-  };
-//  WASTED_VOTERS;
+  },
+  WASTED_VOTERS;
 
   public Double getValue(District district, Float weight) {
     return -1.0;
