@@ -26,11 +26,14 @@ public class State implements Serializable {
   private Integer id;
   private String name;
   private String shortName;
+  private Integer population;
   private Collection<District> districts;
   private Collection<Precinct> precincts;
   private ConstitutionRequirements constitutionRequirements;
   private Collection<ConstitutionText> constitutionTexts;
   private Double objectiveFunction;
+
+
 
   public State() {
     this.constitutionRequirements = new ConstitutionRequirements();
@@ -88,6 +91,15 @@ public class State implements Serializable {
     this.districts = districts;
   }
 
+  @Column(name="POPULATION")
+  public Integer getPopulation() {
+    return population;
+  }
+
+  public void setPopulation(Integer population) {
+    this.population = population;
+  }
+  
   @Transient
   public ConstitutionRequirements getConstitutionRequirements() {
     return this.constitutionRequirements;
@@ -105,7 +117,7 @@ public class State implements Serializable {
   public void setPrecincts(Collection<Precinct> precincts) {
     this.precincts = precincts;
   }
-
+  
   public void initiatePrecinctsInDistrict() {
     for (Precinct p : this.getPrecincts()) {
       this.getDistrictById(p.getDistrictId()).addPrecinct(p);
@@ -163,7 +175,7 @@ public class State implements Serializable {
     this.objectiveFunction = objectiveFunction;
   }
 
-  public Double calculateObjectiveFunction(EnumMap<Metric, Double> weights) {
+  public Double calculateObjectiveFunction(EnumMap<Metric, Float> weights) {
     Double objectiveFunc = 0.0;
     Integer validMetrics = 0;
     for (Metric metric : Metric.values()) {

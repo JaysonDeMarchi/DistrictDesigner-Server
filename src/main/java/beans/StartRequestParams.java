@@ -5,6 +5,7 @@ import java.util.Map;
 import enums.ShortName;
 import enums.AlgorithmType;
 import enums.Metric;
+import java.util.EnumMap;
 import enums.SelectionType;
 
 /**
@@ -15,15 +16,17 @@ public class StartRequestParams {
 
   private AlgorithmType algoType;
   private ShortName shortName;
-  private Map<Metric, Float> weights;
+  private EnumMap<Metric, Float> weights;
   private Integer numOfDistricts;
   private SelectionType selectionType;
+
 
   public StartRequestParams() {
     super();
   }
 
-  public StartRequestParams(AlgorithmType algorithmType, Integer numOfDistricts, SelectionType selectionType, ShortName shortName, Map<Metric, Float> weights) {
+
+  public StartRequestParams(AlgorithmType algorithmType, Integer numOfDistricts, SelectionType selectionType, ShortName shortName, EnumMap<Metric, Float> weights) {
     this.algoType = algorithmType;
     this.numOfDistricts = numOfDistricts;
     this.selectionType = selectionType;
@@ -49,7 +52,7 @@ public class StartRequestParams {
     return this.shortName;
   }
 
-  public Map<Metric, Float> getWeights() {
+  public EnumMap<Metric, Float> getWeights() {
     return this.weights;
   }
 
@@ -69,7 +72,7 @@ public class StartRequestParams {
     this.shortName = s;
   }
 
-  public void setWeights(Map<Metric, Float> w) {
+  public void setWeights(EnumMap<Metric, Float> w) {
     this.weights = w;
   }
 

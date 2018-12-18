@@ -1,21 +1,25 @@
 package regions;
 
-import com.vividsolutions.jts.geom.Geometry;
-import com.vividsolutions.jts.geom.GeometryCollection;
-import com.vividsolutions.jts.geom.GeometryFactory;
-import com.vividsolutions.jts.io.ParseException;
-import com.vividsolutions.jts.io.WKTReader;
+import electionResults.Election;
+import electionResults.HouseResult;
+import enums.ElectionType;
 import enums.Metric;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.EnumMap;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Transient;
+import org.locationtech.jts.geom.Geometry;
+import org.locationtech.jts.geom.GeometryCollection;
+import org.locationtech.jts.geom.GeometryFactory;
+import org.wololo.jts2geojson.GeoJSONReader;
 
 /**
  * @author Hengqi
@@ -31,24 +35,32 @@ public class District extends Region implements Serializable {
   private Collection<Precinct> precincts;
   private Collection<Geometry> geoBoundary;
   private Collection<Precinct> candidatePrecincts;
+  private HashMap<String,Integer> partyResult;
+  private GeometryFactory geometryFactory;
+  private GeoJSONReader reader;
+  private Integer population;
   private Double objectiveFunction;
-  GeometryFactory geometryFactory;
-  WKTReader reader;
 
   public District() {
-    this.reader = new WKTReader();
+    this.reader = new GeoJSONReader();
     this.precincts = new HashSet<>();
     this.geoBoundary = new HashSet<>();
+    this.partyResult = new HashMap<>();
+    this.population = new Integer(0);
   }
 
-  public District(String id, Precinct seed) throws ParseException {
+
+  public District(String id,Precinct seed) {
     this.geometryFactory = new GeometryFactory();
-    this.reader = new WKTReader();
+    this.reader = new GeoJSONReader();
     this.id = id;
     this.precincts = new HashSet<>();
+    this.partyResult = new HashMap<>();
     this.geoBoundary = new HashSet<>();
-    this.candidatePrecincts = new HashSet<>();
+    this.candidatePrecincts = new LinkedHashSet<>();
+    this.population= new Integer(0);
     this.addPrecinct(seed);
+    seed.setDistrictId(id);
   }
 
   @Id
@@ -91,12 +103,28 @@ public class District extends Region implements Serializable {
   }
 
   @Transient
+  public Integer getPopulation() {
+    return this.population;
+  }
+
+  public void setPopulation(Integer population) {
+    this.population = population;
+  }
+ 
+  @Transient
   public Collection<Precinct> getCandidatePrecincts() {
     return candidatePrecincts;
   }
 
   public void setCandidatePrecincts(Collection<Precinct> candidatePrecincts) {
     this.candidatePrecincts = candidatePrecincts;
+    this.candidatePrecincts.removeAll(this.precincts);
+    for(Precinct p : this.candidatePrecincts){
+      if(p.getDistrictId()==null)
+      if(!p.getDistrictId().equals("")){
+        this.candidatePrecincts.remove(p);
+      }
+    }
   }
 
   @Transient
@@ -110,20 +138,33 @@ public class District extends Region implements Serializable {
 
   public void addPrecinct(Precinct precinct) {
     this.precincts.add(precinct);
-    try {
-      this.geoBoundary.add(this.reader.read(precinct.getBoundary()));
-    } catch (ParseException ex) {
-      System.out.println(ex.getMessage());
+    this.geoBoundary.add(this.reader.read(precinct.getBoundary()));
+    this.population += precinct.getPopulation();
+    Collection<Election> houseResults = precinct.getElectionResults().get(ElectionType.HOUSE);
+    for(Election hr : houseResults){
+      HouseResult temp = (HouseResult) hr;
+      int value;
+      if(this.partyResult.get(temp.getParty())==null){
+       value = temp.getNumOfVoter();
+      }else{
+       value = this.partyResult.get(temp.getParty())+temp.getNumOfVoter();
+      }
+      this.partyResult.put(temp.getParty(), value);
     }
+    precinct.setDistrictId(this.id);
   }
-
-  public void removePrecinct(Precinct precinct) {
+  
+  public void removePrecinct(Precinct precinct){
     this.precincts.remove(precinct);
-    try {
-      this.geoBoundary.remove(this.reader.read(precinct.getBoundary()));
-    } catch (ParseException ex) {
-      System.out.println(ex.getMessage());
+    this.geoBoundary.remove(this.reader.read(precinct.getBoundary()));
+    this.population-=precinct.getPopulation();
+    Collection<Election> houseResults = precinct.getElectionResults().get(ElectionType.HOUSE);
+    for(Election hr : houseResults){
+      HouseResult temp = (HouseResult) hr;
+      int value = this.partyResult.get(temp.getParty())-temp.getNumOfVoter();
+      this.partyResult.put(temp.getParty(), value);
     }
+    precinct.setDistrictId("");
   }
 
   @Transient
@@ -143,20 +184,25 @@ public class District extends Region implements Serializable {
   public void setGeometryFactory(GeometryFactory geometryFactory) {
     this.geometryFactory = geometryFactory;
   }
-
+  
   @Transient
-  public Geometry getGeometryShape() {
-    GeometryCollection geometryShape = (GeometryCollection) this.getGeometryFactory().buildGeometry(this.getGeoBoundary());
-    return geometryShape.union();
+  public Geometry getGeometryShape(){
+     GeometryCollection geometryShape = (GeometryCollection)this.getGeometryFactory().buildGeometry(this.getGeoBoundary());
+     return geometryShape.union(); 
   }
 
   @Transient
-  public WKTReader getReader() {
+  public GeoJSONReader getReader() {
     return reader;
   }
 
-  public void setReader(WKTReader reader) {
+  public void setReader(GeoJSONReader reader) {
     this.reader = reader;
+  }
+  
+  @Transient
+  public HashMap<String, Integer> getPartyResult() {
+    return this.partyResult;
   }
 
   @Transient
@@ -168,7 +214,7 @@ public class District extends Region implements Serializable {
     this.objectiveFunction = objectiveFunction;
   }
 
-  public Double calculateObjectiveFunction(EnumMap<Metric, Double> weights) {
+  public Double calculateObjectiveFunction(EnumMap<Metric, Float> weights) {
     Double objectiveFunc = 0.0;
     Integer validMetrics = 0;
     for (Metric metric : Metric.values()) {
@@ -180,4 +226,5 @@ public class District extends Region implements Serializable {
     }
     return objectiveFunc / validMetrics;
   }
+
 }

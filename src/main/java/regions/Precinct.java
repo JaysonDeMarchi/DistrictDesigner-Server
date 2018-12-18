@@ -33,6 +33,7 @@ public class Precinct extends Region implements Serializable {
   private Integer hispanic;
   private String adjPrecinctsList;
   private Map<ElectionType, Collection<Election>> electionResults;
+  
 
   public Precinct() {
     this.electionResults = new EnumMap<>(ElectionType.class);
@@ -78,6 +79,17 @@ public class Precinct extends Region implements Serializable {
     this.boundary = boundary;
   }
 
+  @Column(name = "POPULATION")
+  public Integer getPopulation() {
+    return population;
+  }
+
+  public void setPopulation(Integer population) {
+    this.population = population;
+  }
+
+  
+  
   @Column(name = "DISTRICT")
   public String getDistrictId() {
     return this.districtId;
@@ -103,16 +115,7 @@ public class Precinct extends Region implements Serializable {
 
   public void setStateName(String stateName) {
     this.stateName = stateName;
-  }
-
-  @Column(name = "POPULATION")
-  public Integer getPopulation() {
-    return this.population;
-  }
-
-  public void setPopulation(Integer population) {
-    this.population = population;
-  }
+  } 
 
   @Column(name = "WHITE")
   public Integer getWhite() {

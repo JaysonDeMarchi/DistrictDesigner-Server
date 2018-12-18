@@ -12,6 +12,7 @@ import enums.SelectionType;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.EnumMap;
 import java.util.Map;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -31,7 +32,7 @@ public class StartAlgorithm extends HttpServlet {
 
   protected void processRequest(HttpServletRequest request, HttpServletResponse response)
           throws ServletException, IOException {
-    BufferedReader br = request.getReader();
+    BufferedReader br = request.getReader();   
     String requestBody = br.readLine();
     StartRequestParams requestParams = mapper.readValue(requestBody, StartRequestParams.class);
     HttpSession session = request.getSession();
@@ -43,7 +44,7 @@ public class StartAlgorithm extends HttpServlet {
     ShortName shortName = requestParams.getShortName();
     Integer numOfDistricts = requestParams.getNumOfDistricts();
     SelectionType selectionType = requestParams.getSelectionType();
-    Map<Metric, Float> weights = requestParams.getWeights();
+    EnumMap<Metric, Float> weights = requestParams.getWeights();
     session.setAttribute(SessionAttribute.ALGORITHM.toString(), algoType.createAlgorithm(shortName, selectionType, weights, numOfDistricts));
     return true;
   }
