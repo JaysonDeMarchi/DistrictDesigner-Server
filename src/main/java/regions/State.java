@@ -33,8 +33,6 @@ public class State implements Serializable {
   private Collection<ConstitutionText> constitutionTexts;
   private Double objectiveFunction;
 
-
-
   public State() {
     this.constitutionRequirements = new ConstitutionRequirements();
     this.constitutionTexts = new ArrayList<>();
@@ -91,7 +89,7 @@ public class State implements Serializable {
     this.districts = districts;
   }
 
-  @Column(name="POPULATION")
+  @Column(name = "POPULATION")
   public Integer getPopulation() {
     return population;
   }
@@ -99,7 +97,7 @@ public class State implements Serializable {
   public void setPopulation(Integer population) {
     this.population = population;
   }
-  
+
   @Transient
   public ConstitutionRequirements getConstitutionRequirements() {
     return this.constitutionRequirements;
@@ -117,7 +115,7 @@ public class State implements Serializable {
   public void setPrecincts(Collection<Precinct> precincts) {
     this.precincts = precincts;
   }
-  
+
   public void initiatePrecinctsInDistrict() {
     for (Precinct p : this.getPrecincts()) {
       this.getDistrictById(p.getDistrictId()).addPrecinct(p);
@@ -133,7 +131,7 @@ public class State implements Serializable {
     return adjPrecincts;
   }
 
-  private District getDistrictById(String id) {
+  public District getDistrictById(String id) {
     for (District d : this.getDistricts()) {
       if (d.getId().equals(id)) {
         return d;

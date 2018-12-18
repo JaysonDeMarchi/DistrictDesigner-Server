@@ -35,7 +35,7 @@ public class District extends Region implements Serializable {
   private Collection<Precinct> precincts;
   private Collection<Geometry> geoBoundary;
   private Collection<Precinct> candidatePrecincts;
-  private HashMap<String,Integer> partyResult;
+  private HashMap<String, Integer> partyResult;
   private GeometryFactory geometryFactory;
   private GeoJSONReader reader;
   private Integer population;
@@ -49,8 +49,7 @@ public class District extends Region implements Serializable {
     this.population = new Integer(0);
   }
 
-
-  public District(String id,Precinct seed) {
+  public District(String id, Precinct seed) {
     this.geometryFactory = new GeometryFactory();
     this.reader = new GeoJSONReader();
     this.id = id;
@@ -58,7 +57,7 @@ public class District extends Region implements Serializable {
     this.partyResult = new HashMap<>();
     this.geoBoundary = new HashSet<>();
     this.candidatePrecincts = new LinkedHashSet<>();
-    this.population= new Integer(0);
+    this.population = new Integer(0);
     this.addPrecinct(seed);
     seed.setDistrictId(id);
   }
@@ -110,7 +109,7 @@ public class District extends Region implements Serializable {
   public void setPopulation(Integer population) {
     this.population = population;
   }
- 
+
   @Transient
   public Collection<Precinct> getCandidatePrecincts() {
     return candidatePrecincts;
