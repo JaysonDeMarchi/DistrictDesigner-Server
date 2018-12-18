@@ -14,19 +14,19 @@ public class SaveWeightsParams {
   private String username;
   private String name;
   private Float compactness;
-  private Float partisanGerrymandering;
-  private Float populationEquality;
+  private Float partisan_Gerrymandering;
+  private Float population_Equality;
 
   public SaveWeightsParams() {
     super();
   }
  
-  public SaveWeightsParams(String username, String name, Float compactness, Float partisanGerrymandering, Float populationEquality) {
+  public SaveWeightsParams(String username, String name, Float compactness, Float partisan_Gerrymandering, Float population_Equality) {
     this.username = username;
     this.name = name;
     this.compactness = compactness;
-    this.partisanGerrymandering = partisanGerrymandering;
-    this.populationEquality = populationEquality;
+    this.partisan_Gerrymandering = partisan_Gerrymandering;
+    this.population_Equality = population_Equality;
   }
 
   public String getUsername() {
@@ -45,20 +45,20 @@ public class SaveWeightsParams {
     this.compactness = compactness;
   }
 
-  public Float getPartisanGerrymandering() {
-    return this.partisanGerrymandering;
+  public Float getPartisan_Gerrymandering() {
+    return this.partisan_Gerrymandering;
   }
 
-  public void setPartisanGerrymandering(Float partisanGerrymandering) {
-    this.partisanGerrymandering = partisanGerrymandering;
+  public void setPartisan_Gerrymandering(Float partisan_Gerrymandering) {
+    this.partisan_Gerrymandering = partisan_Gerrymandering;
   }
 
-  public Float getPopulationEquality() {
-    return this.populationEquality;
+  public Float getPopulation_Equality() {
+    return this.population_Equality;
   }
 
-  public void setPopulationEquality(Float populationEquality) {
-    this.populationEquality = populationEquality;
+  public void setPopulation_Equality(Float population_Equality) {
+    this.population_Equality = population_Equality;
   }
 
   public String getName() {

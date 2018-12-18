@@ -17,16 +17,19 @@ import javax.persistence.Transient;
 @Entity
 @Table(name = "USER_WEIGHTS")
 public class UserWeights implements Serializable {
-  
+
+  private String id;
   private String username;
+  private String name;
   private Float compactness;
   private Float populationEquality;
   private Float partisanGerrymandering;
   
   public UserWeights(){}
 
-  public UserWeights(String username, Float compactness, Float populationEquality, Float partisanGerrymandering) {
+  public UserWeights(String username, String name, Float compactness, Float populationEquality, Float partisanGerrymandering) {
     this.username = username;
+    this.name = name;
     this.compactness = compactness;
     this.populationEquality = populationEquality;
     this.partisanGerrymandering = partisanGerrymandering;
@@ -34,13 +37,29 @@ public class UserWeights implements Serializable {
   
   @Id
   @GeneratedValue
+  @Column(name = "ID")
+  public String getId() { return this.id; }
+
+  public void setId(String id) {
+    this.id = id;
+  }
+
   @Column(name = "USERNAME")
   public String getUsername() {
-    return username;
+    return this.username;
   }
 
   public void setUsername(String username) {
     this.username = username;
+  }
+
+  @Column(name = "NAME")
+  public String getName() {
+    return this.name;
+  }
+
+  public void setName(String name) {
+    this.name = name;
   }
 
   @Column(name = "COMPACTNESS")
@@ -79,9 +98,9 @@ public class UserWeights implements Serializable {
     return userWeights;
   }
   
-   public void setUserWeights(HashMap<Metric,Float> userWeightsList){
+   public void setUserWeights(HashMap<Metric,Float> userWeightsList) {
      this.compactness = userWeightsList.get(Metric.COMPACTNESS);
      this.populationEquality = userWeightsList.get(Metric.POPULATION_EQUALITY);
      this.partisanGerrymandering = userWeightsList.get(Metric.PARTISAN_GERRYMANDERING);
-  }
+   }
 }
