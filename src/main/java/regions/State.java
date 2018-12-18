@@ -50,6 +50,17 @@ public class State implements Serializable {
     this.shortName = shortName;
   }
 
+  public State(State state) {
+    this.id = state.getId();
+    this.name = state.getName();
+    this.shortName = state.getShortName();
+    this.districts = state.getDistricts();
+    this.precincts = state.getPrecincts();
+    this.constitutionRequirements = state.getConstitutionRequirements();
+    this.constitutionTexts = state.getConstitutionTexts();
+    this.objectiveFunction = state.getObjectiveFunction();
+  }
+
   @Id
   @GeneratedValue
   @Column(name = "ID")
