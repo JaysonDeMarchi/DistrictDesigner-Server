@@ -3,6 +3,7 @@ package algorithms;
 import enums.Metric;
 import enums.ShortName;
 import java.util.Collection;
+import java.util.EnumMap;
 import regions.State;
 import java.util.Map;
 import managers.UpdateManager;
@@ -16,11 +17,11 @@ import utils.HibernateManager;
 public abstract class Algorithm {
 
   State state;
-  Map<Metric, Float> weights;
+  EnumMap<Metric, Float> weights;
   UpdateManager updateManager;
   Collection<District> districts;
 
-  public Algorithm(ShortName shortName, Map<Metric, Float> weights) throws Exception {
+  public Algorithm(ShortName shortName, EnumMap<Metric, Float> weights) throws Exception {
     this.weights = weights;
     this.updateManager = new UpdateManager();
     HibernateManager hb = HibernateManager.getInstance();
@@ -43,11 +44,11 @@ public abstract class Algorithm {
     this.state = state;
   }
 
-  public Map<Metric, Float> getWeights() {
+  public EnumMap<Metric, Float> getWeights() {
     return this.weights;
   }
 
-  public void setWeights(Map<Metric, Float> weights) {
+  public void setWeights(EnumMap<Metric, Float> weights) {
     this.weights = weights;
   }
 

@@ -168,7 +168,7 @@ public class District extends Region implements Serializable {
     this.objectiveFunction = objectiveFunction;
   }
 
-  public Double calculateObjectiveFunction(EnumMap<Metric, Double> weights) {
+  public Double calculateObjectiveFunction(EnumMap<Metric, Float> weights) {
     Double objectiveFunc = 0.0;
     Integer validMetrics = 0;
     for (Metric metric : Metric.values()) {

@@ -10,7 +10,7 @@ import regions.State;
 public enum Metric {
   COMPACTNESS {
     @Override
-    public Double getValue(District district, Double weight) {
+    public Double getValue(District district, Float weight) {
       return 0.0;
     }
   },
@@ -18,11 +18,11 @@ public enum Metric {
   POPULATION_EQUALITY,
   WASTED_VOTERS;
 
-  public Double getValue(District district, Double weight) {
+  public Double getValue(District district, Float weight) {
     return -1.0;
   }
 
-  public Double getValue(State state, Double weight) {
+  public Double getValue(State state, Float weight) {
     return -1.0;
   }
 }

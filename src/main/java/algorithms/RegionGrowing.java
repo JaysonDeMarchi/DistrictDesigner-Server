@@ -5,6 +5,7 @@ import enums.Metric;
 import enums.ShortName;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.EnumMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -22,7 +23,7 @@ public class RegionGrowing extends Algorithm {
 
   List<Precinct> seeds;
 
-  public RegionGrowing(ShortName shortName, Map<Metric, Float> weights) throws Exception {
+  public RegionGrowing(ShortName shortName, EnumMap<Metric, Float> weights) throws Exception {
     super(shortName, weights);
     this.state.setDistricts(new ArrayList<>());
     this.state.getPrecincts().forEach((precinct) -> precinct.setDistrictId(""));
