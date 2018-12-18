@@ -1,5 +1,6 @@
 package servlets;
 
+import algorithms.Algorithm;
 import beans.StartRequestParams;
 import enums.AlgorithmType;
 import enums.Metric;
@@ -35,7 +36,7 @@ public class StartAlgorithm extends HttpServlet {
     String requestBody = br.readLine();
     StartRequestParams requestParams = mapper.readValue(requestBody, StartRequestParams.class);
     HttpSession session = request.getSession();
-    processResponse(response, request, session.getId(), initiateAlgorithm(session, requestParams));
+    processResponse(response, request, session, initiateAlgorithm(session, requestParams));
   }
 
   private Boolean initiateAlgorithm(HttpSession session, StartRequestParams requestParams) {
@@ -46,15 +47,16 @@ public class StartAlgorithm extends HttpServlet {
     return true;
   }
 
-  private void processResponse(HttpServletResponse response, HttpServletRequest request, String sessionId, Boolean status) throws IOException {
+  private void processResponse(HttpServletResponse response, HttpServletRequest request, HttpSession session, Boolean status) throws IOException {
     ObjectNode responseBody = mapper.createObjectNode();
     try (PrintWriter pw = response.getWriter()) {
       response.setContentType("application/json;charset=UTF-8");
       response.setHeader("Access-Control-Allow-Origin", request.getHeader("Origin"));
       responseBody.put(ResponseAttribute.ALGO_STARTED.toString(), status);
-      responseBody.put(ResponseAttribute.SESSION_ID.toString(), sessionId);
+      responseBody.put(ResponseAttribute.SESSION_ID.toString(), session.getId());
       pw.print(responseBody.toString());
     }
+    ((Algorithm) session.getAttribute(SessionAttribute.ALGORITHM.toString())).run();
   }
 
   // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
