@@ -14,9 +14,9 @@ import java.util.logging.Logger;
 public enum AlgorithmType {
   SIMULATED_ANNEALING {
     @Override
-    public Algorithm createAlgorithm(ShortName shortName, Map<Metric, Float> weights) {
+    public Algorithm createAlgorithm(ShortName shortName, SelectionType selectionType, Map<Metric, Float> weights, Integer numOfDistricts) {
       try {
-        return new SimulatedAnnealing(shortName, weights);
+        return new SimulatedAnnealing(shortName, selectionType, weights);
       } catch (Exception ex) {
         Logger.getLogger(AlgorithmType.class.getName()).log(Level.SEVERE, null, ex);
       }
@@ -25,9 +25,9 @@ public enum AlgorithmType {
   },
   REGION_GROWING {
     @Override
-    public Algorithm createAlgorithm(ShortName shortName, Map<Metric, Float> weights) {
+    public Algorithm createAlgorithm(ShortName shortName, SelectionType selectionType, Map<Metric, Float> weights, Integer numOfDistricts) {
       try {
-        return new RegionGrowing(shortName, weights);
+        return new RegionGrowing(shortName, selectionType, weights, numOfDistricts);
       } catch (Exception ex) {
         Logger.getLogger(AlgorithmType.class.getName()).log(Level.SEVERE, null, ex);
       }
@@ -35,5 +35,5 @@ public enum AlgorithmType {
     }
   };
 
-  public abstract Algorithm createAlgorithm(ShortName shortName, Map<Metric, Float> weights);
+  public abstract Algorithm createAlgorithm(ShortName shortName, SelectionType selectionType, Map<Metric, Float> weights, Integer numOfDistricts);
 }
