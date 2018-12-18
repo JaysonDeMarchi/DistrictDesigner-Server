@@ -15,6 +15,7 @@ import java.util.Map;
 import java.util.Random;
 import org.locationtech.jts.io.WKTWriter;
 import managers.UpdateManager;
+import org.wololo.jts2geojson.GeoJSONWriter;
 import regions.District;
 import regions.Precinct;
 
@@ -35,15 +36,13 @@ public class RegionGrowing extends Algorithm {
 
   @Override
   public Boolean start() {
-  
-    
     return true;
   }
 
   @Override
   public UpdateManager run() {
-    while(!this.getUpdateManager().isReady()) {
-      WKTWriter wktWriter = new WKTWriter();
+//    while(!this.getUpdateManager().isReady()) {
+      GeoJSONWriter geojsonWriter = new GeoJSONWriter();
       this.setSeedsRandomly(5);
       int districtNameIndex = 0;
       for(Precinct p : this.seeds){
@@ -56,17 +55,24 @@ public class RegionGrowing extends Algorithm {
       toGrowDistricts.addAll(this.getState().getDistricts());
       
       int precinctIndistrict = precinctInDistrict(this.state.getDistricts());
-      while(this.getState().getPrecincts().size() > precinctIndistrict&&!toGrowDistricts.isEmpty()){
+      int limit = 0;
+      while(this.getState().getPrecincts().size() > precinctIndistrict&&!toGrowDistricts.isEmpty()&&limit<500){
         District minPopDistrict = toGrowDistricts.stream().min(Comparator.comparing(District::getPopulation)).get();
         if(!minPopDistrict.getCandidatePrecincts().isEmpty()){
           districtGrowing(minPopDistrict, (ArrayList<District>) this.state.getDistricts());
         }else{
           toGrowDistricts.remove(minPopDistrict);
-          continue;
         }
         precinctIndistrict = precinctInDistrict(this.state.getDistricts());
+        System.out.println(precinctIndistrict+" precincts finished");
+        limit++;
       }
-    }
+      
+      for (District d : this.state.getDistricts()){
+        System.out.println("polygon of "+d.getId()+" is "+geojsonWriter.write(d.getGeometryShape()));
+      }
+      
+//    }
     return this.getUpdateManager();
   }
 
@@ -80,7 +86,6 @@ public class RegionGrowing extends Algorithm {
   private void districtGrowing(District newDistrict,ArrayList<District> districts){
     double maxObjFunction;
     try {
-//        int precinctVisted = 0;
         maxObjFunction = 0.0;
         Precinct bestPrecinct = null;
         Iterator iterator = newDistrict.getCandidatePrecincts().iterator();
@@ -93,7 +98,6 @@ public class RegionGrowing extends Algorithm {
             bestPrecinct = p;
           }
           newDistrict.removePrecinct(p);
-//          precinctVisted++;
         }
         newDistrict.addPrecinct(bestPrecinct);
         HashSet<Precinct> bestPrecinctAdj = (HashSet<Precinct>) this.state.findAdjPrecincts(bestPrecinct);

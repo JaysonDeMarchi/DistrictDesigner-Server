@@ -23,7 +23,6 @@ public abstract class Algorithm {
   Collection<District> districts;
   SelectionType selectionType;
 
-
   public Algorithm(ShortName shortName, SelectionType selectionType, EnumMap<Metric, Float> weights) throws Exception {
     this.weights = weights;
     this.updateManager = new UpdateManager();
