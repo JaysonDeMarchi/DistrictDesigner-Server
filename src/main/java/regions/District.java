@@ -116,18 +116,14 @@ public class District implements Serializable {
   }
 
   public void setCandidatePrecincts(Collection<Precinct> candidatePrecincts) {
-    System.out.println("here25");
     this.candidatePrecincts = candidatePrecincts;
-    System.out.println("here6");
     this.candidatePrecincts.removeAll(this.precincts);
-    System.out.println("here7");
-    System.out.println("here9"+this.candidatePrecincts.size());
     for(Precinct p : this.candidatePrecincts){
+      if(p.getDistrictId()==null)
       if(!p.getDistrictId().equals("")){
         this.candidatePrecincts.remove(p);
       }
     }
-    System.out.println("here8");
   }
 
   @Transient

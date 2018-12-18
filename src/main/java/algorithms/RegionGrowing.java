@@ -54,16 +54,13 @@ public class RegionGrowing extends Algorithm {
       
       int precinctIndistrict = precinctInDistrict(this.state.getDistricts());
       while(this.getState().getPrecincts().size() > precinctIndistrict&&!toGrowDistricts.isEmpty()){
-        System.out.println("here3");
         District minPopDistrict = toGrowDistricts.stream().min(Comparator.comparing(District::getPopulation)).get();
-        System.out.println(minPopDistrict.getId()+"has "+minPopDistrict.getCandidatePrecincts().size()+"candidate precincts");
         if(!minPopDistrict.getCandidatePrecincts().isEmpty()){
           districtGrowing(minPopDistrict, (ArrayList<District>) this.state.getDistricts());
         }else{
           toGrowDistricts.remove(minPopDistrict);
           continue;
         }
-        System.out.println(minPopDistrict.getId()+"has "+minPopDistrict.getPopulation());
         precinctIndistrict = precinctInDistrict(this.state.getDistricts());
         System.out.println(precinctIndistrict+"have done");
       }
@@ -88,11 +85,11 @@ public class RegionGrowing extends Algorithm {
   private void districtGrowing(District newDistrict,ArrayList<District> districts){
     double maxObjFunction;
     try {
-        int precinctVisted = 0;
+//        int precinctVisted = 0;
         maxObjFunction = 0.0;
         Precinct bestPrecinct = null;
         Iterator iterator = newDistrict.getCandidatePrecincts().iterator();
-        while (iterator.hasNext()&&precinctVisted<5) {
+        while (iterator.hasNext()) {
           Precinct p = (Precinct) iterator.next();
           newDistrict.addPrecinct(p);
           Double tempObjFunction = newDistrict.calculateObjectiveFunction(this.weights);
@@ -101,17 +98,12 @@ public class RegionGrowing extends Algorithm {
             bestPrecinct = p;
           }
           newDistrict.removePrecinct(p);
-          precinctVisted++;
+//          precinctVisted++;
         }
-        System.out.println(bestPrecinct.getName());
         newDistrict.addPrecinct(bestPrecinct);
         HashSet<Precinct> bestPrecinctAdj = (HashSet<Precinct>) this.state.findAdjPrecincts(bestPrecinct);
-        System.out.println("neiberhoud number is "+bestPrecinctAdj.size());
         newDistrict.getCandidatePrecincts().addAll(bestPrecinctAdj);
-        System.out.println("here1");
-
         newDistrict.setCandidatePrecincts(newDistrict.getCandidatePrecincts());
-        System.out.println("here2");
     } catch (Exception ex) {
      System.out.println(ex.getMessage());
     }
