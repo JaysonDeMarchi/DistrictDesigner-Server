@@ -37,7 +37,7 @@ public class UserWeights implements Serializable {
   
   @Id
   @GeneratedValue
-  @Column(name = "ID")
+  @Column(name = "ROWID")
   public String getId() { return this.id; }
 
   public void setId(String id) {
