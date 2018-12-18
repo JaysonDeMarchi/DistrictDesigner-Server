@@ -2,6 +2,7 @@ package algorithms;
 
 import com.vividsolutions.jts.geom.Geometry;
 import enums.Metric;
+import enums.SelectionType;
 import enums.ShortName;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -22,8 +23,8 @@ public class RegionGrowing extends Algorithm {
 
   List<Precinct> seeds;
 
-  public RegionGrowing(ShortName shortName, Map<Metric, Float> weights) throws Exception {
-    super(shortName, weights);
+  public RegionGrowing(ShortName shortName, SelectionType selectionType, Map<Metric, Float> weights, Integer numOfDistricts) throws Exception {
+    super(shortName, selectionType, weights);
     this.state.setDistricts(new ArrayList<>());
     this.state.getPrecincts().forEach((precinct) -> precinct.setDistrictId(""));
   }

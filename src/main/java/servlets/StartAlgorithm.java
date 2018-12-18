@@ -8,6 +8,7 @@ import enums.SessionAttribute;
 import enums.ShortName;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import enums.SelectionType;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -40,8 +41,10 @@ public class StartAlgorithm extends HttpServlet {
   private Boolean initiateAlgorithm(HttpSession session, StartRequestParams requestParams) {
     AlgorithmType algoType = requestParams.getAlgoType();
     ShortName shortName = requestParams.getShortName();
+    Integer numOfDistricts = requestParams.getNumOfDistricts();
+    SelectionType selectionType = requestParams.getSelectionType();
     Map<Metric, Float> weights = requestParams.getWeights();
-    session.setAttribute(SessionAttribute.ALGORITHM.toString(), algoType.createAlgorithm(shortName, weights));
+    session.setAttribute(SessionAttribute.ALGORITHM.toString(), algoType.createAlgorithm(shortName, selectionType, weights, numOfDistricts));
     return true;
   }
 
