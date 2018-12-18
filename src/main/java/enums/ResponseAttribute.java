@@ -9,7 +9,19 @@ public enum ResponseAttribute {
   ALGO_STOPPED,
   CONSTITUTION_REQUIREMENTS,
   CONSTITUTION_TEXT,
+  DEMOGRAPHICS,
+  DISTRICTS,
+  ELECTION_RESULTS,
   ERROR_MESSAGE,
+  NEW_DISTRICT_ID,
+  OLD_DISTRICT_ID,
+  POPULATION,
+  POPULATION_INFO,
+  PRECINCTS,
+  PRECINCT_ID,
+  SESSION_ID,
+  SUCCESS_STATUS,
+  UPDATED_PRECINCTS,
   USER_CREATED {
     @Override
     public String getErrorMessage() {
@@ -29,7 +41,8 @@ public enum ResponseAttribute {
       return "Error: User could not log out";
     }
   },
-  WEIGHTS_SAVED{
+
+  WEIGHTS_SAVED {
     @Override
     public String getErrorMessage() {
       return "Error: Weights could not be saved";
@@ -39,4 +52,5 @@ public enum ResponseAttribute {
   public String getErrorMessage() {
     return "Error";
   }
+
 }

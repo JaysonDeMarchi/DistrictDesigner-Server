@@ -3,17 +3,14 @@ package servlets;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import enums.ComparisonType;
 import enums.ConstitutionRequirementsAttribute;
 import enums.ConstitutionTextAttribute;
-import enums.QueryField;
+import enums.RequestParam;
 import enums.ResponseAttribute;
 import enums.ShortName;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.servlet.ServletException;
@@ -23,8 +20,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import politics.ConstitutionRequirements;
 import politics.ConstitutionText;
+import regions.State;
 import utils.HibernateManager;
-import utils.QueryCondition;
 
 /**
  *
@@ -37,36 +34,10 @@ public class Constitution extends HttpServlet {
 
   protected void processRequest(HttpServletRequest request, HttpServletResponse response)
           throws ServletException, IOException, Exception {
-    ShortName shortName = ShortName.valueOf(request.getParameter(QueryField.shortName.toString()));
-    processResponse(response, request, getConstitutionRequirements(shortName.toString()), getConstitutionTexts(shortName.toString()));
-  }
-
-  private ConstitutionRequirements getConstitutionRequirements(String shortName) throws Exception {
-    ConstitutionRequirements requirements = new ConstitutionRequirements(shortName);
-    try {
-      HibernateManager hb = new HibernateManager();
-
-      QueryCondition queryCondition = new QueryCondition(QueryField.shortName, shortName, ComparisonType.EQUAL);
-      requirements = (ConstitutionRequirements) ((List) hb.getObjectsByConditions(ConstitutionRequirements.class, queryCondition)).get(0);
-    } catch (Throwable e) {
-      System.out.println(e.getMessage());
-    }
-    return requirements;
-  }
-
-  private Collection<ConstitutionText> getConstitutionTexts(String shortName) {
-    Collection<ConstitutionText> texts = new ArrayList<>();
-    try {
-      HibernateManager hb = new HibernateManager();
-
-      QueryCondition queryCondition = new QueryCondition(QueryField.shortName, shortName, ComparisonType.EQUAL);
-      texts.addAll((Collection) hb.getObjectsByConditions(ConstitutionText.class, queryCondition));
-      queryCondition = new QueryCondition(QueryField.shortName, ShortName.USA.toString(), ComparisonType.EQUAL);
-      texts.addAll((Collection) hb.getObjectsByConditions(ConstitutionText.class, queryCondition));
-    } catch (Throwable e) {
-      System.out.println(e.getMessage());
-    }
-    return texts;
+    ShortName shortName = ShortName.valueOf(request.getParameter(RequestParam.SHORT_NAME.getName()));
+    HibernateManager hb = HibernateManager.getInstance();
+    State state = hb.getStateByShortName(shortName);
+    processResponse(response, request, state.getConstitutionRequirements(), state.getConstitutionTexts());
   }
 
   private void processResponse(HttpServletResponse response, HttpServletRequest request, ConstitutionRequirements constitutionRequirements, Collection<ConstitutionText> constitutionTexts) throws IOException {

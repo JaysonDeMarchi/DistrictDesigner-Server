@@ -5,8 +5,10 @@ import com.vividsolutions.jts.geom.GeometryCollection;
 import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.io.ParseException;
 import com.vividsolutions.jts.io.WKTReader;
+import enums.Metric;
 import java.io.Serializable;
 import java.util.Collection;
+import java.util.EnumMap;
 import java.util.HashSet;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -20,7 +22,7 @@ import javax.persistence.Transient;
  */
 @Entity
 @Table(name = "DISTRICT")
-public class District implements Serializable {
+public class District extends Region implements Serializable {
 
   private String id;
   private String boundary;
@@ -29,9 +31,9 @@ public class District implements Serializable {
   private Collection<Precinct> precincts;
   private Collection<Geometry> geoBoundary;
   private Collection<Precinct> candidatePrecincts;
+  private Double objectiveFunction;
   GeometryFactory geometryFactory;
   WKTReader reader;
-  
 
   public District() {
     this.reader = new WKTReader();
@@ -39,7 +41,7 @@ public class District implements Serializable {
     this.geoBoundary = new HashSet<>();
   }
 
-  public District(String id,Precinct seed) throws ParseException {
+  public District(String id, Precinct seed) throws ParseException {
     this.geometryFactory = new GeometryFactory();
     this.reader = new WKTReader();
     this.id = id;
@@ -52,6 +54,7 @@ public class District implements Serializable {
   @Id
   @GeneratedValue
   @Column(name = "ID")
+  @Override
   public String getId() {
     return this.id;
   }
@@ -59,7 +62,6 @@ public class District implements Serializable {
   public void setId(String id) {
     this.id = id;
   }
-
 
   @Column(name = "STATE")
   public String getStateName() {
@@ -96,7 +98,7 @@ public class District implements Serializable {
   public void setCandidatePrecincts(Collection<Precinct> candidatePrecincts) {
     this.candidatePrecincts = candidatePrecincts;
   }
- 
+
   @Transient
   public Collection<Precinct> getPrecincts() {
     return this.precincts;
@@ -114,8 +116,8 @@ public class District implements Serializable {
       System.out.println(ex.getMessage());
     }
   }
-  
-  public void removePrecinct(Precinct precinct){
+
+  public void removePrecinct(Precinct precinct) {
     this.precincts.remove(precinct);
     try {
       this.geoBoundary.remove(this.reader.read(precinct.getBoundary()));
@@ -132,7 +134,7 @@ public class District implements Serializable {
   public void setGeoBoundary(Collection<Geometry> geoBoundary) {
     this.geoBoundary = geoBoundary;
   }
-  
+
   @Transient
   public GeometryFactory getGeometryFactory() {
     return geometryFactory;
@@ -141,11 +143,11 @@ public class District implements Serializable {
   public void setGeometryFactory(GeometryFactory geometryFactory) {
     this.geometryFactory = geometryFactory;
   }
-  
+
   @Transient
-  public Geometry getGeometryShape(){
-     GeometryCollection geometryShape = (GeometryCollection)this.getGeometryFactory().buildGeometry(this.getGeoBoundary());
-     return geometryShape.union(); 
+  public Geometry getGeometryShape() {
+    GeometryCollection geometryShape = (GeometryCollection) this.getGeometryFactory().buildGeometry(this.getGeoBoundary());
+    return geometryShape.union();
   }
 
   @Transient
@@ -156,5 +158,26 @@ public class District implements Serializable {
   public void setReader(WKTReader reader) {
     this.reader = reader;
   }
-  
+
+  @Transient
+  public Double getObjectiveFunction() {
+    return this.objectiveFunction;
+  }
+
+  public void setObjectiveFunction(Double objectiveFunction) {
+    this.objectiveFunction = objectiveFunction;
+  }
+
+  public Double calculateObjectiveFunction(EnumMap<Metric, Double> weights) {
+    Double objectiveFunc = 0.0;
+    Integer validMetrics = 0;
+    for (Metric metric : Metric.values()) {
+      Double result = metric.getValue(this, weights.get(metric));
+      if (result >= 0.0) {
+        objectiveFunc += metric.getValue(this, weights.get(metric));
+        validMetrics++;
+      }
+    }
+    return objectiveFunc / validMetrics;
+  }
 }

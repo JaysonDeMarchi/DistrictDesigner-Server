@@ -9,6 +9,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.function.Function;
+import managers.UpdateManager;
 import regions.District;
 import regions.Precinct;
 
@@ -20,9 +22,10 @@ public class RegionGrowing extends Algorithm {
 
   List<Precinct> seeds;
 
-  public RegionGrowing(ShortName shortName, Map<Metric, Float> weights) {
+  public RegionGrowing(ShortName shortName, Map<Metric, Float> weights) throws Exception {
     super(shortName, weights);
-    this.start();
+    this.state.setDistricts(new ArrayList<>());
+    this.state.getPrecincts().forEach((precinct) -> precinct.setDistrictId(""));
   }
 
   @Override
@@ -30,8 +33,6 @@ public class RegionGrowing extends Algorithm {
 
     Precinct seed = (Precinct) ((List) this.state.getPrecincts()).get(100);
     System.out.println("seed is " + seed.getBoundary());
-
-   
     try {
       District newDistrict = new District("ut-1", seed);
       newDistrict.setCandidatePrecincts(this.state.findAdjPrecincts(seed));
@@ -51,14 +52,20 @@ public class RegionGrowing extends Algorithm {
         newDistrict.removePrecinct(p);
       }
 
-      System.out.println("best precinct is " + bestPrecinct.getName());  
+      System.out.println("best precinct is " + bestPrecinct.getName());
+
     } catch (Exception ex) {
       System.out.println(ex.getMessage());
     }
-   
+
     return true;
   }
-  
+
+  @Override
+  public UpdateManager run() {
+    return this.getUpdateManager();
+  }
+
   /**
    * This is used to get precincts randomly to start region growing according to
    * existing districts.

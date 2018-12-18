@@ -1,18 +1,25 @@
 package regions;
 
+import electionResults.Election;
+import enums.ElectionType;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.EnumMap;
+import java.util.Map;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 /**
  * @author Hengqi Zhu
  */
 @Entity
 @Table(name = "PRECINCT")
-public class Precinct implements Serializable {
+public class Precinct extends Region implements Serializable {
 
   private String id;
   private String name;
@@ -25,8 +32,11 @@ public class Precinct implements Serializable {
   private Integer asian;
   private Integer hispanic;
   private String adjPrecinctsList;
+  private Map<ElectionType, Collection<Election>> electionResults;
 
   public Precinct() {
+    this.electionResults = new EnumMap<>(ElectionType.class);
+    this.electionResults.put(ElectionType.HOUSE, new ArrayList<Election>());
   }
 
   public Precinct(String precinctId, String stateName, String boundary, String adjPrecincts) throws Exception {
@@ -34,18 +44,22 @@ public class Precinct implements Serializable {
     this.boundary = boundary;
     this.stateName = stateName;
     this.adjPrecinctsList = adjPrecincts;
+    this.electionResults = new EnumMap<>(ElectionType.class);
+    this.electionResults.put(ElectionType.HOUSE, new ArrayList<Election>());
   }
 
   @Id
   @GeneratedValue
   @Column(name = "ID")
+  @Override
   public String getId() {
     return this.id;
   }
 
   public void setId(String id) {
     this.id = id;
-  } 
+  }
+
   @Column(name = "NAME")
   public String getName() {
     return this.name;
@@ -89,9 +103,9 @@ public class Precinct implements Serializable {
 
   public void setStateName(String stateName) {
     this.stateName = stateName;
-  } 
-  
-  @Column(name="POPULATION")
+  }
+
+  @Column(name = "POPULATION")
   public Integer getPopulation() {
     return this.population;
   }
@@ -100,7 +114,7 @@ public class Precinct implements Serializable {
     this.population = population;
   }
 
-  @Column(name="WHITE")
+  @Column(name = "WHITE")
   public Integer getWhite() {
     return this.white;
   }
@@ -109,7 +123,7 @@ public class Precinct implements Serializable {
     this.white = white;
   }
 
-  @Column(name="BLACK")
+  @Column(name = "BLACK")
   public Integer getBlack() {
     return this.black;
   }
@@ -118,7 +132,7 @@ public class Precinct implements Serializable {
     this.black = black;
   }
 
-  @Column(name="ASIAN")
+  @Column(name = "ASIAN")
   public Integer getAsian() {
     return this.asian;
   }
@@ -127,12 +141,18 @@ public class Precinct implements Serializable {
     this.asian = asian;
   }
 
-  @Column(name="HISPANIC")
+  @Column(name = "HISPANIC")
   public Integer getHispanic() {
     return this.hispanic;
   }
 
   public void setHispanic(Integer hispanic) {
     this.hispanic = hispanic;
-  } 
+  }
+
+  @Transient
+  public Map<ElectionType, Collection<Election>> getElectionResults() {
+    return this.electionResults;
+  }
+
 }
