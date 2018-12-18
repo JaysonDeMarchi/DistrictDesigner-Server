@@ -67,6 +67,11 @@ public class RegionGrowing extends Algorithm {
     return this.getUpdateManager();
   }
 
+  @Override
+  public UpdateManager end() {
+    return this.getUpdateManager();
+  }
+
   /**
    * This is used to get precincts randomly to start region growing according to
    * existing districts.
