@@ -23,13 +23,12 @@ public abstract class Algorithm {
   Collection<District> districts;
   SelectionType selectionType;
 
-
   public Algorithm(ShortName shortName, SelectionType selectionType, EnumMap<Metric, Float> weights) throws Exception {
     this.weights = weights;
-    this.updateManager = new UpdateManager();
     this.selectionType = selectionType;
     HibernateManager hb = HibernateManager.getInstance();
     this.state = hb.getStateByShortName(shortName);
+    this.updateManager = new UpdateManager(this.state);
   }
 
   public abstract Boolean start();
