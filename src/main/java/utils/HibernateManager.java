@@ -122,6 +122,7 @@ public class HibernateManager {
       queryCondition = new QueryCondition(QueryField.stateName, shortName.toString(), ComparisonType.EQUAL);
       state.setPrecincts((Collection) this.getObjectsByConditions(Precinct.class, queryCondition));
       state.initiatePrecinctsInDistrict();
+      state.generateRegionObjects();
       queryCondition = new QueryCondition(QueryField.shortName, shortName.toString(), ComparisonType.EQUAL);
       state.setConstitutionRequirements((ConstitutionRequirements) ((List) this.getObjectsByConditions(ConstitutionRequirements.class, queryCondition)).get(0));
       queryCondition = new QueryCondition(QueryField.shortName, shortName.toString(), ComparisonType.EQUAL);

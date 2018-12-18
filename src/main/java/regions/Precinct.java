@@ -6,7 +6,10 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.EnumMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -32,6 +35,8 @@ public class Precinct extends Region implements Serializable {
   private Integer asian;
   private Integer hispanic;
   private String adjPrecinctsList;
+  private Collection<Precinct> adjPrecincts;
+  private District district;
   private Map<ElectionType, Collection<Election>> electionResults;
 
   public Precinct() {
@@ -153,6 +158,31 @@ public class Precinct extends Region implements Serializable {
   @Transient
   public Map<ElectionType, Collection<Election>> getElectionResults() {
     return this.electionResults;
+  }
+
+  @Transient
+  public Collection<Precinct> getAdjPrecincts() {
+    return this.adjPrecincts;
+  }
+
+  public void setAdjPrecincts(Collection<Precinct> adjPrecincts) {
+    this.adjPrecincts = adjPrecincts;
+  }
+
+  @Transient
+  public District getDistrict() {
+    return this.district;
+  }
+
+  public void setDistrict(District district) {
+    this.district = district;
+  }
+
+  public Boolean isEdgePrecinct() {
+    Collection<Precinct> outerPrecincts = this.getAdjPrecincts().stream()
+            .filter((adjPrecinct) -> adjPrecinct.getDistrictId().equals(this.getDistrictId()))
+            .collect(Collectors.toList());
+    return !outerPrecincts.isEmpty();
   }
 
 }

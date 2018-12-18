@@ -121,7 +121,7 @@ public class State implements Serializable {
     return adjPrecincts;
   }
 
-  private District getDistrictById(String id) {
+  public District getDistrictById(String id) {
     for (District d : this.getDistricts()) {
       if (d.getId().equals(id)) {
         return d;
@@ -174,5 +174,14 @@ public class State implements Serializable {
       }
     }
     return objectiveFunc / validMetrics;
+  }
+
+  public void generateRegionObjects() {
+    this.getPrecincts().forEach(precinct -> {
+      Collection<Precinct> adjPrecincts = this.findAdjPrecincts(precinct);
+      precinct.setAdjPrecincts(adjPrecincts);
+      this.getDistrictById(precinct.getDistrictId()).getPrecincts().add(precinct);
+      precinct.setDistrict(this.getDistrictById(precinct.getDistrictId()));
+    });
   }
 }
