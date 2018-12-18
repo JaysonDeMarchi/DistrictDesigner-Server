@@ -1,5 +1,6 @@
 package servlets;
 
+import algorithms.Algorithm;
 import beans.StartRequestParams;
 import enums.AlgorithmType;
 import enums.Metric;

@@ -117,13 +117,6 @@ public class District extends Region implements Serializable {
 
   public void setCandidatePrecincts(Collection<Precinct> candidatePrecincts) {
     this.candidatePrecincts = candidatePrecincts;
-    this.candidatePrecincts.removeAll(this.precincts);
-    for(Precinct p : this.candidatePrecincts){
-      if(p.getDistrictId()==null)
-      if(!p.getDistrictId().equals("")){
-        this.candidatePrecincts.remove(p);
-      }
-    }
   }
 
   @Transient
@@ -140,27 +133,27 @@ public class District extends Region implements Serializable {
     this.geoBoundary.add(this.reader.read(precinct.getBoundary()));
     this.population += precinct.getPopulation();
     Collection<Election> houseResults = precinct.getElectionResults().get(ElectionType.HOUSE);
-    for(Election hr : houseResults){
+    for (Election hr : houseResults) {
       HouseResult temp = (HouseResult) hr;
       int value;
-      if(this.partyResult.get(temp.getParty())==null){
-       value = temp.getNumOfVoter();
-      }else{
-       value = this.partyResult.get(temp.getParty())+temp.getNumOfVoter();
+      if (this.partyResult.get(temp.getParty()) == null) {
+        value = temp.getNumOfVoter();
+      } else {
+        value = this.partyResult.get(temp.getParty()) + temp.getNumOfVoter();
       }
       this.partyResult.put(temp.getParty(), value);
     }
     precinct.setDistrictId(this.id);
   }
-  
-  public void removePrecinct(Precinct precinct){
+
+  public void removePrecinct(Precinct precinct) {
     this.precincts.remove(precinct);
     this.geoBoundary.remove(this.reader.read(precinct.getBoundary()));
-    this.population-=precinct.getPopulation();
+    this.population -= precinct.getPopulation();
     Collection<Election> houseResults = precinct.getElectionResults().get(ElectionType.HOUSE);
-    for(Election hr : houseResults){
+    for (Election hr : houseResults) {
       HouseResult temp = (HouseResult) hr;
-      int value = this.partyResult.get(temp.getParty())-temp.getNumOfVoter();
+      int value = this.partyResult.get(temp.getParty()) - temp.getNumOfVoter();
       this.partyResult.put(temp.getParty(), value);
     }
     precinct.setDistrictId("");

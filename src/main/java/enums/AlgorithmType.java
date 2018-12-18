@@ -4,7 +4,6 @@ import algorithms.Algorithm;
 import algorithms.RegionGrowing;
 import algorithms.SimulatedAnnealing;
 import java.util.EnumMap;
-import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -15,6 +14,7 @@ import java.util.logging.Logger;
 public enum AlgorithmType {
   SIMULATED_ANNEALING {
 
+    @Override
     public Algorithm createAlgorithm(ShortName shortName, SelectionType selectionType, EnumMap<Metric, Float> weights, Integer numOfDistricts) {
       try {
         return new SimulatedAnnealing(shortName, selectionType, weights);
@@ -35,7 +35,6 @@ public enum AlgorithmType {
       return null;
     }
   };
-
 
   public abstract Algorithm createAlgorithm(ShortName shortName, SelectionType selectionType, EnumMap<Metric, Float> weights, Integer numOfDistricts);
 }

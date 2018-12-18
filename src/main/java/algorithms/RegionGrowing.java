@@ -1,7 +1,6 @@
 package algorithms;
 
 import enums.Metric;
-import enums.Party;
 import enums.SelectionType;
 import enums.ShortName;
 import java.util.ArrayList;
