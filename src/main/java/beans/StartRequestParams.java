@@ -1,6 +1,5 @@
 package beans;
 
-import java.util.Map;
 import enums.ShortName;
 import enums.AlgorithmType;
 import enums.Metric;
