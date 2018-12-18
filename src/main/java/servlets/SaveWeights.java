@@ -36,11 +36,12 @@ public class SaveWeights extends HttpServlet {
 
   public Boolean saveWeights(SaveWeightsParams saveWeightsParams) throws Exception, Throwable {
     String username = saveWeightsParams.getUsername();
+    String name = saveWeightsParams.getName();
     Float compactness = saveWeightsParams.getCompactness();
-    Float populationEquality = saveWeightsParams.getPopulationEquality();
-    Float partisanGerrymandering = saveWeightsParams.getPartisanGerrymandering();
-    UserWeights uw = new UserWeights(username,compactness,populationEquality,partisanGerrymandering);
-    HibernateManager hb = new HibernateManager();
+    Float population_Equality = saveWeightsParams.getPopulation_Equality();
+    Float partisan_Gerrymandering = saveWeightsParams.getPartisan_Gerrymandering();
+    UserWeights uw = new UserWeights(username,name,compactness,population_Equality,partisan_Gerrymandering);
+    HibernateManager hb = HibernateManager.getInstance();
     return hb.saveObjectToDB(uw);
   }
 
@@ -72,7 +73,7 @@ public class SaveWeights extends HttpServlet {
     try {
       processRequest(request, response);
     } catch (Throwable ex) {
-      Logger.getLogger(CreateAccount.class.getName()).log(Level.SEVERE, null, ex);
+      Logger.getLogger(SaveWeights.class.getName()).log(Level.SEVERE, ex.getMessage(), ex);
     }
   }
 
@@ -90,7 +91,7 @@ public class SaveWeights extends HttpServlet {
     try {
       processRequest(request, response);
     } catch (Throwable ex) {
-      Logger.getLogger(CreateAccount.class.getName()).log(Level.SEVERE, null, ex);
+      Logger.getLogger(SaveWeights.class.getName()).log(Level.SEVERE, ex.getMessage(), ex);
     }
   }
 
