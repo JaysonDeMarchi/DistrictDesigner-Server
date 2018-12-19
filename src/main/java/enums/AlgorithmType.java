@@ -28,6 +28,7 @@ public enum AlgorithmType {
     @Override
     public Algorithm createAlgorithm(ShortName shortName, SelectionType selectionType, EnumMap<Metric, Float> weights, Integer numOfDistricts) {
       try {
+        System.out.println("Type Region Growing");
         return new RegionGrowing(shortName, selectionType, weights, numOfDistricts);
       } catch (Exception ex) {
         Logger.getLogger(AlgorithmType.class.getName()).log(Level.SEVERE, null, ex);

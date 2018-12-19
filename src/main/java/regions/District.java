@@ -19,6 +19,7 @@ import javax.persistence.Transient;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.GeometryCollection;
 import org.locationtech.jts.geom.GeometryFactory;
+import org.locationtech.jts.geom.Polygon;
 import org.wololo.jts2geojson.GeoJSONReader;
 
 /**
@@ -42,6 +43,7 @@ public class District extends Region implements Serializable {
   private Double objectiveFunction;
 
   public District() {
+    this.geometryFactory = new GeometryFactory();
     this.reader = new GeoJSONReader();
     this.precincts = new HashSet<>();
     this.geoBoundary = new HashSet<>();
@@ -117,6 +119,14 @@ public class District extends Region implements Serializable {
 
   public void setCandidatePrecincts(Collection<Precinct> candidatePrecincts) {
     this.candidatePrecincts = candidatePrecincts;
+    this.candidatePrecincts.removeAll(this.precincts);
+    for (Precinct p : this.candidatePrecincts) {
+      if (p.getDistrictId() == null) {
+        if (!p.getDistrictId().equals("")) {
+          this.candidatePrecincts.remove(p);
+        }
+      }
+    }
   }
 
   @Transient
@@ -161,7 +171,7 @@ public class District extends Region implements Serializable {
 
   @Transient
   public Collection<Geometry> getGeoBoundary() {
-    return geoBoundary;
+    return this.geoBoundary;
   }
 
   public void setGeoBoundary(Collection<Geometry> geoBoundary) {
@@ -170,17 +180,20 @@ public class District extends Region implements Serializable {
 
   @Transient
   public GeometryFactory getGeometryFactory() {
-    return geometryFactory;
+    return this.geometryFactory;
   }
 
   public void setGeometryFactory(GeometryFactory geometryFactory) {
     this.geometryFactory = geometryFactory;
   }
-  
+
   @Transient
-  public Geometry getGeometryShape(){
-     GeometryCollection geometryShape = (GeometryCollection)this.getGeometryFactory().buildGeometry(this.getGeoBoundary());
-     return geometryShape.union(); 
+  public Geometry getGeometryShape() {
+    if (this.getGeometryFactory().buildGeometry(this.getGeoBoundary()) instanceof Polygon) {
+      return this.getGeometryFactory().buildGeometry(this.getGeoBoundary());
+    }
+    GeometryCollection geometryShape = (GeometryCollection) this.getGeometryFactory().buildGeometry(this.getGeoBoundary());
+    return geometryShape.union();
   }
 
   @Transient
@@ -191,7 +204,7 @@ public class District extends Region implements Serializable {
   public void setReader(GeoJSONReader reader) {
     this.reader = reader;
   }
-  
+
   @Transient
   public HashMap<String, Integer> getPartyResult() {
     return this.partyResult;
