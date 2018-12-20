@@ -36,6 +36,8 @@ public abstract class Algorithm {
 
   public abstract UpdateManager run();
 
+  public abstract UpdateManager end();
+
   public UpdateManager getUpdateManager() {
     return this.updateManager;
   }

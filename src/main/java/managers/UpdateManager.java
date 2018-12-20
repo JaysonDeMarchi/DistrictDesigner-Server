@@ -13,10 +13,12 @@ public class UpdateManager {
 
   Collection<Move> moves;
   Integer currentSize;
+  Boolean completetionStatus;
 
   public UpdateManager() {
     this.moves = new ArrayList<>();
     this.currentSize = 0;
+    this.completetionStatus = false;
   }
 
   public boolean isReady() {
@@ -47,6 +49,14 @@ public class UpdateManager {
 
   public void setCurrentSize(Integer value) {
     this.currentSize = value;
+  }
+
+  public Boolean isComplete() {
+    return this.completetionStatus;
+  }
+
+  public void setComplete(Boolean status) {
+    this.completetionStatus = status;
   }
 
 }

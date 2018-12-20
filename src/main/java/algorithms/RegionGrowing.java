@@ -73,6 +73,12 @@ public class RegionGrowing extends Algorithm {
     return this.getUpdateManager();
   }
 
+  @Override
+  public UpdateManager end() {
+    this.getUpdateManager().setComplete(true);
+    return this.getUpdateManager();
+  }
+
   public void setSeedsRandomly(int n) {
     this.seeds = new ArrayList<>();
     for (int i = 0; i < n; i++) {

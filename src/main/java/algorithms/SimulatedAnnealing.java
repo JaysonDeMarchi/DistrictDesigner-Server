@@ -28,6 +28,15 @@ public class SimulatedAnnealing extends Algorithm {
 
   @Override
   public UpdateManager run() {
+    while (!this.getUpdateManager().isReady()) {
+
+    }
+    return this.getUpdateManager();
+  }
+
+  @Override
+  public UpdateManager end() {
+    this.getUpdateManager().setComplete(true);
     return this.getUpdateManager();
   }
 }
