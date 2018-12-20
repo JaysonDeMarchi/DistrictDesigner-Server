@@ -16,7 +16,7 @@ import utils.HibernateManager;
  */
 public abstract class Algorithm {
 
-  private State originalState;
+  private final State originalState;
   private State state;
   private EnumMap<Metric, Float> weights;
   private UpdateManager updateManager;
@@ -66,4 +66,7 @@ public abstract class Algorithm {
     this.weights = weights;
   }
 
+  public State getOriginalState() {
+    return this.originalState;
+  }
 }
