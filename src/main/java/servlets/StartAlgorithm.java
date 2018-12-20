@@ -1,13 +1,17 @@
 package servlets;
 
+
+import algorithms.Algorithm;
 import algorithms.RegionGrowing;
 import beans.StartRequestParams;
+import com.fasterxml.jackson.databind.JsonNode;
 import enums.AlgorithmType;
 import enums.Metric;
 import enums.ResponseAttribute;
 import enums.SessionAttribute;
 import enums.ShortName;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import enums.SelectionType;
 import static enums.ShortName.SC;
@@ -21,6 +25,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import org.wololo.jts2geojson.GeoJSONWriter;
+import regions.District;
 
 /**
  *
@@ -33,20 +39,11 @@ public class StartAlgorithm extends HttpServlet {
 
   protected void processRequest(HttpServletRequest request, HttpServletResponse response)
           throws ServletException, IOException {
-    BufferedReader br = request.getReader(); 
-     EnumMap<Metric,Float> weight = new EnumMap<Metric,Float>(Metric.class);
-     weight.put(Metric.compactness, new Float(1));
-     weight.put(Metric.partisan_Gerrymandering, new Float(0.5));
-     weight.put(Metric.population_Equality, new Float(0.5));
-     try{
-     RegionGrowing rg = new RegionGrowing(SC,SelectionType.BEST_FIT,weight, 5);
-     }catch(Exception ex){
-     }
-    
+    BufferedReader br = request.getReader();
     String requestBody = br.readLine();
     StartRequestParams requestParams = mapper.readValue(requestBody, StartRequestParams.class);
     HttpSession session = request.getSession();
-    processResponse(response, request, session.getId(), initiateAlgorithm(session, requestParams));
+    processResponse(response, request, session, initiateAlgorithm(session, requestParams));
   }
 
   private Boolean initiateAlgorithm(HttpSession session, StartRequestParams requestParams) {
@@ -59,13 +56,37 @@ public class StartAlgorithm extends HttpServlet {
     return true;
   }
 
-  private void processResponse(HttpServletResponse response, HttpServletRequest request, String sessionId, Boolean status) throws IOException {
+  private JsonNode getSeededDistricts(Algorithm algorithm) {
+    ArrayNode districtNodes = mapper.createArrayNode();
+    GeoJSONWriter writer = new GeoJSONWriter();
+    for (District d : algorithm.getState().getDistricts()) {
+      ObjectNode districtNode = mapper.createObjectNode();
+      districtNode.put("geometry", writer.write(d.getGeometryShape()).toString());
+      ObjectNode properties = mapper.createObjectNode();
+      districtNode.put("properties", properties);
+      districtNodes.add(districtNode);
+    }
+//    algorithm.getState().getDistricts().stream().map((district) -> {
+//      System.out.println("Add district");
+//      ObjectNode districtNode = mapper.createObjectNode();
+//      districtNode.put("geometry", writer.write(district.getGeometryShape()).toString());
+//      System.out.println("DistrictNode");
+//      return districtNode;
+//    }).forEachOrdered(districtNode -> {
+//      districtNodes.add(districtNode);
+//    });
+    System.out.println("RETURNS");
+    return districtNodes;
+  }
+
+  private void processResponse(HttpServletResponse response, HttpServletRequest request, HttpSession session, Boolean status) throws IOException {
     ObjectNode responseBody = mapper.createObjectNode();
     try (PrintWriter pw = response.getWriter()) {
       response.setContentType("application/json;charset=UTF-8");
       response.setHeader("Access-Control-Allow-Origin", request.getHeader("Origin"));
       responseBody.put(ResponseAttribute.ALGO_STARTED.toString(), status);
-      responseBody.put(ResponseAttribute.SESSION_ID.toString(), sessionId);
+      responseBody.put(ResponseAttribute.DISTRICTS.toString(), getSeededDistricts(((Algorithm) session.getAttribute(SessionAttribute.ALGORITHM.toString()))));
+      responseBody.put(ResponseAttribute.SESSION_ID.toString(), session.getId());
       pw.print(responseBody.toString());
     }
   }

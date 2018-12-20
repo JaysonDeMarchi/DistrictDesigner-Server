@@ -10,7 +10,7 @@ import regions.State;
  * @author Jayson
  */
 public enum Metric {
-  compactness{
+  compactness {
     @Override
     public Double getValue(District district, Float weight) {
       double area = district.getGeometryShape().getArea();
@@ -18,7 +18,7 @@ public enum Metric {
       return weight*(4*Math.PI*area/(perimeter*perimeter));
     }
   },
-  partisan_Gerrymandering{
+  partisan_Gerrymandering {
     @Override
     public Double getValue(District district,Float weight){
       Party losingParty = getLosingParty(district.getPartyResult());
@@ -32,7 +32,7 @@ public enum Metric {
       return totalVotes == 0 ? 0 : weight*(1-((Math.abs(wastedVoteWinning-wastedVoteLosing)/(totalVotes+0.0))*2));
     }
   },
-  population_Equality{
+  population_Equality {
     @Override
     public Double getValue(State state,Float weight){
         District max = state.getDistricts().stream().max(Comparator.comparing(District::getPopulation)).get();

@@ -89,7 +89,7 @@ public class HibernateManager {
     Criteria criteria = session.createCriteria(c);
     if (conditions != null && !conditions.isEmpty()) {
       for (QueryCondition qc : conditions) {
-        criteria.add(qc.getType().getRestriction(qc.getFieldToCompare(), qc.getValue()));
+        if(qc != null) criteria.add(qc.getType().getRestriction(qc.getFieldToCompare(), qc.getValue()));
       }
     }
     Collection<Object> entites = criteria.list();

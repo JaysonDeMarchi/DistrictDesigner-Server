@@ -62,7 +62,7 @@ public class UserWeights implements Serializable {
     this.name = name;
   }
 
-  @Column(name = "COMPACTNESS")
+  @Column(name = "compactness")
   public Float getCompactness() {
     return this.compactness;
   }
@@ -71,7 +71,7 @@ public class UserWeights implements Serializable {
     this.compactness = compactness;
   }
 
-  @Column(name = "POPULATION_EQUALITY")
+  @Column(name = "population_Equality")
   public Float getPopulationEquality() {
     return this.populationEquality;
   }

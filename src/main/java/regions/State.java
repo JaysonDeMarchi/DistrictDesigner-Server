@@ -33,11 +33,10 @@ public class State implements Serializable {
   private Collection<ConstitutionText> constitutionTexts;
   private Double objectiveFunction;
 
-
-
   public State() {
     this.constitutionRequirements = new ConstitutionRequirements();
     this.constitutionTexts = new ArrayList<>();
+    this.districts = new ArrayList<>();
   }
 
   public State(int id, String name) {
@@ -91,7 +90,7 @@ public class State implements Serializable {
     this.districts = districts;
   }
 
-  @Column(name="POPULATION")
+  @Column(name = "POPULATION")
   public Integer getPopulation() {
     return population;
   }
@@ -99,7 +98,7 @@ public class State implements Serializable {
   public void setPopulation(Integer population) {
     this.population = population;
   }
-  
+
   @Transient
   public ConstitutionRequirements getConstitutionRequirements() {
     return this.constitutionRequirements;
@@ -117,7 +116,7 @@ public class State implements Serializable {
   public void setPrecincts(Collection<Precinct> precincts) {
     this.precincts = precincts;
   }
-  
+
   public void initiatePrecinctsInDistrict() {
     for (Precinct p : this.getPrecincts()) {
       this.getDistrictById(p.getDistrictId()).addPrecinct(p);
@@ -186,5 +185,19 @@ public class State implements Serializable {
       }
     }
     return objectiveFunc / validMetrics;
+  }
+
+  @Override
+  public State clone() {
+    State newState = new State();
+    newState.setConstitutionRequirements(this.getConstitutionRequirements());
+    newState.setConstitutionTexts(this.getConstitutionTexts());
+    newState.setId(this.getId());
+    newState.setName(this.getName());
+    newState.setObjectiveFunction(this.getObjectiveFunction());
+    newState.setPopulation(this.getPopulation());
+    newState.setPrecincts(this.getPrecincts());
+    newState.setShortName(this.getShortName());
+    return newState;
   }
 }
