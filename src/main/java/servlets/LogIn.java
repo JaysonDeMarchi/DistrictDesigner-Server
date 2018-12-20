@@ -40,10 +40,12 @@ public class LogIn extends HttpServlet {
   }
 
   public String logInUser(String username) throws Exception, Throwable {
-    HibernateManager hb = HibernateManager.getInstance();
+    HibernateManager hb = new HibernateManager();
     QueryCondition queryCondition = new QueryCondition(QueryField.username, username, ComparisonType.EQUAL);
     ArrayList<User> existingUsers = (ArrayList) hb.getObjectsByConditions(User.class, queryCondition);
+    System.out.println("Users: " + existingUsers.size());
     if (!existingUsers.isEmpty()) {
+      System.out.println("Pass: " + ((User) existingUsers.get(0)).getPassword());
       return ((User) existingUsers.get(0)).getPassword();
     }
     return "";
