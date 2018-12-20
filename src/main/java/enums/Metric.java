@@ -17,6 +17,18 @@ public enum Metric {
       double perimeter = district.getGeometryShape().getLength();
       return weight*(4*Math.PI*area/(perimeter*perimeter));
     }
+    
+    @Override
+    public Double getValue(State state, Float weight) {
+      if(state.getDistricts().size()==0){
+        return 0.0;
+      }
+      double stateCompactness = 0;
+      for(District d:state.getDistricts()){
+        stateCompactness+=getValue(d,weight);
+      }
+      return stateCompactness/state.getDistricts().size();
+    }
   },
   partisan_Gerrymandering {
     @Override
@@ -29,6 +41,26 @@ public enum Metric {
       int totalVotes = ((district.getPartyResult().get(losingParty.toString())==null) ? 0 :  district.getPartyResult().get(losingParty.toString()))+
               ((district.getPartyResult().get(winningParty.toString())==null) ? 0 : district.getPartyResult().get(winningParty.toString()));
       
+      return totalVotes == 0 ? 0 : weight*(1-((Math.abs(wastedVoteWinning-wastedVoteLosing)/(totalVotes+0.0))*2));
+    }
+    
+    @Override
+    public Double getValue(State state,Float weight){
+      HashMap<String,Integer> statePartyResult = new HashMap<>();
+      int democraticVotes = 0;
+      int republicanVotes = 0;
+      for(District d : state.getDistricts()){
+        democraticVotes += (d.getPartyResult().get(Party.DEMOCRATIC.toString())==null) ? 0: d.getPartyResult().get(Party.DEMOCRATIC.toString());
+        statePartyResult.put(Party.DEMOCRATIC.toString(), democraticVotes);
+        republicanVotes += (d.getPartyResult().get(Party.REPUBLICAN.toString())==null) ? 0: d.getPartyResult().get(Party.REPUBLICAN.toString());
+        statePartyResult.put(Party.REPUBLICAN.toString(), republicanVotes);
+      }
+      Party losingParty = democraticVotes>= republicanVotes ? Party.REPUBLICAN : Party.DEMOCRATIC;
+      Party winningParty = losingParty == Party.DEMOCRATIC ? Party.REPUBLICAN : Party.DEMOCRATIC;
+
+      int wastedVoteLosing = statePartyResult.get(losingParty.toString());
+      int wastedVoteWinning = statePartyResult.get(winningParty.toString())-wastedVoteLosing;
+      int totalVotes = democraticVotes+republicanVotes;
       return totalVotes == 0 ? 0 : weight*(1-((Math.abs(wastedVoteWinning-wastedVoteLosing)/(totalVotes+0.0))*2));
     }
   },

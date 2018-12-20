@@ -44,14 +44,12 @@ public class RegionGrowing extends Algorithm {
   @Override
   public UpdateManager run() {
     while (!this.getUpdateManager().isReady()) {
-      this.setSeedsRandomly(5);
       int districtNameIndex = 0;
       for (Precinct p : this.seeds) {
         District newDistrict = new District(this.getState().getShortName() + Integer.toString(districtNameIndex++), p);
         newDistrict.setCandidatePrecincts(this.getState().findAdjPrecincts(p));
         this.getState().getDistricts().add(newDistrict);
       }
-
       HashSet<District> toGrowDistricts = new HashSet<>();
       toGrowDistricts.addAll(this.getState().getDistricts());
       int precinctIndistrict = precinctInDistrict(this.getState().getDistricts());
@@ -63,6 +61,10 @@ public class RegionGrowing extends Algorithm {
           toGrowDistricts.remove(minPopDistrict);
         }
         precinctIndistrict = precinctInDistrict(this.getState().getDistricts());
+        System.out.println(precinctIndistrict+" has finished");
+        if(precinctIndistrict%100==0){
+          System.out.println(this.getState().calculateObjectiveFunction(this.getWeights()));
+        }
       }
     }
     return this.getUpdateManager();
@@ -76,7 +78,7 @@ public class RegionGrowing extends Algorithm {
   }
 
   private void districtGrowing(District targetDistrict,ArrayList<District> districts){
-    try {
+    try{
         double maxObjFunction = 0.0;
         Precinct bestPrecinct = null;
         Iterator iterator = targetDistrict.getCandidatePrecincts().iterator();
@@ -95,7 +97,7 @@ public class RegionGrowing extends Algorithm {
         targetDistrict.getCandidatePrecincts().addAll(bestPrecinctAdj);
         targetDistrict.setCandidatePrecincts(targetDistrict.getCandidatePrecincts());
     } catch (Exception ex) {
-      System.out.println(ex.getMessage());
+      ex.printStackTrace(System.out);
     }
   }
 

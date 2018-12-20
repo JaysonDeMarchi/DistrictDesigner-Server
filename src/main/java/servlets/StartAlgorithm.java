@@ -14,7 +14,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import enums.SelectionType;
-import static enums.ShortName.SC;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -89,6 +88,7 @@ public class StartAlgorithm extends HttpServlet {
       responseBody.put(ResponseAttribute.SESSION_ID.toString(), session.getId());
       pw.print(responseBody.toString());
     }
+    ((Algorithm) session.getAttribute("ALGORITHM")).run();
   }
 
   // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

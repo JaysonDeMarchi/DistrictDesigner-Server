@@ -9,6 +9,7 @@ import java.util.Collection;
 import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.LinkedHashSet;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -120,10 +121,11 @@ public class District extends Region implements Serializable {
 
   public void setCandidatePrecincts(Collection<Precinct> candidatePrecincts) {
     this.candidatePrecincts = candidatePrecincts;
-    this.candidatePrecincts.removeAll(this.precincts); 
-    for(Precinct p : this.candidatePrecincts){
-      if(!p.getDistrictId().equals("")){
-        this.candidatePrecincts.remove(p);
+    this.candidatePrecincts.removeAll(this.precincts);
+    Iterator<Precinct> iter = this.candidatePrecincts.iterator();
+    while (iter.hasNext()) {
+      if (!iter.next().getDistrictId().equals("")) {
+        iter.remove();
       }
     }
   }

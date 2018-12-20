@@ -31,7 +31,7 @@ public enum AlgorithmType {
         System.out.println("Type Region Growing");
         return new RegionGrowing(shortName, selectionType, weights, numOfDistricts);
       } catch (Exception ex) {
-        Logger.getLogger(AlgorithmType.class.getName()).log(Level.SEVERE, null, ex);
+        System.out.println(ex.getMessage());
       }
       return null;
     }
