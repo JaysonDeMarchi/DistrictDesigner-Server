@@ -11,9 +11,9 @@ import moves.Move;
  */
 public class UpdateManager {
 
-  Collection<Move> moves;
-  Integer currentSize;
-  Boolean completetionStatus;
+  private Collection<Move> moves;
+  private Integer currentSize;
+  private Boolean completetionStatus;
 
   public UpdateManager() {
     this.moves = new ArrayList<>();
@@ -21,7 +21,7 @@ public class UpdateManager {
     this.completetionStatus = false;
   }
 
-  public boolean isReady() {
+  public Boolean isReady() {
     return this.getCurrentSize() >= MoveAttribute.MAX_CAPACITY.getValue();
   }
 
