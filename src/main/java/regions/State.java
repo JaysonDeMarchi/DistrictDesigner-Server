@@ -33,11 +33,10 @@ public class State implements Serializable {
   private Collection<ConstitutionText> constitutionTexts;
   private Double objectiveFunction;
 
-
-
   public State() {
     this.constitutionRequirements = new ConstitutionRequirements();
     this.constitutionTexts = new ArrayList<>();
+    this.districts = new ArrayList<>();
   }
 
   public State(int id, String name) {
@@ -186,5 +185,19 @@ public class State implements Serializable {
       }
     }
     return objectiveFunc / validMetrics;
+  }
+
+  @Override
+  public State clone() {
+    State newState = new State();
+    newState.setConstitutionRequirements(this.getConstitutionRequirements());
+    newState.setConstitutionTexts(this.getConstitutionTexts());
+    newState.setId(this.getId());
+    newState.setName(this.getName());
+    newState.setObjectiveFunction(this.getObjectiveFunction());
+    newState.setPopulation(this.getPopulation());
+    newState.setPrecincts(this.getPrecincts());
+    newState.setShortName(this.getShortName());
+    return newState;
   }
 }

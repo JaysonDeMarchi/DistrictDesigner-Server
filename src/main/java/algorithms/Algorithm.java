@@ -29,7 +29,8 @@ public abstract class Algorithm {
     this.updateManager = new UpdateManager();
     this.selectionType = selectionType;
     HibernateManager hb = HibernateManager.getInstance();
-    this.state = hb.getStateByShortName(shortName);
+    this.originalState = hb.getStateByShortName(shortName);
+    this.state = originalState.clone();
   }
 
   public abstract Boolean start();
