@@ -120,6 +120,7 @@ public class State implements Serializable, Cloneable {
   public void initiatePrecinctsInDistrict() {
     for (Precinct p : this.getPrecincts()) {
       this.getDistrictById(p.getDistrictId()).addPrecinct(p);
+      this.findAdjPrecincts(p);
     }
   }
 
@@ -128,11 +129,12 @@ public class State implements Serializable, Cloneable {
     String[] adjPrecinctsId = stringToList(p.getAdjPrecinctsList());
     for (String precinctId : adjPrecinctsId) {
       adjPrecincts.add(getPrecinctById(precinctId));
+      p.getAdjPrecincts().add(getPrecinctById(precinctId));
     }
     return adjPrecincts;
   }
 
-  private District getDistrictById(String id) {
+  public District getDistrictById(String id) {
     for (District d : this.getDistricts()) {
       if (d.getId().equals(id)) {
         return d;

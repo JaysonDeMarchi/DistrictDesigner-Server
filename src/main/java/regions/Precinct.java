@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.EnumMap;
 import java.util.Map;
+import java.util.stream.Collectors;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -31,13 +32,14 @@ public class Precinct extends Region implements Serializable {
   private Integer black;
   private Integer asian;
   private Integer hispanic;
+  private Collection<Precinct> adjPrecincts;
   private String adjPrecinctsList;
   private Map<ElectionType, Collection<Election>> electionResults;
-  
 
   public Precinct() {
     this.electionResults = new EnumMap<>(ElectionType.class);
     this.electionResults.put(ElectionType.HOUSE, new ArrayList<Election>());
+    this.adjPrecincts = new ArrayList<>();
   }
 
   public Precinct(String precinctId, String stateName, String boundary, String adjPrecincts) throws Exception {
@@ -47,6 +49,7 @@ public class Precinct extends Region implements Serializable {
     this.adjPrecinctsList = adjPrecincts;
     this.electionResults = new EnumMap<>(ElectionType.class);
     this.electionResults.put(ElectionType.HOUSE, new ArrayList<Election>());
+    this.adjPrecincts = new ArrayList<>();
   }
 
   @Id
@@ -88,8 +91,6 @@ public class Precinct extends Region implements Serializable {
     this.population = population;
   }
 
-  
-  
   @Column(name = "DISTRICT")
   public String getDistrictId() {
     return this.districtId;
@@ -115,7 +116,7 @@ public class Precinct extends Region implements Serializable {
 
   public void setStateName(String stateName) {
     this.stateName = stateName;
-  } 
+  }
 
   @Column(name = "WHITE")
   public Integer getWhite() {
@@ -156,6 +157,22 @@ public class Precinct extends Region implements Serializable {
   @Transient
   public Map<ElectionType, Collection<Election>> getElectionResults() {
     return this.electionResults;
+  }
+
+  @Transient
+  public Boolean isEdgePrecinct() {
+    Collection<Precinct> outerPrecincts = this.getAdjPrecincts().stream()
+            .filter((adjPrecinct) -> adjPrecinct.getDistrictId().equals(this.getDistrictId()))
+            .collect(Collectors.toList());
+    return !outerPrecincts.isEmpty();
+  }
+
+  public void setEdgePrecinct(Boolean value) {
+  }
+
+  @Transient
+  public Collection<Precinct> getAdjPrecincts() {
+    return this.adjPrecincts;
   }
 
 }
