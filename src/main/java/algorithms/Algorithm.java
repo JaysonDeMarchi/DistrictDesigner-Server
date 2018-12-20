@@ -6,7 +6,6 @@ import enums.ShortName;
 import java.util.Collection;
 import java.util.EnumMap;
 import regions.State;
-import java.util.Map;
 import managers.UpdateManager;
 import regions.District;
 import utils.HibernateManager;
@@ -22,7 +21,6 @@ public abstract class Algorithm {
   UpdateManager updateManager;
   Collection<District> districts;
   SelectionType selectionType;
-
 
   public Algorithm(ShortName shortName, SelectionType selectionType, EnumMap<Metric, Float> weights) throws Exception {
     this.weights = weights;

@@ -3,9 +3,11 @@ package algorithms;
 import enums.Metric;
 import enums.SelectionType;
 import enums.ShortName;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.EnumMap;
-import java.util.Map;
 import managers.UpdateManager;
+import regions.District;
 
 /**
  *
