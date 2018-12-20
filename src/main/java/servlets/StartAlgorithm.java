@@ -1,5 +1,6 @@
 package servlets;
 
+import algorithms.RegionGrowing;
 import beans.StartRequestParams;
 import enums.AlgorithmType;
 import enums.Metric;
@@ -9,6 +10,7 @@ import enums.ShortName;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import enums.SelectionType;
+import static enums.ShortName.SC;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -31,7 +33,16 @@ public class StartAlgorithm extends HttpServlet {
 
   protected void processRequest(HttpServletRequest request, HttpServletResponse response)
           throws ServletException, IOException {
-    BufferedReader br = request.getReader();   
+    BufferedReader br = request.getReader(); 
+     EnumMap<Metric,Float> weight = new EnumMap<Metric,Float>(Metric.class);
+     weight.put(Metric.compactness, new Float(1));
+     weight.put(Metric.partisan_Gerrymandering, new Float(0.5));
+     weight.put(Metric.population_Equality, new Float(0.5));
+     try{
+     RegionGrowing rg = new RegionGrowing(SC,SelectionType.BEST_FIT,weight, 5);
+     }catch(Exception ex){
+     }
+    
     String requestBody = br.readLine();
     StartRequestParams requestParams = mapper.readValue(requestBody, StartRequestParams.class);
     HttpSession session = request.getSession();

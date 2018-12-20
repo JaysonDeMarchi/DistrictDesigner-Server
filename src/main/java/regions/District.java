@@ -20,6 +20,7 @@ import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.GeometryCollection;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.Polygon;
+import org.locationtech.jts.operation.union.UnaryUnionOp;
 import org.wololo.jts2geojson.GeoJSONReader;
 
 /**
@@ -114,14 +115,13 @@ public class District extends Region implements Serializable {
  
   @Transient
   public Collection<Precinct> getCandidatePrecincts() {
-    return candidatePrecincts;
+    return this.candidatePrecincts;
   }
 
   public void setCandidatePrecincts(Collection<Precinct> candidatePrecincts) {
     this.candidatePrecincts = candidatePrecincts;
-    this.candidatePrecincts.removeAll(this.precincts);
+    this.candidatePrecincts.removeAll(this.precincts); 
     for(Precinct p : this.candidatePrecincts){
-      if(p.getDistrictId()==null)
       if(!p.getDistrictId().equals("")){
         this.candidatePrecincts.remove(p);
       }
@@ -170,7 +170,7 @@ public class District extends Region implements Serializable {
 
   @Transient
   public Collection<Geometry> getGeoBoundary() {
-    return geoBoundary;
+    return this.geoBoundary;
   }
 
   public void setGeoBoundary(Collection<Geometry> geoBoundary) {
@@ -179,7 +179,7 @@ public class District extends Region implements Serializable {
 
   @Transient
   public GeometryFactory getGeometryFactory() {
-    return geometryFactory;
+    return this.geometryFactory;
   }
 
   public void setGeometryFactory(GeometryFactory geometryFactory) {
@@ -188,17 +188,12 @@ public class District extends Region implements Serializable {
   
   @Transient
   public Geometry getGeometryShape(){
-    if (this.getGeometryFactory().buildGeometry(this.getGeoBoundary()) instanceof Polygon) {
-      return this.getGeometryFactory().buildGeometry(this.getGeoBoundary());
-    }else{
-     GeometryCollection geometryShape = (GeometryCollection)this.getGeometryFactory().buildGeometry(this.getGeoBoundary());
-     return geometryShape.union();
-    }
+    return new UnaryUnionOp(this.geoBoundary).union();
   }
 
   @Transient
   public GeoJSONReader getReader() {
-    return reader;
+    return this.reader;
   }
 
   public void setReader(GeoJSONReader reader) {

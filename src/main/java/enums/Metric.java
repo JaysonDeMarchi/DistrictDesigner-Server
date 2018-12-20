@@ -15,9 +15,7 @@ public enum Metric {
     public Double getValue(District district, Float weight) {
       double area = district.getGeometryShape().getArea();
       double perimeter = district.getGeometryShape().getLength();
-      double r = Math.sqrt(area / Math.PI);
-      double equalAreaPerimeter = 2 * Math.PI * r;
-      return weight*(1 / (perimeter / equalAreaPerimeter));
+      return weight*(4*Math.PI*area/(perimeter*perimeter));
     }
   },
   partisan_Gerrymandering{
