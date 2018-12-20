@@ -21,7 +21,7 @@ import politics.ConstitutionText;
  */
 @Entity
 @Table(name = "STATE")
-public class State implements Serializable {
+public class State implements Serializable, Cloneable {
 
   private Integer id;
   private String name;
@@ -188,7 +188,7 @@ public class State implements Serializable {
   }
 
   @Override
-  public State clone() {
+  public State clone() throws CloneNotSupportedException {
     State newState = new State();
     newState.setConstitutionRequirements(this.getConstitutionRequirements());
     newState.setConstitutionTexts(this.getConstitutionTexts());

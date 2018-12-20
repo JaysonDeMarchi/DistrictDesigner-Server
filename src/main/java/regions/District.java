@@ -5,11 +5,14 @@ import electionResults.HouseResult;
 import enums.ElectionType;
 import enums.Metric;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
+import java.util.Set;
+import java.util.stream.Collectors;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -27,7 +30,7 @@ import org.wololo.jts2geojson.GeoJSONReader;
  */
 @Entity
 @Table(name = "DISTRICT")
-public class District extends Region implements Serializable {
+public class District extends Region implements Serializable, Cloneable {
 
   private String id;
   private String boundary;
@@ -43,15 +46,18 @@ public class District extends Region implements Serializable {
   private Double objectiveFunction;
 
   public District() {
+    this.candidatePrecincts = new ArrayList<>();
     this.geometryFactory = new GeometryFactory();
     this.reader = new GeoJSONReader();
     this.precincts = new HashSet<>();
     this.geoBoundary = new HashSet<>();
     this.partyResult = new HashMap<>();
-    this.population = new Integer(0);
+    this.population = 0;
   }
 
   public District(String id, Precinct seed) {
+    this.candidatePrecincts = new ArrayList<>();
+
     this.geometryFactory = new GeometryFactory();
     this.reader = new GeoJSONReader();
     this.id = id;
@@ -230,6 +236,38 @@ public class District extends Region implements Serializable {
       }
     }
     return objectiveFunc / validMetrics;
+  }
+
+  @Transient
+  public Set<Precinct> getEdgePrecincts() {
+    return this.getPrecincts().stream()
+            .filter((precinct) -> precinct.isEdgePrecinct())
+            .collect(Collectors.toSet());
+  }
+
+  public void setEdgePrecincts() {
+  }
+
+  @Override
+  public District clone() throws CloneNotSupportedException {
+    District newDistrict = new District();
+    newDistrict.setBoundary(this.getBoundary());
+    Collection<Precinct> candidates = new ArrayList<>();
+    this.getCandidatePrecincts().forEach((p) -> {
+      candidates.add(p);
+    });
+    newDistrict.setCandidatePrecincts(candidates);
+    newDistrict.setGeoBoundary(this.getGeoBoundary());
+    newDistrict.setId(this.getId());
+    newDistrict.setObjectiveFunction(this.getObjectiveFunction());
+    newDistrict.setPopulation(this.getPopulation());
+    Collection<Precinct> currentPrecints = new ArrayList<>();
+    this.getPrecincts().forEach((p) -> {
+      currentPrecints.add(p);
+    });
+    newDistrict.setPrecincts(currentPrecints);
+    newDistrict.setStateName(this.getStateName());
+    return newDistrict;
   }
 
 }
