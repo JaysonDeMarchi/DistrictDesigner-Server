@@ -10,12 +10,12 @@
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
-      <module name="DistrictDesignerServer" target="1.7" />
+      <module name="DistrictDesignerServer" target="1.8" />
     </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
-      <module name="DistrictDesignerServer" options="-endorseddirs C:\Users\Jayson\CourseWork\CSE308\DistrictDesignerServer\target/endorsed" />
+      <module name="DistrictDesignerServer" options="" />
     </option>
   </component>
 </project>

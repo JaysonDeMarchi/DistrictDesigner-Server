@@ -62,7 +62,7 @@ public class UserWeights implements Serializable {
     this.name = name;
   }
 
-  @Column(name = "COMPACTNESS")
+  @Column(name = "compactness")
   public Float getCompactness() {
     return this.compactness;
   }
@@ -71,7 +71,7 @@ public class UserWeights implements Serializable {
     this.compactness = compactness;
   }
 
-  @Column(name = "POPULATION_EQUALITY")
+  @Column(name = "population_Equality")
   public Float getPopulationEquality() {
     return this.populationEquality;
   }
@@ -92,15 +92,15 @@ public class UserWeights implements Serializable {
   @Transient
   public HashMap<Metric,Float> getUserWeightsList(){
     HashMap<Metric,Float> userWeights = new HashMap<>();
-    userWeights.put(Metric.COMPACTNESS,this.compactness);
-    userWeights.put(Metric.POPULATION_EQUALITY, this.populationEquality);
-    userWeights.put(Metric.PARTISAN_GERRYMANDERING, this.partisanGerrymandering);
+    userWeights.put(Metric.compactness,this.compactness);
+    userWeights.put(Metric.population_Equality, this.populationEquality);
+    userWeights.put(Metric.partisan_Gerrymandering, this.partisanGerrymandering);
     return userWeights;
   }
   
    public void setUserWeights(HashMap<Metric,Float> userWeightsList) {
-     this.compactness = userWeightsList.get(Metric.COMPACTNESS);
-     this.populationEquality = userWeightsList.get(Metric.POPULATION_EQUALITY);
-     this.partisanGerrymandering = userWeightsList.get(Metric.PARTISAN_GERRYMANDERING);
+     this.compactness = userWeightsList.get(Metric.compactness);
+     this.populationEquality = userWeightsList.get(Metric.population_Equality);
+     this.partisanGerrymandering = userWeightsList.get(Metric.partisan_Gerrymandering);
    }
 }
