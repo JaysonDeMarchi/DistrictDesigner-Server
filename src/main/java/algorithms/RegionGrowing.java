@@ -63,20 +63,13 @@ public class RegionGrowing extends Algorithm {
     return this.getUpdateManager();
   }
 
-  public void setSeedsRandomly(int n) {
-    this.seeds = new ArrayList<>();
-    for (int i = 0; i < n; i++) {
-      this.seeds.add(((List<Precinct>) (List) this.state.getPrecincts()).get(new Random().nextInt(this.state.getPrecincts().size())));
-    }
-  }
-
   private void districtGrowing(District targetDistrict, ArrayList<District> districts) {
     try {
       Double maxObjFunction = 0.0;
       Precinct bestPrecinct = null;
       for (Precinct p : targetDistrict.getCandidatePrecincts()) {
         targetDistrict.addPrecinct(p);
-        Double tempObjFunction = targetDistrict.calculateObjectiveFunction(this.weights);
+        Double tempObjFunction = targetDistrict.calculateObjectiveFunction(this.getWeights());
         if (tempObjFunction > maxObjFunction) {
           maxObjFunction = tempObjFunction;
           bestPrecinct = p;
