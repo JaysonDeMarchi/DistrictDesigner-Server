@@ -17,10 +17,12 @@ public enum AlgorithmType {
 
     public Algorithm createAlgorithm(ShortName shortName, SelectionType selectionType, EnumMap<Metric, Float> weights, Integer numOfDistricts) {
       try {
+        System.out.println("Type Simulated Annealing");
         return new SimulatedAnnealing(shortName, selectionType, weights);
       } catch (Exception ex) {
         Logger.getLogger(AlgorithmType.class.getName()).log(Level.SEVERE, null, ex);
       }
+      System.out.println("Cannot create algorithm");
       return null;
     }
   },
