@@ -19,57 +19,55 @@ import regions.District;
 import regions.Precinct;
 
 /**
-* @author Jayson
-*/
+ * @author Jayson
+ */
 public class RegionGrowing extends Algorithm {
 
   List<Precinct> seeds;
 
-
   public RegionGrowing(ShortName shortName, SelectionType selectionType, EnumMap<Metric, Float> weights, Integer numOfDistricts) throws Exception {
     super(shortName, selectionType, weights);
-    this.state.getPrecincts().forEach((precinct) -> precinct.setDistrictId(""));
+    this.getState().getPrecincts().forEach((precinct) -> precinct.setDistrictId(""));
     this.setSeedsRandomly(numOfDistricts);
     int districtNameIndex = 0;
-    for(Precinct p : this.seeds){
-      District newDistrict = new District(this.state.getShortName()+Integer.toString(districtNameIndex++),p);
-      newDistrict.setCandidatePrecincts(this.state.findAdjPrecincts(p));
-      this.state.getDistricts().add(newDistrict);
+    for (Precinct p : this.seeds) {
+      District newDistrict = new District(this.getState().getShortName() + Integer.toString(districtNameIndex++), p);
+      newDistrict.setCandidatePrecincts(this.getState().findAdjPrecincts(p));
+      this.getState().getDistricts().add(newDistrict);
     }
   }
 
   @Override
   public Boolean start() {
-  
-    
+
     return true;
   }
 
   @Override
   public UpdateManager run() {
-    while(!this.getUpdateManager().isReady()) {
+    while (!this.getUpdateManager().isReady()) {
       WKTWriter wktWriter = new WKTWriter();
       this.setSeedsRandomly(5);
       int districtNameIndex = 0;
-      for(Precinct p : this.seeds){
-        District newDistrict = new District(this.state.getShortName()+Integer.toString(districtNameIndex++),p);
-        newDistrict.setCandidatePrecincts(this.state.findAdjPrecincts(p));
-        this.state.getDistricts().add(newDistrict);
+      for (Precinct p : this.seeds) {
+        District newDistrict = new District(this.getState().getShortName() + Integer.toString(districtNameIndex++), p);
+        newDistrict.setCandidatePrecincts(this.getState().findAdjPrecincts(p));
+        this.getState().getDistricts().add(newDistrict);
       }
-      
+
       HashSet<District> toGrowDistricts = new HashSet<>();
       toGrowDistricts.addAll(this.getState().getDistricts());
-      
-      int precinctIndistrict = precinctInDistrict(this.state.getDistricts());
-      while(this.getState().getPrecincts().size() > precinctIndistrict&&!toGrowDistricts.isEmpty()){
+
+      int precinctIndistrict = precinctInDistrict(this.getState().getDistricts());
+      while (this.getState().getPrecincts().size() > precinctIndistrict && !toGrowDistricts.isEmpty()) {
         District minPopDistrict = toGrowDistricts.stream().min(Comparator.comparing(District::getPopulation)).get();
-        if(!minPopDistrict.getCandidatePrecincts().isEmpty()){
-          districtGrowing(minPopDistrict, (ArrayList<District>) this.state.getDistricts());
-        }else{
+        if (!minPopDistrict.getCandidatePrecincts().isEmpty()) {
+          districtGrowing(minPopDistrict, (ArrayList<District>) this.getState().getDistricts());
+        } else {
           toGrowDistricts.remove(minPopDistrict);
           continue;
         }
-        precinctIndistrict = precinctInDistrict(this.state.getDistricts());
+        precinctIndistrict = precinctInDistrict(this.getState().getDistricts());
       }
     }
     return this.getUpdateManager();
@@ -77,41 +75,41 @@ public class RegionGrowing extends Algorithm {
 
   public void setSeedsRandomly(int n) {
     this.seeds = new ArrayList<>();
-    for (int i=0;i<n;i++) {
-      this.seeds.add(((List<Precinct>) (List) this.state.getPrecincts()).get(new Random().nextInt(this.state.getPrecincts().size())));
+    for (int i = 0; i < n; i++) {
+      this.seeds.add(((List<Precinct>) (List) this.getState().getPrecincts()).get(new Random().nextInt(this.getState().getPrecincts().size())));
     }
   }
 
-  private void districtGrowing(District newDistrict,ArrayList<District> districts){
+  private void districtGrowing(District newDistrict, ArrayList<District> districts) {
     double maxObjFunction;
     try {
 //        int precinctVisted = 0;
-        maxObjFunction = 0.0;
-        Precinct bestPrecinct = null;
-        Iterator iterator = newDistrict.getCandidatePrecincts().iterator();
-        while (iterator.hasNext()) {
-          Precinct p = (Precinct) iterator.next();
-          newDistrict.addPrecinct(p);
-          Double tempObjFunction = newDistrict.calculateObjectiveFunction(this.weights);
-          if (tempObjFunction > maxObjFunction) {
-            maxObjFunction = tempObjFunction;
-            bestPrecinct = p;
-          }
-          newDistrict.removePrecinct(p);
-//          precinctVisted++;
+      maxObjFunction = 0.0;
+      Precinct bestPrecinct = null;
+      Iterator iterator = newDistrict.getCandidatePrecincts().iterator();
+      while (iterator.hasNext()) {
+        Precinct p = (Precinct) iterator.next();
+        newDistrict.addPrecinct(p);
+        Double tempObjFunction = newDistrict.calculateObjectiveFunction(this.getWeights());
+        if (tempObjFunction > maxObjFunction) {
+          maxObjFunction = tempObjFunction;
+          bestPrecinct = p;
         }
-        newDistrict.addPrecinct(bestPrecinct);
-        HashSet<Precinct> bestPrecinctAdj = (HashSet<Precinct>) this.state.findAdjPrecincts(bestPrecinct);
-        newDistrict.getCandidatePrecincts().addAll(bestPrecinctAdj);
-        newDistrict.setCandidatePrecincts(newDistrict.getCandidatePrecincts());
+        newDistrict.removePrecinct(p);
+//          precinctVisted++;
+      }
+      newDistrict.addPrecinct(bestPrecinct);
+      HashSet<Precinct> bestPrecinctAdj = (HashSet<Precinct>) this.getState().findAdjPrecincts(bestPrecinct);
+      newDistrict.getCandidatePrecincts().addAll(bestPrecinctAdj);
+      newDistrict.setCandidatePrecincts(newDistrict.getCandidatePrecincts());
     } catch (Exception ex) {
-     System.out.println(ex.getMessage());
+      System.out.println(ex.getMessage());
     }
   }
-  
-  private int precinctInDistrict(Collection<District> districts){
+
+  private int precinctInDistrict(Collection<District> districts) {
     int numOfprecints = 0;
-    for(District d : districts){
+    for (District d : districts) {
       numOfprecints += d.getPrecincts().size();
     }
     return numOfprecints;
@@ -120,7 +118,7 @@ public class RegionGrowing extends Algorithm {
   public void setSeedsRandomly(Collection<District> districts) {
     this.seeds = new ArrayList<>();
     for (District d : districts) {
-        this.seeds.add(((List<Precinct>) (List) d.getPrecincts()).get(new Random().nextInt(d.getPrecincts().size())));
+      this.seeds.add(((List<Precinct>) (List) d.getPrecincts()).get(new Random().nextInt(d.getPrecincts().size())));
     }
   }
 }

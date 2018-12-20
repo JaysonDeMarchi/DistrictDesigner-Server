@@ -17,12 +17,12 @@ import utils.HibernateManager;
  */
 public abstract class Algorithm {
 
-  State state;
-  EnumMap<Metric, Float> weights;
-  UpdateManager updateManager;
-  Collection<District> districts;
-  SelectionType selectionType;
-
+  private State originalState;
+  private State state;
+  private EnumMap<Metric, Float> weights;
+  private UpdateManager updateManager;
+  private Collection<District> districts;
+  private SelectionType selectionType;
 
   public Algorithm(ShortName shortName, SelectionType selectionType, EnumMap<Metric, Float> weights) throws Exception {
     this.weights = weights;
