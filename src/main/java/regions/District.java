@@ -9,6 +9,7 @@ import java.util.Collection;
 import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.LinkedHashSet;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -20,6 +21,7 @@ import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.GeometryCollection;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.Polygon;
+import org.locationtech.jts.operation.union.UnaryUnionOp;
 import org.wololo.jts2geojson.GeoJSONReader;
 
 /**
@@ -114,17 +116,16 @@ public class District extends Region implements Serializable {
 
   @Transient
   public Collection<Precinct> getCandidatePrecincts() {
-    return candidatePrecincts;
+    return this.candidatePrecincts;
   }
 
   public void setCandidatePrecincts(Collection<Precinct> candidatePrecincts) {
     this.candidatePrecincts = candidatePrecincts;
     this.candidatePrecincts.removeAll(this.precincts);
-    for (Precinct p : this.candidatePrecincts) {
-      if (p.getDistrictId() == null) {
-        if (!p.getDistrictId().equals("")) {
-          this.candidatePrecincts.remove(p);
-        }
+    Iterator<Precinct> iter = this.candidatePrecincts.iterator();
+    while (iter.hasNext()) {
+      if (!iter.next().getDistrictId().equals("")) {
+        iter.remove();
       }
     }
   }
@@ -188,17 +189,13 @@ public class District extends Region implements Serializable {
   }
 
   @Transient
-  public Geometry getGeometryShape() {
-    if (this.getGeometryFactory().buildGeometry(this.getGeoBoundary()) instanceof Polygon) {
-      return this.getGeometryFactory().buildGeometry(this.getGeoBoundary());
-    }
-    GeometryCollection geometryShape = (GeometryCollection) this.getGeometryFactory().buildGeometry(this.getGeoBoundary());
-    return geometryShape.union();
+  public Geometry getGeometryShape(){
+    return new UnaryUnionOp(this.geoBoundary).union();
   }
 
   @Transient
   public GeoJSONReader getReader() {
-    return reader;
+    return this.reader;
   }
 
   public void setReader(GeoJSONReader reader) {

@@ -17,6 +17,7 @@ import utils.HibernateManager;
  */
 public abstract class Algorithm {
 
+
   private State originalState;
   private State state;
   private EnumMap<Metric, Float> weights;

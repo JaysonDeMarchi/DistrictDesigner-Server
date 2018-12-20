@@ -1,6 +1,8 @@
 package servlets;
 
+
 import algorithms.Algorithm;
+import algorithms.RegionGrowing;
 import beans.StartRequestParams;
 import com.fasterxml.jackson.databind.JsonNode;
 import enums.AlgorithmType;
@@ -15,9 +17,7 @@ import enums.SelectionType;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.math.BigDecimal;
 import java.util.EnumMap;
-import java.util.Map;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -88,6 +88,7 @@ public class StartAlgorithm extends HttpServlet {
       responseBody.put(ResponseAttribute.SESSION_ID.toString(), session.getId());
       pw.print(responseBody.toString());
     }
+    ((Algorithm) session.getAttribute("ALGORITHM")).run();
   }
 
   // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
