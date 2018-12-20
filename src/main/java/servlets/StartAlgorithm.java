@@ -60,7 +60,7 @@ public class StartAlgorithm extends HttpServlet {
     GeoJSONWriter writer = new GeoJSONWriter();
     for (District d : algorithm.getState().getDistricts()) {
       ObjectNode districtNode = mapper.createObjectNode();
-      districtNode.put("geomerty", writer.write(d.getGeometryShape()).toString());
+      districtNode.put("geometry", writer.write(d.getGeometryShape()).toString());
       ObjectNode properties = mapper.createObjectNode();
       districtNode.put("properties", properties);
       districtNodes.add(districtNode);

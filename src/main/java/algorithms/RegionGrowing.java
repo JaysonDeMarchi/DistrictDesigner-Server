@@ -28,9 +28,14 @@ public class RegionGrowing extends Algorithm {
 
   public RegionGrowing(ShortName shortName, SelectionType selectionType, EnumMap<Metric, Float> weights, Integer numOfDistricts) throws Exception {
     super(shortName, selectionType, weights);
-    this.state.setDistricts(new ArrayList<>());
     this.state.getPrecincts().forEach((precinct) -> precinct.setDistrictId(""));
-    run();
+    this.setSeedsRandomly(numOfDistricts);
+    int districtNameIndex = 0;
+    for(Precinct p : this.seeds){
+      District newDistrict = new District(this.state.getShortName()+Integer.toString(districtNameIndex++),p);
+      newDistrict.setCandidatePrecincts(this.state.findAdjPrecincts(p));
+      this.state.getDistricts().add(newDistrict);
+    }
   }
 
   @Override
@@ -110,5 +115,12 @@ public class RegionGrowing extends Algorithm {
       numOfprecints += d.getPrecincts().size();
     }
     return numOfprecints;
+  }
+
+  public void setSeedsRandomly(Collection<District> districts) {
+    this.seeds = new ArrayList<>();
+    for (District d : districts) {
+        this.seeds.add(((List<Precinct>) (List) d.getPrecincts()).get(new Random().nextInt(d.getPrecincts().size())));
+    }
   }
 }
