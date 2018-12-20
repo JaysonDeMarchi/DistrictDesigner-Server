@@ -15,9 +15,7 @@ import enums.SelectionType;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.math.BigDecimal;
 import java.util.EnumMap;
-import java.util.Map;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -51,7 +49,8 @@ public class StartAlgorithm extends HttpServlet {
     Integer numOfDistricts = requestParams.getNumOfDistricts();
     SelectionType selectionType = requestParams.getSelectionType();
     EnumMap<Metric, Float> weights = requestParams.getWeights();
-    session.setAttribute(SessionAttribute.ALGORITHM.toString(), algoType.createAlgorithm(shortName, selectionType, weights, numOfDistricts));
+    session.setAttribute("ALGORITHM", algoType.createAlgorithm(shortName, selectionType, weights, numOfDistricts));
+    System.out.println("Session " + session.getId() + ": " + session.getAttributeNames().nextElement());
     return true;
   }
 
@@ -65,20 +64,11 @@ public class StartAlgorithm extends HttpServlet {
       districtNode.put("properties", properties);
       districtNodes.add(districtNode);
     }
-//    algorithm.getState().getDistricts().stream().map((district) -> {
-//      System.out.println("Add district");
-//      ObjectNode districtNode = mapper.createObjectNode();
-//      districtNode.put("geometry", writer.write(district.getGeometryShape()).toString());
-//      System.out.println("DistrictNode");
-//      return districtNode;
-//    }).forEachOrdered(districtNode -> {
-//      districtNodes.add(districtNode);
-//    });
-    System.out.println("RETURNS");
     return districtNodes;
   }
 
   private void processResponse(HttpServletResponse response, HttpServletRequest request, HttpSession session, Boolean status) throws IOException {
+    System.out.println("Session " + session.getId() + ": " + session.getAttributeNames().nextElement());
     ObjectNode responseBody = mapper.createObjectNode();
     try (PrintWriter pw = response.getWriter()) {
       response.setContentType("application/json;charset=UTF-8");
@@ -88,6 +78,11 @@ public class StartAlgorithm extends HttpServlet {
       responseBody.put(ResponseAttribute.SESSION_ID.toString(), session.getId());
       pw.print(responseBody.toString());
     }
+    System.out.println("Begin run");
+    System.out.println("Session Attributes: " + session.getAttributeNames());
+    ((Algorithm) session.getAttribute("ALGORITHM")).run();
+    System.out.println("Update Manager: " + ((Algorithm) session.getAttribute("ALGORITHM")).getUpdateManager().getCurrentSize());
+    System.out.println("Run complete");
   }
 
   // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
