@@ -5,6 +5,7 @@ package enums;
  * @author Jayson
  */
 public enum ResponseAttribute {
+  ALGO_COMPLETED,
   ALGO_STARTED,
   ALGO_STOPPED,
   CONSTITUTION_REQUIREMENTS,
@@ -41,7 +42,6 @@ public enum ResponseAttribute {
       return "Error: User could not log out";
     }
   },
-
   WEIGHTS_SAVED {
     @Override
     public String getErrorMessage() {
